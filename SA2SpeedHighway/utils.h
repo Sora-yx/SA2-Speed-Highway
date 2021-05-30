@@ -1,6 +1,7 @@
 #pragma once
 
-void FreeLandTable(LandTableInfo** land);
+void FreeLandTableObj();
+void FreeLandTableInfo(LandTableInfo** info);
 void LoadLandTable(const char* path, LandTableInfo** land, const TexPackInfo* tex);
 void DeleteSetHandler();
 void LoadLevelLayout(const ObjectListHead* objlist, const char* s, const char* u);

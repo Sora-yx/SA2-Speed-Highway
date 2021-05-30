@@ -1,19 +1,20 @@
 #include "pch.h"
 
-void FreeLandTable(LandTableInfo** land)
+void FreeLandTableObj()
 {
 	if (LandManagerPtr)
 	{
 		DeleteObject_(LandManagerPtr);
 		LandManagerPtr = nullptr;
 	}
+}
 
-	if (*land)
+void FreeLandTableInfo(LandTableInfo** info)
+{
+	if (*info)
 	{
-		delete *land;
+		delete *info;
 	}
-
-	*land = nullptr;
 }
 
 static void FixLand(LandTable* land) {
@@ -37,7 +38,6 @@ static void FixLand(LandTable* land) {
 		}
 	}
 }
-
 
 void LoadLandTable(const char* path, LandTableInfo** land, const TexPackInfo* tex) {
 	LandTableInfo* land_ = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(path));
@@ -69,11 +69,11 @@ void DeleteSetHandler()
 
 void LoadLevelLayout(const ObjectListHead* objlist, const char* s, const char* u) {
 	for (uint8_t i = 0; i < objlist->Count; ++i) {
-		CityEscape_ObjectArray[i] = objlist->List[i];
+		RadicalHighway_ObjectList.List[i] = objlist->List[i];
 	}
 
 	void* setfile = LoadSETFile(2048, (char*)s, (char*)u);
-	LoadSetObject(&CityEscape_ObjectList, setfile);
+	LoadSetObject(&RadicalHighway_ObjectList, setfile);
 }
 
 void LoadLevelMusic(const char* name) {
