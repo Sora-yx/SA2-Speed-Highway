@@ -9,3 +9,5 @@ DataPointer(void*, dword_1DE4688, 0x1DE4688);
 DataPointer(void*, dword_1DE468C, 0x1DE468C);
 
 VoidFunc(FreeSETObjects, 0x4889B0);
+
+extern LoopHead* PathList_SpeedHighway0[];

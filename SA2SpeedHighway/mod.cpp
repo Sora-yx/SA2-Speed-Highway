@@ -41,7 +41,7 @@ static void LoadSHAct(int act)
 		LoadLandTable("resource\\gd_pc\\speed-highway0.sa2lvl", &Act1LandInfo, &HIGHWAY01_TEXINFO);
 		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway0-set-s.bin", "speed-highway0-set-u.bin");
 		LoadLevelMusic((char*)"highway1.adx");
-		//LoadStagePaths(SpeedHighway0PathList);
+		LoadStagePaths(PathList_SpeedHighway0);
 		//LoadDeathZones(SpeedHighway0DeathZones);
 		MovePlayers(-673.0f, -10.0f, 5.0f);
 		break;
