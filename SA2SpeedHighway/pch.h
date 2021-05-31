@@ -5,6 +5,7 @@
 #include "SA2ModLoader.h"
 #include "LandTableInfo.h"
 #include "ModelInfo.h"
+#include "AnimationFile.h"
 
 #include "mod.h"
 #include "utils.h"
