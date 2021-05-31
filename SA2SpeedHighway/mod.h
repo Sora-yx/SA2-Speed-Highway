@@ -9,6 +9,7 @@ DataPointer(void*, dword_1DE4688, 0x1DE4688);
 DataPointer(void*, dword_1DE468C, 0x1DE468C);
 
 VoidFunc(FreeSETObjects, 0x4889B0);
+void DeleteSHAct();
 
 extern LoopHead* PathList_SpeedHighway0[];
 extern int CurrentAct;

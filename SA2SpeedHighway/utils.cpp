@@ -1,6 +1,22 @@
 #include "pch.h"
 
 
+
+void RemoveMaterialColors_Landtable(LandTable* landtable)
+{
+	for (int j = 0; j < landtable->COLCount; j++)
+	{
+		for (int k = 0; k < landtable->COLList[j].Model->basicdxmodel->nbMat; k++)
+		{
+
+			landtable->COLList[j].Model->basicmodel->mats[k].diffuse.argb.r = 0xFF;
+			landtable->COLList[j].Model->basicmodel->mats[k].diffuse.argb.g = 0xFF;
+			landtable->COLList[j].Model->basicmodel->mats[k].diffuse.argb.b = 0xFF;
+
+		}
+	}
+}
+
 void njCnkAction(NJS_ACTION* action, float frame)
 {
 	*(int*)0x25EFE54 = 0x25EFE60;
@@ -50,10 +66,10 @@ ModelInfo* LoadMDL(const char* name, ModelFormat format) {
 	ModelInfo* temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
 
 	if (temp->getformat() == format) {
-		PrintDebug("[SA1 Amy Mod] Loaded %s model: %s.", ModelFormatStrings[(int)format - 1], name);
+		PrintDebug("[SA2 Speed Highway] Loaded %s model: %s.", ModelFormatStrings[(int)format - 1], name);
 	}
 	else {
-		PrintDebug("[SA1 Amy Mod] Failed loading %s model: %s.", ModelFormatStrings[(int)format - 1], name);
+		PrintDebug("[SA2 Speed Highway] Failed loading %s model: %s.", ModelFormatStrings[(int)format - 1], name);
 	}
 
 	return temp;
@@ -82,10 +98,10 @@ AnimationFile* LoadAnim(const char* name) {
 	AnimationFile* file = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
 	if (file->getmotion() != nullptr) {
-		PrintDebug("[SA1 Amy Mod] Loaded animation: %s.", name);
+		PrintDebug("[SA2 Speed Highway] Loaded animation: %s.", name);
 	}
 	else {
-		PrintDebug("[SA1 Amy Mod] Failed loading animation: %s.", name);
+		PrintDebug("[SA2 Speed Highway] Failed loading animation: %s.", name);
 	}
 
 	return file;
@@ -133,7 +149,7 @@ void FreeLandTableInfo(LandTableInfo** info)
 {
 	if (*info)
 	{
-		delete *info;
+		delete* info;
 	}
 }
 
@@ -143,7 +159,7 @@ static void FixLand(LandTable* land) {
 
 		col->field_14 = 0;
 		col->field_18 = 0;
-		
+
 		if (col->Flags == 0x2)
 		{
 			col->Flags = 0x40000002;
@@ -167,14 +183,14 @@ void LoadLandTable(const char* path, LandTableInfo** land, const TexPackInfo* te
 		LandTable* geo = land_->getlandtable();
 
 		FixLand(geo);
-		
+
 		geo->TextureList = tex->TexList;
 		geo->TextureName = (char*)tex->TexName;
 		LoadTextureList(tex->TexName, tex->TexList);
 		LandTableSA2BModels = 0;
 		LoadLandManager(geo);
 	}
-	
+
 	*land = land_;
 }
 
@@ -194,6 +210,15 @@ void LoadLevelLayout(const ObjectListHead* objlist, const char* s, const char* u
 
 	void* setfile = LoadSETFile(2048, (char*)s, (char*)u);
 	LoadSetObject(&RadicalHighway_ObjectList, setfile);
+}
+
+void LoadLevelLayout2(const ObjectListHead* objlist, const char* s, const char* u) {
+	for (uint8_t i = 0; i < objlist->Count; ++i) {
+		CityEscape_ObjectList.List[i] = objlist->List[i];
+	}
+
+	void* setfile = LoadSETFile(2048, (char*)s, (char*)u);
+	LoadSetObject(&CityEscape_ObjectList, setfile);
 }
 
 void LoadLevelMusic(const char* name) {

@@ -19,9 +19,9 @@ static NJS_TEXLIST HIGHWAY03_TEXLIST = { arrayptrandlength(HIGHWAY03_TEXNAME, Ui
 static const TexPackInfo HIGHWAY03_TEXINFO = { "HIGHWAY03", &HIGHWAY03_TEXLIST };
 
 static const StartPosition sh_startpos = { LevelIDs_RadicalHighway, 0, 0, 0, { -673.0f, -10.0f, 5.0f }, { -673.0f, -10.0f, 0.0f }, { -673.0f, -10.0f, 10.0f } };
-static const StartPosition sh_endpos = { LevelIDs_RadicalHighway, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } };
+static const StartPosition sh_endpos = { LevelIDs_RadicalHighway, 0, 0, 0, { -230.08, 150, -1840.42 }, { -230.08, 150, -1840.42}, { -230.08, 150, -1840.42} };
 static const LevelEndPosition sh_2pintro = { LevelIDs_RadicalHighway, 0, 0, 0, { 0.0f, 0.0f, 0.0 }, { 0.0f, 0.0f, 0.0 } };
-static const LevelEndPosition sh_endpos23 = { LevelIDs_RadicalHighway, 0, 0, 0, { 0.0f, 0.0f, 0.0 }, { 0.0f, 0.0f, 0.0 } };
+static const LevelEndPosition sh_endpos23 = { LevelIDs_RadicalHighway, 0, 0, 0, { -230.08, 150, -1840.42}, { -230.08, 150, -1840.42 } };
 
 ModelInfo* SH_BG[4];
 
@@ -51,9 +51,9 @@ void SpeedHighway_Display(ObjectMaster* obj) {
 	njControl3D_Add(NJD_CONTROL_3D_NO_CLIP_CHECK);
 	njControl3D_Remove(NJD_CONTROL_3D_DEPTH_QUEUE);
 
-	switch (v1->Action)
+	switch (CurrentAct)
 	{
-	case 1:
+	case 0:
 		njPushMatrixEx();
 		njTranslateV(0, &v2.Position);
 		njScaleV_(&SkyboxScale_SH[CurrentAct]);
@@ -64,24 +64,16 @@ void SpeedHighway_Display(ObjectMaster* obj) {
 		njScale(0, 1.0, 1.0, 1.0);
 		njPopMatrixEx();
 		break;
-	case 2:
-	case 5:
-	case 8:
-		v1->Action = 1;
-		break;
-	case 3:
-		v1->Action = 4;
-		break;
-	case 4:
+	case 1:
 		if (MainCharObj1[0]->Position.y > -10400.0)
 		{
 			njPushMatrixEx();
 			njTranslateV(0, &v2.Position);
 			njScaleV_(&SkyboxScale_SH[CurrentAct]);
 			njSetTexture(&bg_highway_TEXLIST);
-			DrawObject(SH_BG[1]->getmodel());
+			DrawObject(SH_BG[0]->getmodel());
 			YDist = -10000.0 - v2.Position.y * 0.2;
-	
+
 			njTranslate(0, 0.0, YDist, 0.0);
 			njSetTexture(&bg_highway02_TEXLIST);
 			DrawObject(SH_BG[2]->getmodel());
@@ -90,10 +82,7 @@ void SpeedHighway_Display(ObjectMaster* obj) {
 
 		}
 		break;
-	case 6:
-		v1->Action = 7;
-		break;
-	case 7:
+	case 2:
 		njSetTexture(&bg_highway03_TEXLIST);
 		njPushMatrixEx();
 		njTranslateV(0, &v2.Position);
@@ -134,60 +123,101 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 	switch (data->Action)
 	{
 	case 0:
+		LoadSHAct(0);
 		LoadTextureBG_SH();
 		LoadObject(0, "act", SHControlActTrigger, LoadObj_Data1);
 		obj->DisplaySub = SpeedHighway_Display;
 		data->Action = 1;
 		break;
 	}
+}
 
-	v1 = 4;
-	curAct = CurrentAct | v1;
-	v4 = (unsigned __int8)curAct;
 
-	v4 = (unsigned __int8)CurrentAct;
-
-	curAction = data->Action;
-	v6 = curAction % 3;
-	if (curAction / 3 != v4)
-	{
-		if (v6 == 1)
-		{
-			++data->Action;
-			return;
-		}
-		if (!v6)
-		{
-			data->Action = 3 * v4;
-		}
+VoidFunc(sub_4431B0, 0x4431B0);
+void DeleteSHAct(ObjectMaster* obj) {
+	sub_4431B0();
+	DeleteObject_(SetObject_ptr);
+	if (LandManagerPtr) {
+		DeleteObject_(LandManagerPtr);
 	}
 
 }
 
+void SH_Act2Master(ObjectMaster* a1) {
+	if (a1->Data1.Entity->Action == 0) {
+		a1->DeleteSub = DeleteSHAct;
+		LoadLandTable("resource\\gd_pc\\speed-highway1.sa2lvl", &Act2LandInfo, &HIGHWAY02_TEXINFO);
+		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway1-set-s.bin", "speed-highway1-set-u.bin");
+		LoadLevelMusic((char*)"highway2.adx");
+		a1->Data1.Entity->Action = 1;
+	}
+}
+
+void SH_Act1Master(ObjectMaster* a1) {
+	if (a1->Data1.Entity->Action == 0) {
+		a1->DeleteSub = DeleteSHAct;
+		LoadLandTable("resource\\gd_pc\\speed-highway0.sa2lvl", &Act1LandInfo, &HIGHWAY01_TEXINFO);
+		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway0-set-s.bin", "speed-highway0-set-u.bin");
+		LoadLevelMusic((char*)"highway1.adx");
+		LoadStagePaths(PathList_SpeedHighway0);
+		a1->Data1.Entity->Action = 1;
+	}
+}
+
+void LoadSHAct1() {
+
+	ObjectMaster* v0; // esi
+	EntityData1* v1; // eax
+
+	PrintDebug("Load SH Act1 \n");
+	v0 = AllocateObjectMaster(SH_Act1Master, 3, "SH_Act1Master");
+	if (v0)
+	{
+		v1 = AllocateEntityData1();
+		if (!v1)
+		{
+			DeleteObject_(v0);
+		}
+		v0->Data1.Entity = v1;
+	}
+}
+
+void LoadSHAct2() {
+
+	ObjectMaster* v0; // esi
+	EntityData1* v1; // eax
+
+	PrintDebug("Load SH Act2 \n");
+	v0 = AllocateObjectMaster(SH_Act2Master, 3, "SH_Act2Master");
+	if (v0)
+	{
+		v1 = AllocateEntityData1();
+		if (!v1)
+		{
+			DeleteObject_(v0);
+		}
+		v0->Data1.Entity = v1;
+	}
+}
+
+VoidFunc(DeleteMostObject, 0x470AE0);
 void LoadSHAct(int act)
 {
-	FreeLandTableObj();
+	/*FreeLandTableObj();
 	DeleteSetHandler();
-	FreeSETObjects();
+	FreeSETObjects();*/
 
 	CurrentAct = act;
 
 	switch (act)
 	{
 	case 0:
-		LoadLandTable("resource\\gd_pc\\speed-highway0.sa2lvl", &Act1LandInfo, &HIGHWAY01_TEXINFO);
-		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway0-set-s.bin", "speed-highway0-set-u.bin");
-		LoadLevelMusic((char*)"highway1.adx");
-		LoadStagePaths(PathList_SpeedHighway0);
+		LoadSHAct1();
 		//LoadDeathZones(SpeedHighway0DeathZones);
 		MovePlayers(-673.0f, -10.0f, 5.0f);
 		break;
 	case 1:
-		LoadLandTable("resource\\gd_pc\\speed-highway1.sa2lvl", &Act2LandInfo, &HIGHWAY02_TEXINFO);
-		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway1-set-s.bin", "speed-highway1-set-u.bin");
-		LoadLevelMusic((char*)"highway2.adx");
-		//LoadStagePaths(SpeedHighway1PathList);
-		//LoadDeathZones(SpeedHighway1DeathZones);
+		LoadSHAct2();
 		MovePlayers(-50.0f, 42.0f, 0.0f);
 		break;
 	case 2:
@@ -222,7 +252,7 @@ static void __cdecl SpeedHighway_Free()
 
 static void __cdecl SpeedHighway_Init()
 {
-	LoadSHAct(0);
+
 
 	LoadStageLight("stg14_light.bin");
 	LoadFogData_Fogtask("stg14_fog.bin", (FogData*)0x19EEF28);
@@ -260,10 +290,21 @@ extern "C"
 		RadicalHighway_ObjectList.Count = 118;
 		RadicalHighway_ObjectList.List = SpeedHighwayObjListH.List;
 
+
+		CityEscape_ObjectList.Count = 118;
+		CityEscape_ObjectList.List = SpeedHighwayObjListH.List;
+
 		HelperFunctionsGlobal = helperFunctions;
 		RadicalHighwayHeader = speedHighwayModule;
 
+
 		SetStartEndPoints(&sh_startpos, &sh_2pintro, &sh_endpos, &sh_endpos23);
+	}
+
+	__declspec(dllexport) void __cdecl OnFrame() {
+		if (Controllers[0].press & Buttons_Y) {
+			MainCharObj1[0]->Position = { 4095.762207, -1500, 4599.47998 };
+		}
 	}
 
 	__declspec(dllexport) ModInfo SA2ModInfo = { ModLoaderVer };

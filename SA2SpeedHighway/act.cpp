@@ -1,7 +1,6 @@
 #include "pch.h"
 
-int CurrentAct;
-
+int CurrentAct = 0;
 
 void act3Trigger(ObjectMaster* a1)
 {
@@ -16,7 +15,7 @@ void act3Trigger(ObjectMaster* a1)
 
 		if (v1)
 		{
-			if (v1->Position.x >= 280.0) {
+			if (v1->Position.x >= 280.0 && v1->Position.y <= -19000) {
 				v1->Action = 4;
 				StopMusic();
 				LoadSHAct(2);
@@ -39,11 +38,12 @@ void ControlSHTransition(ObjectMaster* a1)
 		{
 			if (v2->Position.x >= 230.0)
 			{
-				v1->Action = 3;
+				v1->Action = 2;
 			}
 		}
 	}
 }
+
 
 void act2Trigger(ObjectMaster* a1)
 {
@@ -63,9 +63,14 @@ void act2Trigger(ObjectMaster* a1)
 				+ (4750.0 - v1->Position.z) * (4750.0 - v1->Position.z);
 			if (sqrt(v3) < 60.0)
 			{
-				v2->Action = 2;
+
+				v2->Action = 1;
 				StopMusic();
-				LoadSHAct(1);
+				CurrentAct = 1;
+				GameState = 0xc;
+				//LoadSHAct(1);
+
+
 			}
 		}
 	}
@@ -75,14 +80,11 @@ void SHControlActTrigger(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
 	
-	switch (data->Action) {
+	switch (CurrentAct) {
 	case 0:
 		act2Trigger(obj);
 		break;
 	case 1:
-		ControlSHTransition(obj);
-		break;
-	case 2:
 		act3Trigger(obj);
 		break;
 	default:
