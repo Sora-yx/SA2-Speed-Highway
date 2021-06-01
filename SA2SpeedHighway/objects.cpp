@@ -2,6 +2,8 @@
 
 
 Trampoline* goalringt;
+Trampoline* itembox_t;
+Trampoline* airbox_t;
 
 //Ennemies
 void Beetle_Stationary(ObjectMaster* a1) {
@@ -46,11 +48,65 @@ void GoalRing_r(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	if (data->Action == 0) {
 		if (isSADXLevel()) {
-			data->Position.y += 33;
+			data->Position.y += 32;
 		}
 	}
 
 	ObjectFunc(origin, goalringt->Target());
+	origin(obj);
+}
+
+//SADX uses different itembox ID than SA2
+unsigned int FixItemBoxID(unsigned int id) {
+
+	switch (id)
+	{
+	case 1:
+		return 10;
+	case 2:
+		return 1;
+	case 6:
+		return 2;
+	case 7:
+		return 6;
+	}
+
+	return id;
+}
+
+void ItemBox_r(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+	if (data->Action == 0) {
+		if (isSADXLevel()) {
+			if ((unsigned __int64)data->Scale.x >= 9)
+			{
+				data->Scale.x = 0.0;
+			}
+
+			data->Scale.x = FixItemBoxID((unsigned int)data->Scale.x);
+		}
+	}
+
+	ObjectFunc(origin, itembox_t->Target());
+	origin(obj);
+}
+
+void AirBox_r(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+	if (data->Action == 0) {
+		if (isSADXLevel()) {
+			if ((unsigned __int64)data->Scale.x >= 9)
+			{
+				data->Scale.x = 0.0;
+			}
+
+			data->Scale.x = FixItemBoxID((unsigned int)data->Scale.x);
+		}
+	}
+
+	ObjectFunc(origin, airbox_t->Target());
 	origin(obj);
 }
 
@@ -182,4 +238,6 @@ ObjectListHead SpeedHighwayObjListH = { arraylengthandptr(SpeedHighwayObjList) }
 
 void Objects_Init() {
 	goalringt = new Trampoline((int)GoalRing_Main, (int)GoalRing_Main + 0x6, GoalRing_r);
+	itembox_t = new Trampoline((int)ItemBox_Main, (int)ItemBox_Main + 0x5, ItemBox_r);
+	airbox_t = new Trampoline((int)ItemBoxAir_Main, (int)ItemBoxAir_Main + 0x5, AirBox_r);
 }
