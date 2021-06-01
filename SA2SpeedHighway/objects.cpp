@@ -4,6 +4,7 @@
 Trampoline* goalringt;
 Trampoline* itembox_t;
 Trampoline* airbox_t;
+Trampoline* RingLinear_t;
 
 //Ennemies
 void Beetle_Stationary(ObjectMaster* a1) {
@@ -107,6 +108,28 @@ void AirBox_r(ObjectMaster* obj) {
 	}
 
 	ObjectFunc(origin, airbox_t->Target());
+	origin(obj);
+}
+
+signed int RingsLinear_r(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (data->Action == 0) {
+		if (isSADXLevel()) {
+			if (data->Scale.z >= 1.0) {
+				return RingCircleMain(obj);
+			}
+
+			//in sadx scale X is number of rings and scale Y is distance between rings.
+			data->Scale.z = data->Scale.x + 1;
+			data->Scale.x = data->Scale.y / 2.0;
+			data->Scale.y = 0;
+		}
+
+	}
+
+	ObjectFunc(origin, RingLinear_t->Target());
 	origin(obj);
 }
 
@@ -240,4 +263,5 @@ void Objects_Init() {
 	goalringt = new Trampoline((int)GoalRing_Main, (int)GoalRing_Main + 0x6, GoalRing_r);
 	itembox_t = new Trampoline((int)ItemBox_Main, (int)ItemBox_Main + 0x5, ItemBox_r);
 	airbox_t = new Trampoline((int)ItemBoxAir_Main, (int)ItemBoxAir_Main + 0x5, AirBox_r);
+	RingLinear_t = new Trampoline((int)RingLinearMain, (int)RingLinearMain + 0x6, RingsLinear_r);
 }
