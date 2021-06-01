@@ -1,10 +1,5 @@
 #include "pch.h"
 
-ObjectFunc(LoopController, 0x497B50);
-ObjectFunc(RailController, 0x4980C0);
-ObjectFunc(CameraSplineController, nullptr);
-ObjectFunc(AltCameraSplineController, nullptr);
-
 LoopPoint PathList_SpeedHighway0_0_Entries[] = {
 	{ 0, 0xE14D, 1.106329f, { 907, -1062.866f, 49 } },
 	{ 0, 0xE14E, 25.02592f, { 908.346f, -1063.615f, 49.79155f } },
@@ -50,7 +45,6 @@ LoopPoint PathList_SpeedHighway0_0_Entries[] = {
 };
 
 LoopHead PathList_SpeedHighway0_0 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_0_Entries), 895.4773f, PathList_SpeedHighway0_0_Entries, LoopController };
-
 
 LoopPoint PathList_SpeedHighway0_1_Entries[] = {
 	{ 0xE404, 0xF820, 0.759416f, { 2129, -1288, 3597 } },
@@ -1013,7 +1007,6 @@ LoopHead* PathList_SpeedHighway2[] = {
 	&PathList_SpeedHighway2_1,
 	NULL
 };
-
 
 LoopHead* PathList_SpeedHighway0[] = {
 	&PathList_SpeedHighway0_0,

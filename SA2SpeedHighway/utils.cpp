@@ -1,11 +1,11 @@
 #include "pch.h"
 
+static const int SADXLevel[2] = { LevelIDs_RadicalHighway, NULL };
 
-int SADXLevel[2] = { LevelIDs_RadicalHighway, NULL };
-
-bool isSADXLevel() {
-	for (int i = 0; i < LengthOfArray(SADXLevel); i++) {
-
+bool isSADXLevel()
+{
+	for (int i = 0; i < LengthOfArray(SADXLevel); i++)
+	{
 		if (CurrentLevel == SADXLevel[i])
 		{
 			return true;
@@ -13,21 +13,6 @@ bool isSADXLevel() {
 	}
 
 	return false;
-}
-
-void RemoveMaterialColors_Landtable(LandTable* landtable)
-{
-	for (int j = 0; j < landtable->COLCount; j++)
-	{
-		for (int k = 0; k < landtable->COLList[j].Model->basicdxmodel->nbMat; k++)
-		{
-
-			landtable->COLList[j].Model->basicmodel->mats[k].diffuse.argb.r = 0xFF;
-			landtable->COLList[j].Model->basicmodel->mats[k].diffuse.argb.g = 0xFF;
-			landtable->COLList[j].Model->basicmodel->mats[k].diffuse.argb.b = 0xFF;
-
-		}
-	}
 }
 
 void njCnkAction(NJS_ACTION* action, float frame)
@@ -46,7 +31,8 @@ void njCnkMotion(NJS_OBJECT* obj, NJS_MOTION* mot, float frame)
 	DrawObjMotion(obj);
 }
 
-const char* ModelFormatStrings[]{
+const char* ModelFormatStrings[]
+{
 	"collision",
 	"chunk",
 	"battle"
@@ -56,13 +42,15 @@ const char* ModelFormatStrings[]{
 ModelInfo* LoadMDL(const char* name, ModelFormat format) {
 	std::string fullPath;
 
-	if (format == ModelFormat_Chunk) {
+	if (format == ModelFormat_Chunk)
+	{
 		fullPath = "resource\\gd_PC\\Models\\";
 	}
 
 	fullPath += name;
 
-	switch (format) {
+	switch (format)
+	{
 	case ModelFormat_Basic:
 		fullPath += ".sa1mdl";
 		break;
@@ -78,7 +66,8 @@ ModelInfo* LoadMDL(const char* name, ModelFormat format) {
 
 	ModelInfo* temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
 
-	if (temp->getformat() == format) {
+	if (temp->getformat() == format)
+	{
 		PrintDebug("[SA2 Speed Highway] Loaded %s model: %s.", ModelFormatStrings[(int)format - 1], name);
 	}
 	else {
@@ -88,13 +77,15 @@ ModelInfo* LoadMDL(const char* name, ModelFormat format) {
 	return temp;
 }
 
-void LoadAnimation(AnimationFile** info, const char* name, const HelperFunctions& helperFunctions) {
+void LoadAnimation(AnimationFile** info, const char* name, const HelperFunctions& helperFunctions)
+{
 	std::string fullPath = "system\\anims\\";
 	fullPath = fullPath + name + ".saanim";
 
 	AnimationFile* anm = new AnimationFile(helperFunctions.GetReplaceablePath(fullPath.c_str()));
 
-	if (anm->getmodelcount() == 0) {
+	if (anm->getmodelcount() == 0)
+	{
 		delete anm;
 		*info = nullptr;
 	}
@@ -103,7 +94,8 @@ void LoadAnimation(AnimationFile** info, const char* name, const HelperFunctions
 	}
 };
 
-AnimationFile* LoadAnim(const char* name) {
+AnimationFile* LoadAnim(const char* name)
+{
 	std::string fullPath = "resource\\gd_PC\\Anim\\";
 
 	fullPath = fullPath + name + ".saanim";
@@ -120,11 +112,13 @@ AnimationFile* LoadAnim(const char* name) {
 	return file;
 }
 
-void FreeMDL(ModelInfo* pointer) {
+void FreeMDL(ModelInfo* pointer)
+{
 	if (pointer) delete(pointer);
 }
 
-void FreeAnim(AnimationFile* pointer) {
+void FreeAnim(AnimationFile* pointer)
+{
 	if (pointer) delete pointer;
 }
 
@@ -166,7 +160,8 @@ void FreeLandTableInfo(LandTableInfo** info)
 	}
 }
 
-static void FixLand(LandTable* land) {
+static void FixLand(LandTable* land)
+{
 	for (int i = 0; i < land->COLCount; ++i) {
 		COL* col = &land->COLList[i];
 
@@ -188,7 +183,8 @@ static void FixLand(LandTable* land) {
 	}
 }
 
-void LoadLandTable(const char* path, LandTableInfo** land, const TexPackInfo* tex) {
+void LoadLandTable(const char* path, LandTableInfo** land, const TexPackInfo* tex)
+{
 	LandTableInfo* land_ = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(path));
 
 	if (land_ != nullptr)
@@ -199,12 +195,15 @@ void LoadLandTable(const char* path, LandTableInfo** land, const TexPackInfo* te
 
 		geo->TextureList = tex->TexList;
 		geo->TextureName = (char*)tex->TexName;
-		LoadTextureList(tex->TexName, tex->TexList);
-		LandTableSA2BModels = 0;
-		LoadLandManager(geo);
 	}
 
 	*land = land_;
+}
+
+void LoadLandManager_(LandTable* land)
+{
+	LandTableSA2BModels = 0;
+	LoadLandManager(land);
 }
 
 void DeleteSetHandler()
@@ -216,13 +215,55 @@ void DeleteSetHandler()
 	}
 }
 
+void DeleteSETObjects()
+{
+	for (int i = 0; i < ObjectLists_Length; ++i)
+	{
+		ObjectMaster* obj = ObjectLists[i];
+		ObjectMaster* obj_orig = obj;
 
-void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u) {
+		if (obj)
+		{
+			while (1)
+			{
+				ObjectMaster* previous = obj->PrevObject;
+
+				if (obj->SETData)
+				{
+					obj->MainSub = DeleteObject_;
+				}
+
+				if (obj->Child)
+				{
+					DeleteChildObjects(obj);
+				}
+
+				if (previous == obj_orig)
+				{
+					break;
+				}
+
+				obj_orig = ObjectLists[i];
+
+				if (!obj_orig)
+				{
+					break;
+				}
+
+				obj = previous;
+			}
+		}
+	}
+}
+
+void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u)
+{
 	void* setfile = LoadSETFile(2048, (char*)s, (char*)u);
 	LoadSetObject(objlist, setfile);
 }
 
-void LoadLevelMusic(const char* name) {
+void LoadLevelMusic(const char* name)
+{
 	char character;
 	int c = 0;
 
@@ -237,7 +278,8 @@ void LoadLevelMusic(const char* name) {
 	ResetMusic();
 }
 
-void SetStartEndPoints(const StartPosition* start, const LevelEndPosition* start2pIntro, const StartPosition* end, const LevelEndPosition* missionend) {
+void SetStartEndPoints(const StartPosition* start, const LevelEndPosition* start2pIntro, const StartPosition* end, const LevelEndPosition* missionend)
+{
 	for (uint8_t i = 0; i < 8; i++)
 	{
 		HelperFunctionsGlobal.RegisterStartPosition(i, *start);
@@ -257,7 +299,7 @@ void SetStartEndPoints(const StartPosition* start, const LevelEndPosition* start
 
 void MovePlayers(float x, float y, float z)
 {
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < MAXPLAYERS; ++i)
 	{
 		if (MainCharObj1[i])
 		{

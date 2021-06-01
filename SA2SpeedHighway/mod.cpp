@@ -23,7 +23,7 @@ static const StartPosition sh_endpos = { LevelIDs_RadicalHighway, 0, 0, 0, { -23
 static const LevelEndPosition sh_2pintro = { LevelIDs_RadicalHighway, 0, 0, 0, { 0.0f, 0.0f, 0.0 }, { 0.0f, 0.0f, 0.0 } };
 static const LevelEndPosition sh_endpos23 = { LevelIDs_RadicalHighway, 0, 0, 0, { -230.08, 150, -1840.42}, { -230.08, 150, -1840.42 } };
 
-ModelInfo* SH_BG[4];
+static ModelInfo* SH_BG[4];
 
 static NJS_TEXNAME bg_highway_Tex[2]{};
 static NJS_TEXLIST bg_highway_TEXLIST = { arrayptrandlength(bg_highway_Tex, Uint32) };
@@ -37,8 +37,9 @@ static NJS_TEXLIST bg_highway02_TEXLIST = { arrayptrandlength(bg_highway02_Tex, 
 static NJS_TEXNAME bg_highway03_Tex[2]{};
 static NJS_TEXLIST bg_highway03_TEXLIST = { arrayptrandlength(bg_highway03_Tex, Uint32) };
 
-NJS_VECTOR SkyboxScale_SH[3] = { {8.5102701, 8.5102701, 8.5102701},  {1.0, 1.0, 1.0}, {1.22, 1.22, 1.22} };
+static NJS_VECTOR SkyboxScale_SH[3] = { {8.5f, 8.5f, 8.5f},  {1.0f, 1.0f, 1.0f}, {1.22f, 1.22f, 1.22f} };
 
+int CurrentAct;
 
 void LoadModelBG_SH() {
 	for (Uint8 i = 0; i < LengthOfArray(SH_BG); i++) {
@@ -52,16 +53,11 @@ void LoadTextureBG_SH() {
 	LoadTextureList("BG_HIGHWAY01", &bg_highway01_TEXLIST);
 	LoadTextureList("BG_HIGHWAY02", &bg_highway02_TEXLIST);
 	LoadTextureList("BG_HIGHWAY03", &bg_highway03_TEXLIST);
-	return;
 }
 
 void SpeedHighway_Display(ObjectMaster* obj) {
-	EntityData1* v1; // esi
-	CameraInfo v2; // edi
-	float YDist; // [esp+0h] [ebp-14h]
-
-	v1 = obj->Data1.Entity;
-	v2 = CameraData;
+	EntityData1* data = obj->Data1.Entity;
+	NJS_VECTOR* position = &CameraScreensInfoArray[CurrentScreen]->pos;
 
 	njControl3D_Backup();
 	njControl3D_Add(NJD_CONTROL_3D_NO_CLIP_CHECK);
@@ -71,29 +67,27 @@ void SpeedHighway_Display(ObjectMaster* obj) {
 	{
 	case 0:
 		njPushMatrixEx();
-		njTranslateV(0, &v2.Position);
+		njTranslateV(0, position);
 		njScaleV_(&SkyboxScale_SH[CurrentAct]);
 		njSetTexture(&bg_highway_TEXLIST);
 		DrawObject(SH_BG[0]->getmodel());
 		njSetTexture(&bg_highway01_TEXLIST);
 		DrawObject(SH_BG[1]->getmodel());
-		njScale(0, 1.0, 1.0, 1.0);
+		njScale(0, 1.0f, 1.0f, 1.0f);
 		njPopMatrixEx();
 		break;
 	case 1:
-		if (MainCharObj1[0]->Position.y > -10400.0)
+		if (MainCharObj1[CurrentScreen]->Position.y > -10400.0f)
 		{
 			njPushMatrixEx();
-			njTranslateV(0, &v2.Position);
+			njTranslateV(0, position);
 			njScaleV_(&SkyboxScale_SH[CurrentAct]);
 			njSetTexture(&bg_highway_TEXLIST);
 			DrawObject(SH_BG[0]->getmodel());
-			YDist = -10000.0 - v2.Position.y * 0.2;
-
-			njTranslate(0, 0.0, YDist, 0.0);
+			njTranslate(0, 0.0f, -10000.0f - position->y * 0.2f, 0.0f);
 			njSetTexture(&bg_highway02_TEXLIST);
 			DrawObject(SH_BG[2]->getmodel());
-			njScale(0, 1.0, 1.0, 1.0);
+			njScale(0, 1.0f, 1.0f, 1.0f);
 			njPopMatrixEx();
 
 		}
@@ -101,10 +95,10 @@ void SpeedHighway_Display(ObjectMaster* obj) {
 	case 2:
 		njSetTexture(&bg_highway03_TEXLIST);
 		njPushMatrixEx();
-		njTranslateV(0, &v2.Position);
+		njTranslateV(0, position);
 		njScaleV_(&SkyboxScale_SH[CurrentAct]);
 		DrawObject(SH_BG[3]->getmodel());
-		njScale(0, 1.0, 1.0, 1.0);
+		njScale(0, 1.0f, 1.0f, 1.0f);
 		njPopMatrixEx();
 		break;
 	}
@@ -112,123 +106,49 @@ void SpeedHighway_Display(ObjectMaster* obj) {
 	njControl3D_Restore();
 }
 
-
-
 static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
-	__int16 v1 = 0;
-	__int16 curAct;
-	unsigned __int16 v4;
-	int curAction;
-	int v6;
-
+	
 	switch (data->Action)
 	{
 	case 0:
 		LoadSHAct(CurrentAct);
 		LoadTextureBG_SH();
-		LoadObject(0, "act", SHControlActTrigger, LoadObj_Data1);
+		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
 		obj->DisplaySub = SpeedHighway_Display;
 		data->Action = 1;
 		break;
 	}
 }
 
-
-VoidFunc(sub_4431B0, 0x4431B0);
-void DeleteSHAct(ObjectMaster* obj) {
-
-	DeleteSetHandler();
-	FreeSETObjects(); 
-
-	if (LandManagerPtr) {
-		DeleteObject_(LandManagerPtr);
-	}
-}
-
-
-void SH_Act2Master(ObjectMaster* a1) {
-	if (a1->Data1.Entity->Action == 0) {
-		a1->DeleteSub = DeleteSHAct;
-		LoadLandTable("resource\\gd_pc\\speed-highway1.sa2lvl", &Act2LandInfo, &HIGHWAY02_TEXINFO);
-		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway1-set-s.bin", "SET0048_2P_U.bin");
-		LoadLevelMusic((char*)"highway2.adx");
-		a1->Data1.Entity->Action = 1;
-	}
-}
-
-void SH_Act1Master(ObjectMaster* a1) {
-	if (a1->Data1.Entity->Action == 0) {
-		a1->DeleteSub = DeleteSHAct;
-		LoadLandTable("resource\\gd_pc\\speed-highway0.sa2lvl", &Act1LandInfo, &HIGHWAY01_TEXINFO);
-		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway0-set-s.bin", "SET0048_2P_U.bin");
-
-		LoadLevelMusic((char*)"highway1.adx");
-		LoadStagePaths(PathList_SpeedHighway0);
-		a1->Data1.Entity->Action = 1;
-	}
-}
-
-void LoadSHAct1() {
-
-	ObjectMaster* v0; // esi
-	EntityData1* v1; // eax
-
-	PrintDebug("Load SH Act1 \n");
-	v0 = AllocateObjectMaster(SH_Act1Master, 3, "SH_Act1Master");
-	if (v0)
-	{
-		v1 = AllocateEntityData1();
-		if (!v1)
-		{
-			DeleteObject_(v0);
-		}
-		v0->Data1.Entity = v1;
-	}
-}
-
-void LoadSHAct2() {
-
-	ObjectMaster* v0; // esi
-	EntityData1* v1; // eax
-
-	PrintDebug("Load SH Act2 \n");
-	v0 = AllocateObjectMaster(SH_Act2Master, 3, "SH_Act2Master");
-	if (v0)
-	{
-		v1 = AllocateEntityData1();
-		if (!v1)
-		{
-			DeleteObject_(v0);
-		}
-		v0->Data1.Entity = v1;
-	}
-}
-
-VoidFunc(DeleteMostObject, 0x470AE0);
 void LoadSHAct(int act)
 {
-	/*FreeLandTableObj();
+	PrintDebug("[SH] Loading act %i", act);
+
+	StopMusic();
 	DeleteSetHandler();
-	FreeSETObjects();*/
+	DeleteSETObjects();
 
 	CurrentAct = act;
 
 	switch (act)
 	{
 	case 0:
-		LoadSHAct1();
-		//LoadDeathZones(SpeedHighway0DeathZones);
+		LoadLandManager_(Act1LandInfo->getlandtable());
+		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway0-set-s.bin", "SET0048_2P_U.bin");
+		LoadLevelMusic((char*)"highway1.adx");
+		LoadStagePaths(PathList_SpeedHighway0);
 		MovePlayers(-673.0f, -10.0f, 5.0f);
 		break;
 	case 1:
-		LoadSHAct2();
+		LoadLandManager_(Act2LandInfo->getlandtable());
+		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway1-set-s.bin", "SET0048_2P_U.bin");
+		LoadLevelMusic((char*)"highway2.adx");
 		MovePlayers(-50.0f, 42.0f, 0.0f);
 		break;
 	case 2:
-		LoadLandTable("resource\\gd_pc\\speed-highway2.sa2lvl", &Act3LandInfo, &HIGHWAY03_TEXINFO);
-		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway2-set-s.bin", "SET0048_2P_U.bin");
+		LoadLandManager_(Act3LandInfo->getlandtable());
 		LoadLevelMusic((char*)"highway3.adx");
 		MovePlayers(72.0f, 26.0f, 192.0f);
 		break;
@@ -256,11 +176,13 @@ static void __cdecl SpeedHighway_Free()
 
 static void __cdecl SpeedHighway_Init()
 {
-
-
 	LoadStageLight("stg14_light.bin");
 	LoadFogData_Fogtask("stg14_fog.bin", (FogData*)0x19EEF28);
 	LoadStageSounds("se_ac_rh.mlt", (void*)0x8ABFB0);
+
+	LoadLandTable("resource\\gd_pc\\speed-highway0.sa2lvl", &Act1LandInfo, &HIGHWAY01_TEXINFO);
+	LoadLandTable("resource\\gd_pc\\speed-highway1.sa2lvl", &Act2LandInfo, &HIGHWAY02_TEXINFO);
+	LoadLandTable("resource\\gd_pc\\speed-highway2.sa2lvl", &Act3LandInfo, &HIGHWAY03_TEXINFO);
 
 	DropRingsFunc_ptr = DropRings;
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
@@ -273,8 +195,17 @@ static void __cdecl SpeedHighway_Init()
 	dword_1DE4688 = (void*)0x6BC450;
 	dword_1DE468C = (void*)0x6BC4A0;
 
+	// Get starting act
+	if (CurrentCharacter == Characters_Knuckles || CurrentCharacter == Characters_Tikal || CurrentCharacter == Characters_Rouge)
+	{
+		CurrentAct = 2;
+	}
+	else
+	{
+		CurrentAct = 0;
+	}
+	
 	LoadModelBG_SH();
-
 	LoadTexPacks((TexPackInfo*)0x109E810, (NJS_TEXLIST***)0x109E748);
 }
 

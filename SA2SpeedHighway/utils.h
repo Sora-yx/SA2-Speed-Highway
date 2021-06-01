@@ -1,6 +1,5 @@
 #pragma once
 
-void RemoveMaterialColors_Landtable(LandTable* landtable);
 void njCnkAction(NJS_ACTION* action, float frame);
 void njCnkMotion(NJS_OBJECT* obj, NJS_MOTION* mot, float frame);
 ModelInfo* LoadMDL(const char* name, ModelFormat format);
@@ -12,7 +11,9 @@ void FreeAnim(AnimationFile* pointer);
 void FreeLandTableObj();
 void FreeLandTableInfo(LandTableInfo** info);
 void LoadLandTable(const char* path, LandTableInfo** land, const TexPackInfo* tex);
+void LoadLandManager_(LandTable* land);
 void DeleteSetHandler();
+void DeleteSETObjects();
 void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u);
 void LoadLevelMusic(const char* name);
 void SetStartEndPoints(const StartPosition* start, const LevelEndPosition* start2pIntro, const StartPosition* end, const LevelEndPosition* missionend);
