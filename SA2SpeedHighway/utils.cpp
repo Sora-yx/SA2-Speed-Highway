@@ -1,6 +1,19 @@
 #include "pch.h"
 
 
+int SADXLevel[2] = { LevelIDs_RadicalHighway, NULL };
+
+bool isSADXLevel() {
+	for (int i = 0; i < LengthOfArray(SADXLevel); i++) {
+
+		if (CurrentLevel == SADXLevel[i])
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
 
 void RemoveMaterialColors_Landtable(LandTable* landtable)
 {
@@ -203,22 +216,10 @@ void DeleteSetHandler()
 	}
 }
 
-void LoadLevelLayout(const ObjectListHead* objlist, const char* s, const char* u) {
-	for (uint8_t i = 0; i < objlist->Count; ++i) {
-		RadicalHighway_ObjectList.List[i] = objlist->List[i];
-	}
 
+void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u) {
 	void* setfile = LoadSETFile(2048, (char*)s, (char*)u);
-	LoadSetObject(&RadicalHighway_ObjectList, setfile);
-}
-
-void LoadLevelLayout2(const ObjectListHead* objlist, const char* s, const char* u) {
-	for (uint8_t i = 0; i < objlist->Count; ++i) {
-		CityEscape_ObjectList.List[i] = objlist->List[i];
-	}
-
-	void* setfile = LoadSETFile(2048, (char*)s, (char*)u);
-	LoadSetObject(&CityEscape_ObjectList, setfile);
+	LoadSetObject(objlist, setfile);
 }
 
 void LoadLevelMusic(const char* name) {

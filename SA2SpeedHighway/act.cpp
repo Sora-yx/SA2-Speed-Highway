@@ -18,27 +18,8 @@ void act3Trigger(ObjectMaster* a1)
 			if (v1->Position.x >= 280.0 && v1->Position.y <= -19000) {
 				v1->Action = 4;
 				StopMusic();
-				LoadSHAct(2);
-			}
-		}
-	}
-}
-
-void ControlSHTransition(ObjectMaster* a1)
-{
-	EntityData1* v1; // esi
-	EntityData1* v2;
-	v1 = a1->Data1.Entity;
-
-	for (int i = 0; i < 8; i++) {
-
-		v2 = MainCharObj1[i];
-
-		if (v2)
-		{
-			if (v2->Position.x >= 230.0)
-			{
-				v1->Action = 2;
+				CurrentAct = 2;
+				GameState = GameStates_RestartLevel_1;
 			}
 		}
 	}
@@ -67,10 +48,7 @@ void act2Trigger(ObjectMaster* a1)
 				v2->Action = 1;
 				StopMusic();
 				CurrentAct = 1;
-				GameState = 0xc;
-				//LoadSHAct(1);
-
-
+				GameState = GameStates_RestartLevel_1;
 			}
 		}
 	}

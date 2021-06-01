@@ -39,6 +39,22 @@ static NJS_TEXLIST bg_highway03_TEXLIST = { arrayptrandlength(bg_highway03_Tex, 
 
 NJS_VECTOR SkyboxScale_SH[3] = { {8.5102701, 8.5102701, 8.5102701},  {1.0, 1.0, 1.0}, {1.22, 1.22, 1.22} };
 
+
+void LoadModelBG_SH() {
+	for (Uint8 i = 0; i < LengthOfArray(SH_BG); i++) {
+		std::string str = "BG_SH0" + std::to_string(i);
+		SH_BG[i] = LoadMDL(str.c_str(), ModelFormat_Chunk);
+	}
+}
+
+void LoadTextureBG_SH() {
+	LoadTextureList("BG_HIGHWAY", &bg_highway_TEXLIST);
+	LoadTextureList("BG_HIGHWAY01", &bg_highway01_TEXLIST);
+	LoadTextureList("BG_HIGHWAY02", &bg_highway02_TEXLIST);
+	LoadTextureList("BG_HIGHWAY03", &bg_highway03_TEXLIST);
+	return;
+}
+
 void SpeedHighway_Display(ObjectMaster* obj) {
 	EntityData1* v1; // esi
 	CameraInfo v2; // edi
@@ -96,20 +112,7 @@ void SpeedHighway_Display(ObjectMaster* obj) {
 	njControl3D_Restore();
 }
 
-void LoadModelBG_SH() {
-	for (Uint8 i = 0; i < LengthOfArray(SH_BG); i++) {
-		std::string str = "BG_SH0" + std::to_string(i);
-		SH_BG[i] = LoadMDL(str.c_str(), ModelFormat_Chunk);
-	}
-}
 
-void LoadTextureBG_SH() {
-	LoadTextureList("BG_HIGHWAY", &bg_highway_TEXLIST);
-	LoadTextureList("BG_HIGHWAY01", &bg_highway01_TEXLIST);
-	LoadTextureList("BG_HIGHWAY02", &bg_highway02_TEXLIST);
-	LoadTextureList("BG_HIGHWAY03", &bg_highway03_TEXLIST);
-	return;
-}
 
 static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 {
@@ -123,7 +126,7 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 	switch (data->Action)
 	{
 	case 0:
-		LoadSHAct(0);
+		LoadSHAct(CurrentAct);
 		LoadTextureBG_SH();
 		LoadObject(0, "act", SHControlActTrigger, LoadObj_Data1);
 		obj->DisplaySub = SpeedHighway_Display;
@@ -135,19 +138,21 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 
 VoidFunc(sub_4431B0, 0x4431B0);
 void DeleteSHAct(ObjectMaster* obj) {
-	sub_4431B0();
-	DeleteObject_(SetObject_ptr);
+
+	DeleteSetHandler();
+	FreeSETObjects(); 
+
 	if (LandManagerPtr) {
 		DeleteObject_(LandManagerPtr);
 	}
-
 }
+
 
 void SH_Act2Master(ObjectMaster* a1) {
 	if (a1->Data1.Entity->Action == 0) {
 		a1->DeleteSub = DeleteSHAct;
 		LoadLandTable("resource\\gd_pc\\speed-highway1.sa2lvl", &Act2LandInfo, &HIGHWAY02_TEXINFO);
-		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway1-set-s.bin", "speed-highway1-set-u.bin");
+		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway1-set-s.bin", "SET0048_2P_U.bin");
 		LoadLevelMusic((char*)"highway2.adx");
 		a1->Data1.Entity->Action = 1;
 	}
@@ -157,7 +162,8 @@ void SH_Act1Master(ObjectMaster* a1) {
 	if (a1->Data1.Entity->Action == 0) {
 		a1->DeleteSub = DeleteSHAct;
 		LoadLandTable("resource\\gd_pc\\speed-highway0.sa2lvl", &Act1LandInfo, &HIGHWAY01_TEXINFO);
-		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway0-set-s.bin", "speed-highway0-set-u.bin");
+		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway0-set-s.bin", "SET0048_2P_U.bin");
+
 		LoadLevelMusic((char*)"highway1.adx");
 		LoadStagePaths(PathList_SpeedHighway0);
 		a1->Data1.Entity->Action = 1;
@@ -222,10 +228,8 @@ void LoadSHAct(int act)
 		break;
 	case 2:
 		LoadLandTable("resource\\gd_pc\\speed-highway2.sa2lvl", &Act3LandInfo, &HIGHWAY03_TEXINFO);
-		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway2-set-s.bin", "speed-highway2-set-u.bin");
+		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway2-set-s.bin", "SET0048_2P_U.bin");
 		LoadLevelMusic((char*)"highway3.adx");
-		//LoadStagePaths(SpeedHighway2PathList);
-		//LoadDeathZones(SpeedHighway2DeathZones);
 		MovePlayers(72.0f, 26.0f, 192.0f);
 		break;
 	}
@@ -287,18 +291,11 @@ extern "C"
 				MB_ICONWARNING);
 		}
 
-		RadicalHighway_ObjectList.Count = 118;
-		RadicalHighway_ObjectList.List = SpeedHighwayObjListH.List;
-
-
-		CityEscape_ObjectList.Count = 118;
-		CityEscape_ObjectList.List = SpeedHighwayObjListH.List;
-
 		HelperFunctionsGlobal = helperFunctions;
 		RadicalHighwayHeader = speedHighwayModule;
 
-
 		SetStartEndPoints(&sh_startpos, &sh_2pintro, &sh_endpos, &sh_endpos23);
+		Objects_Init();
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {

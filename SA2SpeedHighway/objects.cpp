@@ -1,5 +1,8 @@
 #include "pch.h"
 
+
+Trampoline* goalringt;
+
 //Ennemies
 void Beetle_Stationary(ObjectMaster* a1) {
 	EntityData1* entity = a1->Data1.Entity;
@@ -38,6 +41,18 @@ enum objects {
 
 };
 
+void GoalRing_r(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+	if (data->Action == 0) {
+		if (isSADXLevel()) {
+			data->Position.y += 33;
+		}
+	}
+
+	ObjectFunc(origin, goalringt->Target());
+	origin(obj);
+}
 
 
 static ObjectListEntry SpeedHighwayObjList[] = {
@@ -163,3 +178,8 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 };
 
 ObjectListHead SpeedHighwayObjListH = { arraylengthandptr(SpeedHighwayObjList) };
+
+
+void Objects_Init() {
+	goalringt = new Trampoline((int)GoalRing_Main, (int)GoalRing_Main + 0x6, GoalRing_r);
+}
