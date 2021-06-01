@@ -15,6 +15,16 @@ bool isSADXLevel()
 	return false;
 }
 
+float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest)
+{
+	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
+}
+
+bool IsPointInsideSphere(NJS_VECTOR* center, NJS_VECTOR* pos, float radius)
+{
+	return GetDistance(center, pos) <= radius;
+}
+
 void njCnkAction(NJS_ACTION* action, float frame)
 {
 	*(int*)0x25EFE54 = 0x25EFE60;
@@ -297,13 +307,37 @@ void SetStartEndPoints(const StartPosition* start, const LevelEndPosition* start
 	}
 }
 
-void MovePlayers(float x, float y, float z)
+void __cdecl StartPosManager(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+	EntityData1* player = MainCharObj1[data->Index];
+
+	if (player)
+	{
+		if (IsPointInsideSphere(&data->Position, &player->Position, 5.0f))
+		{
+			DeleteObject_(obj);
+		}
+		else
+		{
+			player->Position = data->Position;
+		}
+	}
+	else
+	{
+		DeleteObject_(obj);
+	}
+}
+
+void MovePlayersToStartPos(float x, float y, float z)
 {
 	for (int i = 0; i < MAXPLAYERS; ++i)
 	{
 		if (MainCharObj1[i])
 		{
-			MainCharObj1[i]->Position = { x, y, z };
+			EntityData1* data = LoadObject(1, "PLAYERTP", StartPosManager, LoadObj_Data1)->Data1.Entity;
+			data->Index = i;
+			data->Position = { x, y, z };
 		}
 	}
 }

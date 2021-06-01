@@ -139,18 +139,18 @@ void LoadSHAct(int act)
 		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway0-set-s.bin", "SET0048_2P_U.bin");
 		LoadLevelMusic((char*)"highway1.adx");
 		LoadStagePaths(PathList_SpeedHighway0);
-		MovePlayers(-673.0f, -10.0f, 5.0f);
+		MovePlayersToStartPos(-673.0f, -10.0f, 5.0f);
 		break;
 	case 1:
 		LoadLandManager_(Act2LandInfo->getlandtable());
 		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway1-set-s.bin", "SET0048_2P_U.bin");
 		LoadLevelMusic((char*)"highway2.adx");
-		MovePlayers(-50.0f, 42.0f, 0.0f);
+		MovePlayersToStartPos(-50.0f, 42.0f, 0.0f);
 		break;
 	case 2:
 		LoadLandManager_(Act3LandInfo->getlandtable());
 		LoadLevelMusic((char*)"highway3.adx");
-		MovePlayers(72.0f, 26.0f, 192.0f);
+		MovePlayersToStartPos(72.0f, 26.0f, 192.0f);
 		break;
 	}
 }

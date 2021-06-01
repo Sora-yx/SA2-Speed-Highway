@@ -42,7 +42,7 @@ static void act2Trigger(ObjectMaster* obj)
 	}
 }
 
-void SHControlActTrigger(ObjectMaster* obj)
+void __cdecl SHControlActTrigger(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
 	

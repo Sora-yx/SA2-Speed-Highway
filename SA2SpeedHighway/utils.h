@@ -1,5 +1,8 @@
 #pragma once
 
+bool isSADXLevel();
+float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
+bool IsPointInsideSphere(NJS_VECTOR* center, NJS_VECTOR* pos, float radius);
 void njCnkAction(NJS_ACTION* action, float frame);
 void njCnkMotion(NJS_OBJECT* obj, NJS_MOTION* mot, float frame);
 ModelInfo* LoadMDL(const char* name, ModelFormat format);
@@ -17,5 +20,4 @@ void DeleteSETObjects();
 void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u);
 void LoadLevelMusic(const char* name);
 void SetStartEndPoints(const StartPosition* start, const LevelEndPosition* start2pIntro, const StartPosition* end, const LevelEndPosition* missionend);
-void MovePlayers(float x, float y, float z);
-bool isSADXLevel();
+void MovePlayersToStartPos(float x, float y, float z);
