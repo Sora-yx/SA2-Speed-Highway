@@ -312,6 +312,7 @@ void __cdecl OCrane(ObjectMaster* obj)
 			
 
 			memcpy(dynobj, SH_RailCol->getmodel(), sizeof(NJS_OBJECT));
+
 			dynobj->scl[2] = 1.0;
 			dynobj->scl[1] = 1.0;
 			dynobj->scl[0] = 1.0;
@@ -321,7 +322,7 @@ void __cdecl OCrane(ObjectMaster* obj)
 			dynobj->ang[1] = v1->Rotation.y;
 			dynobj->ang[2] = v1->Rotation.z;
 			dynobj->pos[0] = v1->Position.x;
-			dynobj->pos[1] = v1->Position.y;
+			dynobj->pos[1] = v1->Position.y - 7;
 			dynobj->pos[2] = v1->Position.z;
 
 

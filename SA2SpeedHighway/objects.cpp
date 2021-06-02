@@ -1,16 +1,20 @@
 #include "pch.h"
 
-
-
 static NJS_TEXNAME highwayObj_Tex[118]{};
 NJS_TEXLIST highwayObj_TEXLIST = { arrayptrandlength(highwayObj_Tex, Uint32) };
 
 static NJS_TEXNAME highwayObj2_Tex[54]{};
 NJS_TEXLIST highwayObj2_TEXLIST = { arrayptrandlength(highwayObj2_Tex, Uint32) };
 
+static ModelInfo* SH_Cone[2];
+CollisionData Col_Cone = { 0x300, (CollisionShapes)0x6, 0x20, 0xE0, 0, { 0, 2.0, 0 }, 3.0, 1.5, 0.0, 0, 0, 0, 0 };
+
+
 void LoadModelsSH() {
 
 	LoadCraneModels();
+	SH_Cone[0] = LoadMDL("cone_cone1", ModelFormat_Chunk);
+	SH_Cone[1] = LoadMDL("cone_cone2", ModelFormat_Chunk);
 }
 
 void LoadObjSHTex() {
@@ -54,6 +58,159 @@ static void __cdecl Robots(ObjectMaster* a1)
 	entity->Rotation.z = 0x100;
 	entity->Scale = { 0, 1, 126 };
 	a1->MainSub = (ObjectFuncPtr)E_AI;
+}
+
+void __fastcall ObjectSetupInput(EntityData1* twp, EntityData2* mwp)
+{
+	twp->Status &= 0xFFC7u;
+	if (mwp)
+	{
+		mwp->Acceleration.z = 0.0;
+		mwp->Acceleration.y = 0.0;
+		mwp->Acceleration.x = 0.0;
+	}
+}
+
+void __cdecl sub_46C150(ObjectMaster* a1)
+{
+	a1->SETData->Flags &= ~0x80u;
+	a1->SETData->Flags &= ~1u;
+	a1->MainSub = DeleteObject_;
+}
+
+void __cdecl Cone_Display(ObjectMaster* a2)
+{
+	EntityData1* v1; // esi
+	Angle v2; // eax
+	Angle v3; // eax
+	Angle v4; // eax
+
+	v1 = a2->Data1.Entity;
+
+	njSetTexture(&highwayObj_TEXLIST);
+	njPushMatrix(0);
+	njTranslateV(0, &v1->Position);
+	v2 = v1->Rotation.z;
+	if (v2)
+	{
+		njRotateZ(0, (unsigned __int16)v2);
+	}
+	v3 = v1->Rotation.x;
+	if (v3)
+	{
+		njRotateX(0, (unsigned __int16)v3);
+	}
+	v4 = v1->Rotation.y;
+	if (v4)
+	{
+		njRotateY(0, (unsigned __int16)v4);
+	}
+	if (v1->Action)
+	{
+		DrawObject(SH_Cone[1]->getmodel());
+	}
+	else
+	{
+		DrawObject(SH_Cone[0]->getmodel());
+	}
+	njPopMatrixEx();
+
+}
+
+void __cdecl Cone_Main(ObjectMaster* a1)
+{
+	ObjectMaster* v1; // ebx
+	EntityData1* v2; // esi
+	NJS_POINT3* v3; // edi
+	Angle v4; // edi
+	double v5; // st7
+	ObjectMaster* v6; // ecx
+	Rotation a4; // [esp+Ch] [ebp-Ch] BYREF
+	Float v13 = 0;
+
+	v1 = a1;
+	v2 = a1->Data1.Entity;
+	v3 = &MainCharObj1[0]->Position;
+	if (ClipSetObject(a1))
+	{
+		if (v2->Scale.y != 0.0 || v2->Scale.x != 0.0)
+		{
+			sub_46C150(v1);
+		}
+	}
+	else
+	{
+		if (v2->Scale.y == 0.0 && v2->Scale.x == 0.0)
+		{
+			if ((v2->Collision->Flag & 1) != 0)
+			{
+				GetPlayerRunningSpeed(0, v13);
+				if (v13) {
+					v2->Scale.x = v13 * 1.5;
+					v2->Scale.y = v13 * 0.66666669;
+				}
+				v2->field_6 = (unsigned __int16)(-16384
+					- (unsigned __int64)(atan2(
+						v2->Position.z - v3->z,
+						v2->Position.x - v3->x)
+						* 65536.0
+						* -0.1591549762031479));
+				//PlaySound(118, 0, 0, 0);
+			}
+		}
+		else
+		{
+			v4 = v2->field_6;
+			v2->Position.x = v2->Position.x - njSin(v4) * v2->Scale.x;
+			v2->Position.y = v2->Scale.y + v2->Position.y;
+			v2->Position.z = njCos(v4) * v2->Scale.x + v2->Position.z;
+
+			v5 = v2->Scale.x - 0.5;
+			v2->Scale.x = v5;
+			if (v5 < 0.0)
+			{
+				v2->Scale.x = 0.0;
+			}
+			v6 = a1;
+			if (v2->Scale.y >= -1.0)
+			{
+				v2->Scale.y = 0.0;
+			}
+			else
+			{
+				v2->Scale.y = v2->Scale.y * -0.5;
+			}
+
+		}
+
+		AddToCollisionList(a1);
+		ObjectSetupInput(v2, 0);
+	}
+}
+
+
+void __cdecl OCone2(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+
+	data->Action = 1;
+	data->Scale.x = 0.0;
+	data->Scale.y = 0.0;
+	InitCollision(obj, &Col_Cone, 1, 4u);
+	obj->MainSub = (ObjectFuncPtr)Cone_Main;
+	obj->DisplaySub = (ObjectFuncPtr)Cone_Display;
+}
+
+void __cdecl OCone1(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+
+	data->Action = 0;
+	data->Scale.x = 0.0;
+	data->Scale.y = 0.0;
+	InitCollision(obj, &Col_Cone, 1, 4u);
+	obj->MainSub = (ObjectFuncPtr)Cone_Main;
+	obj->DisplaySub = (ObjectFuncPtr)Cone_Display;
 }
 
 
@@ -132,8 +289,8 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)6 },// 3, 1, 4000000, 0, (ObjectFuncPtr)0x616150, "O Escalator1" } /* "O Escalator1" */,
 	{ (LoadObj)6 },// 3, 1, 4000000, 0, (ObjectFuncPtr)0x6161B0, "O Escalator2" } /* "O Escalator2" */,
 	{ (LoadObj)2 },//3, 1, 4000000, 0, (ObjectFuncPtr)0x615EB0, "O Antena" } /* "O Antena" */,
-	{ (LoadObj)3, 0, 0, 0, nullptr, }, /* "O Cone1" */
-	{ (LoadObj)3, 0, 0, 0, nullptr, }, /* "O Cone1" */
+	{ (LoadObj)3, 0, 0, 0, OCone1, }, /* "O Cone1" */
+	{ (LoadObj)3, 0, 0, 0, OCone2, }, /* "O Cone1" */
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615990, "O Curb" } /* "O Curb" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615940, "O Fence02" } /* "O Fence02" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615920, "O GREENE" } /* "O GREENE" */,
