@@ -15,6 +15,52 @@ bool isSADXLevel()
 	return false;
 }
 
+int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
+{
+	int player; // esi
+	EntityData1* v3; // eax
+	CollisionInfo* v4; // eax
+	float* v5; // eax
+	double v6; // st7
+	float posX; // [esp+4h] [ebp-1Ch]
+	float posY; // [esp+8h] [ebp-18h]
+	float posZ; // [esp+Ch] [ebp-14h]
+	float v11; // [esp+10h] [ebp-10h]
+	NJS_VECTOR a1; // [esp+14h] [ebp-Ch] BYREF
+
+	posX = position->x;
+	player = 0;
+	posY = position->y;
+	posZ = position->z;
+	while (1)
+	{
+		v3 = MainCharObj1[player];
+		if (v3)
+		{
+			v4 = v3->Collision;
+			if (v4)
+			{
+				v5 = (float*)&v4->CollisionArray->kind;
+				v6 = v5[2];
+				v5 += 3;
+				a1.x = v6 - posX;
+				a1.y = *v5 - posY;
+				a1.z = v5[1] - posZ;
+				v11 = njScalor(&a1) - a2;
+				if (v11 < 0.0)
+				{
+					break;
+				}
+			}
+		}
+		if (++player >= 2)
+		{
+			return 0;
+		}
+	}
+	return player + 1;
+}
+
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest)
 {
 	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));

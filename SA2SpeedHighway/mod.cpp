@@ -149,6 +149,7 @@ void LoadSHAct(int act)
 		break;
 	case 2:
 		LoadLandManager_(Act3LandInfo->getlandtable());
+		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway2-set-s.bin", "SET0048_2P_U.bin");
 		LoadLevelMusic((char*)"highway3.adx");
 		MovePlayersToStartPos(72.0f, 26.0f, 192.0f);
 		break;
@@ -206,6 +207,8 @@ static void __cdecl SpeedHighway_Init()
 	}
 	
 	LoadModelBG_SH();
+	LoadModelsSH();
+	LoadObjSHTex();
 	LoadTexPacks((TexPackInfo*)0x109E810, (NJS_TEXLIST***)0x109E748);
 }
 

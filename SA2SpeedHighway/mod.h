@@ -22,4 +22,3 @@ extern int CurrentAct;
 
 void LoadSHAct(int act);
 void SHControlActTrigger(ObjectMaster* obj);
-void Objects_Init();

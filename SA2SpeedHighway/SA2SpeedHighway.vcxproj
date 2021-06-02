@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="mod.h" />
+    <ClInclude Include="objects.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
@@ -166,6 +167,7 @@
     <ClCompile Include="act.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="mod.cpp" />
+    <ClCompile Include="obj-common.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="paths.cpp" />
     <ClCompile Include="pch.cpp">
@@ -174,6 +176,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="sh-cage.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

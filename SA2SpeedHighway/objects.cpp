@@ -1,9 +1,23 @@
 #include "pch.h"
 
-static Trampoline* goalringt;
-static Trampoline* itembox_t;
-static Trampoline* airbox_t;
-static Trampoline* RingLinear_t;
+
+
+static NJS_TEXNAME highwayObj_Tex[118]{};
+NJS_TEXLIST highwayObj_TEXLIST = { arrayptrandlength(highwayObj_Tex, Uint32) };
+
+static NJS_TEXNAME highwayObj2_Tex[54]{};
+NJS_TEXLIST highwayObj2_TEXLIST = { arrayptrandlength(highwayObj2_Tex, Uint32) };
+
+void LoadModelsSH() {
+
+	LoadCraneModels();
+}
+
+void LoadObjSHTex() {
+	LoadTextureList("OBJ_HIGHWAY", &highwayObj_TEXLIST);
+	LoadTextureList("OBJ_HIGHWAY2", &highwayObj2_TEXLIST);
+}
+
 
 //Ennemies
 static void __cdecl Beetle_Stationary(ObjectMaster* a1)
@@ -42,106 +56,6 @@ static void __cdecl Robots(ObjectMaster* a1)
 	a1->MainSub = (ObjectFuncPtr)E_AI;
 }
 
-static void __cdecl GoalRing_r(ObjectMaster* obj)
-{
-	EntityData1* data = obj->Data1.Entity;
-
-	if (data->Action == 0)
-	{
-		if (isSADXLevel())
-		{
-			data->Position.y += 32.0f;
-		}
-	}
-
-	ObjectFunc(origin, goalringt->Target());
-	origin(obj);
-}
-
-// SADX uses different itembox ID than SA2
-static unsigned int FixItemBoxID(unsigned int id)
-{
-	switch (id)
-	{
-	case 1:
-		return 10;
-	case 2:
-		return 1;
-	case 6:
-		return 2;
-	case 7:
-		return 6;
-	}
-
-	return id;
-}
-
-static void __cdecl ItemBox_r(ObjectMaster* obj)
-{
-	EntityData1* data = obj->Data1.Entity;
-
-	if (data->Action == 0)
-	{
-		if (isSADXLevel())
-		{
-			if ((unsigned __int64)data->Scale.x >= 9)
-			{
-				data->Scale.x = 0.0;
-			}
-
-			data->Scale.x = FixItemBoxID((unsigned int)data->Scale.x);
-		}
-	}
-
-	ObjectFunc(origin, itembox_t->Target());
-	origin(obj);
-}
-
-static void __cdecl AirBox_r(ObjectMaster* obj)
-{
-	EntityData1* data = obj->Data1.Entity;
-
-	if (data->Action == 0)
-	{
-		if (isSADXLevel())
-		{
-			if ((unsigned __int64)data->Scale.x >= 9)
-			{
-				data->Scale.x = 0.0;
-			}
-
-			data->Scale.x = FixItemBoxID((unsigned int)data->Scale.x);
-		}
-	}
-
-	ObjectFunc(origin, airbox_t->Target());
-	origin(obj);
-}
-
-static void __cdecl RingsLinear_r(ObjectMaster* obj)
-{
-	EntityData1* data = obj->Data1.Entity;
-
-	if (data->Action == 0)
-	{
-		if (isSADXLevel())
-		{
-			if (data->Scale.z >= 1.0f)
-			{
-				RingCircleMain(obj);
-				return;
-			}
-
-			//in sadx scale X is number of rings and scale Y is distance between rings.
-			data->Scale.z = data->Scale.x + 1;
-			data->Scale.x = data->Scale.y / 2.0f;
-			data->Scale.y = 0;
-		}
-	}
-
-	ObjectFunc(origin, RingLinear_t->Target());
-	origin(obj);
-}
 
 static ObjectListEntry SpeedHighwayObjList[] = {
 	{ LoadObj_Data1, 2, 0x10, 0.0, RingMain },
@@ -170,7 +84,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)(LoadObj_Data1), 2, 0, 0, (ObjectFuncPtr)LongSpring_Main },
 	{ (LoadObj)6 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x61C740, "O EV   " } /* "O EV   " */,
 	{ (LoadObj)10 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x61BDC0, "O FOUNT" } /* "O FOUNT" */,
-	{ (LoadObj)3, 1, 1000000, 0, nullptr }, /* "O CRANE" */
+	{ LoadObj_Data1, 3, 1, 1000000, OCrane },
 	{ (LoadObj)2 },//3, 1, 1000000, 0, (ObjectFuncPtr)0x61AE80, "O GLASS " } /* "O GLASS " */,
 	{ (LoadObj)2 },//3, 1, 2250000, 0, (ObjectFuncPtr)0x61ACA0, "O GLASS2" } /* "O GLASS2" */,
 	{ (LoadObj)6 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E40, "HIGH RAFT A" } /* "HIGH RAFT A" */,
@@ -183,7 +97,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6188F0, "O ARCADE02" } /* "O ARCADE02" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x618900, "O ARCADE03" } /* "O ARCADE03" */,
 	{ (LoadObj)6 },//3, 1, 1000000, 0, (ObjectFuncPtr)0x6186D0, "O JAMER" } /* "O JAMER" */,
-	{ (LoadObj)3, 1, 2250000, 0, nullptr }, /* "O STP4S" */
+	{ (LoadObj)LoadObj_Data1, 3, 1, 2250000, nullptr }, /* "O STP4S" */
 	{ (LoadObj)6 },//3, 1, 2250000, 0, (ObjectFuncPtr)0x617F00, "O STP4T" } /* "O STP4T" */,
 	{ (LoadObj)14 },// 3, 1, 2250000, 0, (ObjectFuncPtr)0x618030, "O FLYST" } /* "O FLYST" */,
 	{ (LoadObj)2 },// 3, 1, 160000, 0, (ObjectFuncPtr)0x617AE0, "O Post1" } /* "O Post1" */,
@@ -249,7 +163,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 }, /*2, 0, 0, (ObjectFuncPtr)CWALL, }, "OTTOTTO" */
 	{ (LoadObj)2 },//2, 0, 0, 0, (ObjectFuncPtr)0x7A1AA0, "O TIKAL" } /* "O TIKAL" */,
 	{ (LoadObj)2 },//2, 0, 0, 0, (ObjectFuncPtr)0x7A9C60, "O HINT" } /* "O HINT" */,
-	{ LoadObj_Data1, 2, 0x10, 0.0, (ObjectFuncPtr)RingLinearMain },
+	{ LoadObj_Data1, 2, 0x10, 0.0, (ObjectFuncPtr)RingLinearMain},
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B00, "O GFENCE" } /* "O GFENCE" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B30, "O GCURB" } /* "O GCURB" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B60, "O GFENCE02" } /* "O GFENCE02" */,
@@ -267,10 +181,3 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 
 ObjectListHead SpeedHighwayObjListH = { arraylengthandptr(SpeedHighwayObjList) };
 
-
-void Objects_Init() {
-	goalringt = new Trampoline((int)GoalRing_Main, (int)GoalRing_Main + 0x6, GoalRing_r);
-	itembox_t = new Trampoline((int)ItemBox_Main, (int)ItemBox_Main + 0x5, ItemBox_r);
-	airbox_t = new Trampoline((int)ItemBoxAir_Main, (int)ItemBoxAir_Main + 0x5, AirBox_r);
-	RingLinear_t = new Trampoline((int)RingLinearMain, (int)RingLinearMain + 0x6, RingsLinear_r);
-}

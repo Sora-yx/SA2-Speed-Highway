@@ -7,6 +7,7 @@
 #include "ModelInfo.h"
 #include "AnimationFile.h"
 #include "Trampoline.h"
+#include "objects.h"
 
 #include "mod.h"
 #include "utils.h"
