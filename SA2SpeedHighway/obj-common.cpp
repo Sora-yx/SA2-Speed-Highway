@@ -4,7 +4,6 @@ static Trampoline* goalringt;
 static Trampoline* itembox_t;
 static Trampoline* airbox_t;
 
-//in sadx scale X is number of rings and scale Y is distance between rings.
 #pragma region RingGroup
 
 /*

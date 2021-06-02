@@ -85,8 +85,16 @@ void __cdecl sub_442120(float a1, float a2, float a3, float a4)
 	++(v6->field_12);*/
 }
 
-
-
+void CheckCraneColli(EntityData1* a1) {
+	if (IsPlayerInsideSphere(&a1->Position, 570.0f))
+	{
+		a1->Status |= 0x100u;
+	}
+	else
+	{
+		a1->Status &= 0xFEFFu;
+	}
+}
 
 void __cdecl DispSHCage(ObjectMaster* a1)
 {
