@@ -103,6 +103,12 @@ ModelInfo* LoadMDL(const char* name, ModelFormat format) {
 		fullPath = "resource\\gd_PC\\Models\\";
 	}
 
+
+	if (format == ModelFormat_Basic)
+	{
+		fullPath = "resource\\gd_PC\\Collisions\\";
+	}
+
 	fullPath += name;
 
 	switch (format)

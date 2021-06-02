@@ -2,11 +2,19 @@
 
 extern NJS_TEXLIST highwayObj_TEXLIST;
 
-static ModelInfo* SH_Crane[2];
+static ModelInfo* SH_Cage;
+static ModelInfo* SH_Rail;
+static ModelInfo* SH_CageCol;
+static ModelInfo* SH_RailCol;
 
 void LoadCraneModels() {
-	SH_Crane[0] = LoadMDL("crane_cage", ModelFormat_Chunk);
-	SH_Crane[1] = LoadMDL("crane_rail", ModelFormat_Chunk);
+	SH_Cage = LoadMDL("crane_cage", ModelFormat_Chunk);
+	SH_Rail = LoadMDL("crane_rail", ModelFormat_Chunk);
+
+	//Load model collisions
+	SH_CageCol = LoadMDL("crane_cage", ModelFormat_Basic);
+	SH_RailCol = LoadMDL("crane_rail", ModelFormat_Basic);
+	return;
 }
 
 bool sub_61B060(ObjectMaster* a1)
@@ -79,27 +87,6 @@ void __cdecl sub_442120(float a1, float a2, float a3, float a4)
 
 
 
-void __cdecl dispCrane(ObjectMaster* obj)
-{
-	EntityData1* v1; // esi
-	Angle v2; // eax
-
-	v1 = obj->Data1.Entity;
-
-	njSetTexture(&highwayObj_TEXLIST);
-	njPushMatrixEx();
-	njTranslateV(0, &v1->Position);
-	v2 = v1->Rotation.y;
-	if (v2)
-	{
-		njRotateY(0, (unsigned __int16)v2);
-	}
-
-	DrawObject(SH_Crane[1]->getmodel());
-	njPopMatrixEx();
-
-}
-
 void CheckCraneColli(EntityData1* a1) {
 
 	if (IsPlayerInsideSphere(&a1->Position, 570.0)) {
@@ -110,7 +97,7 @@ void CheckCraneColli(EntityData1* a1) {
 	}
 }
 
-void __cdecl DispCage(ObjectMaster* a1)
+void __cdecl DispSHCage(ObjectMaster* a1)
 {
 	EntityData1* v1; // esi
 	Angle v2; // eax
@@ -128,7 +115,7 @@ void __cdecl DispCage(ObjectMaster* a1)
 
 	njSetTexture(&highwayObj_TEXLIST);
 	njTranslate(0, 0.0, 0.0, -30.0);
-	DrawObject(SH_Crane[0]->getmodel());
+	DrawObject(SH_Cage->getmodel());
 	njPopMatrixEx();
 
 }
@@ -166,17 +153,15 @@ void __cdecl SHExecCage(ObjectMaster* a1)
 		v2->Index = 0;
 		//sub_61B130((int)v2);
 		a1->DeleteSub = ObjectFunc_DynColDelete;
-		a1->DisplaySub = DispCage;
-
+		a1->DisplaySub = DispSHCage;
 
 		NJS_OBJECT* dynobj = GetFreeDynObject();
 
-		dynobj->evalflags = 0xFFFFFFFC;
-
-		memcpy(dynobj, SH_Crane[0]->getmodel(), sizeof(NJS_OBJECT));
+		memcpy(dynobj, SH_CageCol->getmodel(), sizeof(NJS_OBJECT));
 		dynobj->scl[2] = 1.0;
 		dynobj->scl[1] = 1.0;
 		dynobj->scl[0] = 1.0;
+		dynobj->evalflags &= 0xFFFFFFFC;
 
 		dynobj->ang[0] = v2->Rotation.x;
 		dynobj->ang[1] = v2->Rotation.y;
@@ -281,19 +266,28 @@ void __cdecl SHExecCage(ObjectMaster* a1)
 	sub_442120(v2->Position.x, v2->Position.y, v2->Position.z, 15.0);
 }
 
-static inline void DynCol_Add2(int flags, ObjectMaster* obj, NJS_OBJECT* object)
+
+
+void __cdecl dispSHRail(ObjectMaster* obj)
 {
-	__asm
+	EntityData1* v1; // esi
+	Angle v2; // eax
+
+	v1 = obj->Data1.Entity;
+
+	njSetTexture(&highwayObj_TEXLIST);
+	njPushMatrixEx();
+	njTranslateV(0, &v1->Position);
+	v2 = v1->Rotation.y;
+	if (v2)
 	{
-		mov esi, [object]
-		mov edx, [obj]
-		mov eax, [flags]
-		call DynCol_AddPtr
+		njRotateY(0, (unsigned __int16)v2);
 	}
+
+	DrawObject(SH_Rail->getmodel());
+	njPopMatrixEx();
+
 }
-
-
-
 
 void __cdecl OCrane(ObjectMaster* obj)
 {
@@ -322,19 +316,19 @@ void __cdecl OCrane(ObjectMaster* obj)
 		else
 		{
 			obj->DeleteSub = ObjectFunc_DynColDelete;
-			obj->DisplaySub = dispCrane;
+			obj->DisplaySub = dispSHRail;
 
 			v1->Rotation.z = 0;
 			v1->Rotation.x = 0;
 
+
 			NJS_OBJECT* dynobj = GetFreeDynObject();
-
-			dynobj->evalflags = 0xFFFFFFFC;
-
-			memcpy(dynobj, SH_Crane[1]->getmodel(), sizeof(NJS_OBJECT));
+			
+			memcpy(dynobj, SH_RailCol->getmodel(), sizeof(NJS_OBJECT));
 			dynobj->scl[2] = 1.0;
 			dynobj->scl[1] = 1.0;
 			dynobj->scl[0] = 1.0;
+			dynobj->evalflags &= 0xFFFFFFFC;
 
 			dynobj->ang[0] = v1->Rotation.x;
 			dynobj->ang[1] = v1->Rotation.y;
