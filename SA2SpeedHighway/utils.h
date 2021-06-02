@@ -24,3 +24,4 @@ void SetStartEndPoints(const StartPosition* start, const LevelEndPosition* start
 void MovePlayersToStartPos(float x, float y, float z);
 int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
 signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2);
+void __cdecl sub_49CE60(EntityData1* a1, EntityData2* a2);

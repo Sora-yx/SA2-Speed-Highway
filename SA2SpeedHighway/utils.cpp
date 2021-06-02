@@ -28,6 +28,17 @@ signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2)
 	return 1;
 }
 
+void __cdecl sub_49CE60(EntityData1* a1, EntityData2* a2)
+{
+	(a1->Status) &= Status_Unknown5 | Status_Unknown4 | Status_Hurt | Status_OnObjectColli | Status_Ground;
+	if (a2)
+	{
+		a2->Acceleration.z = 0.0;
+		a2->Acceleration.y = 0.0;
+		a2->Acceleration.x = 0.0;
+	}
+}
+
 
 int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
 {
