@@ -132,6 +132,7 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 	switch (data->Action)
 	{
 	case 0:
+		PerfectRings_StartCount = 0;
 		LoadSHAct(CurrentAct);
 		LoadTextureBG_SH();
 		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
@@ -143,9 +144,9 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 
 void LoadSHAct(int act)
 {
-	const int PerfectRings_Backup = PerfectRings;
-
 	PrintDebug("[SH] Loading act %i", act);
+
+	PerfectRings_StartCount = PerfectRings;
 
 	StopMusic();
 	DeleteSetHandler();
@@ -175,9 +176,6 @@ void LoadSHAct(int act)
 		MovePlayersToStartPos(72.0f, 26.0f, 192.0f);
 		break;
 	}
-
-	// Increase perfect ring count when loading a new act
-	PerfectRings += PerfectRings_Backup;
 }
 
 static void __cdecl SpeedHighway_Free()
@@ -213,9 +211,6 @@ static void __cdecl SpeedHighway_Init()
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
 
 	SetDrawingPlanes(-3.0f, -65535.0f);
-
-	// Reset Perfect Rings
-	PerfectRings = 0;
 
 	// Chaos Drive Function Pointers
 	dword_1DE4680 = (void*)0x6B6C20;
