@@ -320,7 +320,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 }, /*2, 0, 0, (ObjectFuncPtr)CWALL, }, "OTTOTTO" */
 	{ (LoadObj)2 },//2, 0, 0, 0, (ObjectFuncPtr)0x7A1AA0, "O TIKAL" } /* "O TIKAL" */,
 	{ (LoadObj)2 },//2, 0, 0, 0, (ObjectFuncPtr)0x7A9C60, "O HINT" } /* "O HINT" */,
-	{ LoadObj_Data1, 2, 0x10, 0.0, RingGroup},
+	{ LoadObj_Data1, 2, 0x40, 0.0, RingGroup},
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B00, "O GFENCE" } /* "O GFENCE" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B30, "O GCURB" } /* "O GCURB" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B60, "O GFENCE02" } /* "O GFENCE02" */,

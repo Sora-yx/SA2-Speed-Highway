@@ -3,8 +3,28 @@
 static Trampoline* goalringt;
 static Trampoline* itembox_t;
 static Trampoline* airbox_t;
+static Trampoline* CountPerfectRings_t;
 
-static const double RingDist = 336200;
+static const double RingDist = 336200.0;
+
+static void __cdecl CountPerfectRings_r()
+{
+	VoidFunc(original, CountPerfectRings_t->Target());
+	original();
+
+	if (CurrentObjectList && SETEntries)
+	{
+		for (int i = 0; i < *(int*)SETFile; ++i)
+		{
+			int flag = CurrentObjectList->List[SETEntries[i].ID & 0x7FFF].ObjectFlags & 0x70;
+
+			if (flag == 0x40)
+			{
+				PerfectRings += min(static_cast<int>(SETEntries[i].Scale.x) + 1, 8);
+			}
+		}
+	}
+}
 
 #pragma region RingGroup
 
@@ -94,7 +114,7 @@ static void __cdecl RingGroup_Main(ObjectMaster* obj)
 void __cdecl RingGroup(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
-	
+
 	const int ring_count = min(static_cast<int>(data->Scale.x) + 1, 8);
 	const bool is_circle = static_cast<bool>(data->Scale.z);
 
@@ -216,6 +236,7 @@ void Objects_Init()
 	goalringt = new Trampoline((int)GoalRing_Main, (int)GoalRing_Main + 0x6, GoalRing_r);
 	itembox_t = new Trampoline((int)ItemBox_Main, (int)ItemBox_Main + 0x5, ItemBox_r);
 	airbox_t = new Trampoline((int)ItemBoxAir_Main, (int)ItemBoxAir_Main + 0x5, AirBox_r);
+	CountPerfectRings_t = new Trampoline((int)CountPerfectRings, (int)CountPerfectRings + 0x6, CountPerfectRings_r);
 
 	// Fix Rings draw distance with GroupRing
 	WriteData((const double**)0x6C0FA9, &RingDist);
