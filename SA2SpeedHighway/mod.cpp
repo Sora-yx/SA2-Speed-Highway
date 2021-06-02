@@ -143,6 +143,8 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 
 void LoadSHAct(int act)
 {
+	const int PerfectRings_Backup = PerfectRings;
+
 	PrintDebug("[SH] Loading act %i", act);
 
 	StopMusic();
@@ -173,6 +175,9 @@ void LoadSHAct(int act)
 		MovePlayersToStartPos(72.0f, 26.0f, 192.0f);
 		break;
 	}
+
+	// Increase perfect ring count when loading a new act
+	PerfectRings += PerfectRings_Backup;
 }
 
 static void __cdecl SpeedHighway_Free()
@@ -209,7 +214,10 @@ static void __cdecl SpeedHighway_Init()
 
 	SetDrawingPlanes(-3.0f, -65535.0f);
 
-	//Chaos Drive Function Pointers
+	// Reset Perfect Rings
+	PerfectRings = 0;
+
+	// Chaos Drive Function Pointers
 	dword_1DE4680 = (void*)0x6B6C20;
 	dword_1DE4684 = (void*)0x6BBAE0;
 	dword_1DE4688 = (void*)0x6BC450;
