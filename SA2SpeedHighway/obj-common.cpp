@@ -12,6 +12,19 @@ static Trampoline* airbox_t;
 * Param3: 0 is line, 1 is circle (float)
 */
 
+static char GetSetDataFlag(ObjectMaster* obj)
+{
+	return obj->SETData != nullptr ? obj->SETData->field_1 : 0;
+}
+
+static void SetSetDataFlag(ObjectMaster* obj, char value)
+{
+	if (obj->SETData)
+	{
+		obj->SETData->field_1 = value;
+	}
+}
+
 static void CalcRingPosCircle(EntityData1* data, NJS_VECTOR* pos, int index)
 {
 	NJS_VECTOR offset = {
@@ -48,23 +61,42 @@ static void __cdecl RingGroup_Main(ObjectMaster* obj)
 {
 	if (!ClipSetObject(obj))
 	{
-		// todo: check ring state
-	}
-}
+		// No rings anymore, delete permanently
+		if (obj->Child == nullptr)
+		{
+			UpdateSetDateAndDelete(obj);
+			return;
+		}
 
-static char GetSetDataFlag(ObjectMaster* obj)
-{
-	return obj->SETData != nullptr ? obj->SETData->field_1 : 0;
+		// Loop through the rings, if the ring is in the delete action, set it as obtained
+		const ObjectMaster* orig = obj->Child;
+		ObjectMaster* i = obj->Child;
+
+		while (i)
+		{
+			if (i->Data1.Entity->Action == 3)
+			{
+				SetSetDataFlag(obj, GetSetDataFlag(obj) | (1 << i->Data1.Entity->Index));
+			}
+
+			i = i->PrevObject;
+			
+			if (i && i == orig)
+			{
+				break;
+			}
+		}
+	}
 }
 
 void __cdecl RingGroup(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
-
-	const int ring_count = static_cast<int>(data->Scale.x) + 1;
+	
+	const int ring_count = min(static_cast<int>(data->Scale.x) + 1, 8);
 	const bool is_circle = static_cast<bool>(data->Scale.z);
 
-	for (int i = 0; i < ring_count && i < 9; ++i)
+	for (int i = 0; i < ring_count; ++i)
 	{
 		if (!(GetSetDataFlag(obj) & (1 << i)))
 		{
