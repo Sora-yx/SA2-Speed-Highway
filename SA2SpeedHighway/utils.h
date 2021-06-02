@@ -5,6 +5,7 @@ float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 bool IsPointInsideSphere(NJS_VECTOR* center, NJS_VECTOR* pos, float radius);
 void njCnkAction(NJS_ACTION* action, float frame);
 void njCnkMotion(NJS_OBJECT* obj, NJS_MOTION* mot, float frame);
+void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs);
 ModelInfo* LoadMDL(const char* name, ModelFormat format);
 AnimationFile* LoadAnim(const char* name);
 int __cdecl BAMS_SubWrap(__int16 bams_a, unsigned __int16 bams_b, int limit);
