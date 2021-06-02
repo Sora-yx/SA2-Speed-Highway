@@ -4,6 +4,8 @@ static Trampoline* goalringt;
 static Trampoline* itembox_t;
 static Trampoline* airbox_t;
 
+static const double RingDist = 336200;
+
 #pragma region RingGroup
 
 /*
@@ -214,4 +216,7 @@ void Objects_Init()
 	goalringt = new Trampoline((int)GoalRing_Main, (int)GoalRing_Main + 0x6, GoalRing_r);
 	itembox_t = new Trampoline((int)ItemBox_Main, (int)ItemBox_Main + 0x5, ItemBox_r);
 	airbox_t = new Trampoline((int)ItemBoxAir_Main, (int)ItemBoxAir_Main + 0x5, AirBox_r);
+
+	// Fix Rings draw distance with GroupRing
+	WriteData((const double**)0x6C0FA9, &RingDist);
 }
