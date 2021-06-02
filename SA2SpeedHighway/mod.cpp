@@ -132,6 +132,7 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 	switch (data->Action)
 	{
 	case 0:
+		PerfectRings_StartCount = 0;
 		LoadSHAct(CurrentAct);
 		LoadTextureBG_SH();
 		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
@@ -144,6 +145,8 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 void LoadSHAct(int act)
 {
 	PrintDebug("[SH] Loading act %i", act);
+
+	PerfectRings_StartCount = PerfectRings;
 
 	StopMusic();
 	DeleteSetHandler();
@@ -209,7 +212,7 @@ static void __cdecl SpeedHighway_Init()
 
 	SetDrawingPlanes(-3.0f, -65535.0f);
 
-	//Chaos Drive Function Pointers
+	// Chaos Drive Function Pointers
 	dword_1DE4680 = (void*)0x6B6C20;
 	dword_1DE4684 = (void*)0x6BBAE0;
 	dword_1DE4688 = (void*)0x6BC450;
