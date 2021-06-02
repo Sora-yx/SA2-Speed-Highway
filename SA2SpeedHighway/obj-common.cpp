@@ -3,33 +3,103 @@
 static Trampoline* goalringt;
 static Trampoline* itembox_t;
 static Trampoline* airbox_t;
-static Trampoline* RingLinear_t;
 
+//in sadx scale X is number of rings and scale Y is distance between rings.
+#pragma region RingGroup
 
-static void __cdecl RingsLinear_r(ObjectMaster* obj)
+/*
+* Param1: Number of rings (float)
+* Param2: Distance between rings (float)
+* Param3: 0 is line, 1 is circle (float)
+*/
+
+static void CalcRingPosCircle(EntityData1* data, NJS_VECTOR* pos, int index)
+{
+	NJS_VECTOR offset = {
+		njCos((static_cast<float>(index) * 360.0f) / data->Scale.x * 65536.0f * 0.00278f) * data->Scale.y,
+		0.0f,
+		njSin((static_cast<float>(index) * 360.0f) / data->Scale.x * 65536.0f * 0.00278f) * data->Scale.y
+	};
+
+	njPushUnitMatrix();
+	njTranslateV(0, &data->Position);
+	njRotateZ_(_nj_current_matrix_ptr_, data->Rotation.z);
+	njRotateX_(_nj_current_matrix_ptr_, data->Rotation.x);
+	njRotateY_(_nj_current_matrix_ptr_, data->Rotation.y);
+	njCalcPoint(&offset, pos, _nj_current_matrix_ptr_);
+	njAddVector(pos, &data->Position);
+	njPopMatrixEx();
+}
+
+static void CalcRingPosLine(EntityData1* data, NJS_VECTOR* pos, int index)
+{
+	NJS_VECTOR offset = { 0.0f, 0.0f, index % 2 ? ceilf(static_cast<float>(index) * 0.5f) * data->Scale.y : static_cast<float>(index) * data->Scale.y * -0.5f };
+	
+	njPushUnitMatrix();
+	njTranslateV(0, &data->Position);
+	njRotateZ_(_nj_current_matrix_ptr_, data->Rotation.z);
+	njRotateX_(_nj_current_matrix_ptr_, data->Rotation.x);
+	njRotateY_(_nj_current_matrix_ptr_, data->Rotation.y);
+	njCalcPoint(&offset, pos, _nj_current_matrix_ptr_);
+	njAddVector(pos, &data->Position);
+	njPopMatrixEx();
+}
+
+static void __cdecl RingGroup_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
+		// todo: check ring state
+	}
+}
+
+static char GetSetDataFlag(ObjectMaster* obj)
+{
+	return obj->SETData != nullptr ? obj->SETData->field_1 : 0;
+}
+
+void __cdecl RingGroup(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
 
-	if (data->Action == 0)
+	const int ring_count = static_cast<int>(data->Scale.x) + 1;
+	const bool is_circle = static_cast<bool>(data->Scale.z);
+
+	for (int i = 0; i < ring_count && i < 9; ++i)
 	{
-		if (isSADXLevel())
+		if (!(GetSetDataFlag(obj) & (1 << i)))
 		{
-			if (data->Scale.z >= 1.0f)
+			NJS_VECTOR pos;
+
+			if (is_circle == true)
 			{
-				RingCircleMain(obj);
-				return;
+				CalcRingPosCircle(data, &pos, i);
+			}
+			else
+			{
+				CalcRingPosLine(data, &pos, i);
 			}
 
-			//in sadx scale X is number of rings and scale Y is distance between rings.
-			data->Scale.z = data->Scale.x + 1;
-			data->Scale.x = data->Scale.y / 2.0f;
-			data->Scale.y = 0;
+			ObjectMaster* child = LoadChildObject(LoadObj_Data1, RingMain, obj);
+
+			if (child)
+			{
+				child->Data1.Entity->Index = 1 << i;
+				child->Data1.Entity->Position.x = pos.x;
+				child->Data1.Entity->Position.y = pos.y;
+				child->Data1.Entity->Position.z = pos.z;
+				child->Data1.Entity->Rotation.x = 0;
+				child->Data1.Entity->Rotation.y = 0;
+				child->Data1.Entity->Rotation.z = 0;
+			}
 		}
 	}
 
-	ObjectFunc(origin, RingLinear_t->Target());
-	origin(obj);
+	obj->MainSub = RingGroup_Main;
+	obj->DeleteSub = DeleteChildObjects;
 }
+
+#pragma endregion
 
 static void __cdecl GoalRing_r(ObjectMaster* obj)
 {
@@ -107,11 +177,10 @@ static void __cdecl AirBox_r(ObjectMaster* obj)
 	origin(obj);
 }
 
-
-void Objects_Init() {
+void Objects_Init()
+{
 	//SADX Fixes
 	goalringt = new Trampoline((int)GoalRing_Main, (int)GoalRing_Main + 0x6, GoalRing_r);
 	itembox_t = new Trampoline((int)ItemBox_Main, (int)ItemBox_Main + 0x5, ItemBox_r);
 	airbox_t = new Trampoline((int)ItemBoxAir_Main, (int)ItemBoxAir_Main + 0x5, AirBox_r);
-	RingLinear_t = new Trampoline((int)RingLinearMain, (int)RingLinearMain + 0x6, RingsLinear_r);
 }

@@ -87,6 +87,13 @@ void njCnkMotion(NJS_OBJECT* obj, NJS_MOTION* mot, float frame)
 	DrawObjMotion(obj);
 }
 
+void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs)
+{
+	vd->x += vs->x;
+	vd->y += vs->y;
+	vd->z += vs->z;
+}
+
 const char* ModelFormatStrings[]
 {
 	"collision",
