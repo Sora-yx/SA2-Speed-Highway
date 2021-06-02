@@ -7,14 +7,16 @@ static NJS_TEXNAME highwayObj2_Tex[54]{};
 NJS_TEXLIST highwayObj2_TEXLIST = { arrayptrandlength(highwayObj2_Tex, Uint32) };
 
 static ModelInfo* SH_Cone[2];
-CollisionData Col_Cone = { 0x300, (CollisionShapes)0x6, 0x20, 0xE0, 0, { 0, 2.0, 0 }, 3.0, 1.5, 0.0, 0, 0, 0, 0 };
 
+CollisionData Col_Cone = { 0x300, (CollisionShapes)0x6, 0x20, 0xE0, 0, { 0, 2.0, 0 }, 3.0, 1.5, 0.0, 0, 0, 0, 0 };
 
 void LoadModelsSH() {
 
 	LoadCraneModels();
 	SH_Cone[0] = LoadMDL("cone_cone1", ModelFormat_Chunk);
 	SH_Cone[1] = LoadMDL("cone_cone2", ModelFormat_Chunk);
+
+	LoadSHGlass();
 }
 
 void LoadObjSHTex() {
@@ -77,6 +79,8 @@ void __cdecl sub_46C150(ObjectMaster* a1)
 	a1->SETData->Flags &= ~1u;
 	a1->MainSub = DeleteObject_;
 }
+
+
 
 void __cdecl Cone_Display(ObjectMaster* a2)
 {
@@ -242,7 +246,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)6 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x61C740, "O EV   " } /* "O EV   " */,
 	{ (LoadObj)10 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x61BDC0, "O FOUNT" } /* "O FOUNT" */,
 	{ LoadObj_Data1, 3, 1, 1000000, OCrane },
-	{ (LoadObj)2 },//3, 1, 1000000, 0, (ObjectFuncPtr)0x61AE80, "O GLASS " } /* "O GLASS " */,
+	{ (LoadObj)LoadObj_Data1, 3, 1, 1000000, OGlass}, /* "O GLASS " */
 	{ (LoadObj)2 },//3, 1, 2250000, 0, (ObjectFuncPtr)0x61ACA0, "O GLASS2" } /* "O GLASS2" */,
 	{ (LoadObj)6 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E40, "HIGH RAFT A" } /* "HIGH RAFT A" */,
 	{ (LoadObj)6 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E60, "HIGH RAFT C" } /* "HIGH RAFT C" */,

@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="act.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="sh-glass.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="obj-common.cpp" />
     <ClCompile Include="objects.cpp" />

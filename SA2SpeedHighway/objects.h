@@ -8,3 +8,6 @@ FunctionPointer(NJS_OBJECT*, GetFreeDynObject, (), 0x47D7F0);
 void LoadCraneModels();
 void __cdecl OCrane(ObjectMaster* obj);
 void __cdecl RingGroup(ObjectMaster* obj);
+void __cdecl sub_46C150(ObjectMaster* a1);
+void LoadSHGlass();
+void __cdecl OGlass(ObjectMaster* obj);
