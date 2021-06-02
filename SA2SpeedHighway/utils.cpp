@@ -28,6 +28,7 @@ signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2)
 	return 1;
 }
 
+
 int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
 {
 	int player; // esi

@@ -7,8 +7,10 @@ static NJS_TEXNAME highwayObj2_Tex[54]{};
 NJS_TEXLIST highwayObj2_TEXLIST = { arrayptrandlength(highwayObj2_Tex, Uint32) };
 
 static ModelInfo* SH_Cone[2];
+static ModelInfo* SH_Lamp[2];
 
 CollisionData Col_Cone = { 0x300, (CollisionShapes)0x6, 0x20, 0xE0, 0, { 0, 2.0, 0 }, 3.0, 1.5, 0.0, 0, 0, 0, 0 };
+CollisionData Col_Lamp01 = { 0, CollisionShape_Cyl1, 0x77, 0, 0, {0.0, 22.0, 0.0}, 3.0, 22.0, 0.0, 0.0, 0, 0, 0 };
 
 void LoadModelsSH() {
 
@@ -17,6 +19,8 @@ void LoadModelsSH() {
 	SH_Cone[1] = LoadMDL("cone_cone2", ModelFormat_Chunk);
 
 	LoadSHGlass();
+
+	SH_Lamp[0] = LoadMDL("SH-Lamp01", ModelFormat_Chunk);
 }
 
 void LoadObjSHTex() {
@@ -24,6 +28,61 @@ void LoadObjSHTex() {
 	LoadTextureList("OBJ_HIGHWAY2", &highwayObj2_TEXLIST);
 }
 
+void __cdecl O_HANAB_Main(ObjectMaster* a1)
+{
+	EntityData1* v1; // esi
+	Angle rotZ; // eax
+	Angle rotX; // eax
+	Angle rotY; // eax
+
+	v1 = a1->Data1.Entity;
+	if (!ClipSetObject(a1))
+	{
+
+		njSetTexture(&highwayObj_TEXLIST);
+
+
+		njPushMatrixEx();
+		njTranslateV(0, &v1->Position);
+		rotZ = v1->Rotation.z;
+		if (rotZ)
+		{
+			njRotateZ(0, (unsigned __int16)rotZ);
+		}
+		rotX = v1->Rotation.x;
+		if (rotX)
+		{
+			njRotateX(0, (unsigned __int16)rotX);
+		}
+		rotY = v1->Rotation.y;
+		if (rotY)
+		{
+			njRotateY(0, (unsigned __int16)rotY);
+		}
+		DrawObject((NJS_OBJECT*)a1->field_4C);
+		njPopMatrixEx();
+	}
+}
+
+void Lamp_Main(ObjectMaster* a1) {
+
+	EntityData1* v1 = a1->Data1.Entity;
+	AddToCollisionList(a1);
+	v1->Status &= 0xC7u;
+
+}
+void __cdecl LoadLamp01(ObjectMaster* a1)
+{
+	a1->MainSub = Lamp_Main;
+	a1->DisplaySub = O_HANAB_Main;
+}
+
+void InitLamp01(ObjectMaster* obj) {
+	obj->field_4C = SH_Lamp[0]->getmodel();
+	InitCollision(obj, &Col_Lamp01, 1, 4u);
+	obj->Data1.Entity->Status |= 0x8000u;
+	LoadLamp01(obj);
+}
 
 //Ennemies
 static void __cdecl Beetle_Stationary(ObjectMaster* a1)
@@ -59,6 +118,7 @@ static void __cdecl Robots(ObjectMaster* a1)
 	entity->Rotation.x = 0x1;
 	entity->Rotation.z = 0x100;
 	entity->Scale = { 0, 1, 126 };
+	entity->Position.y -= 6;
 	a1->MainSub = (ObjectFuncPtr)E_AI;
 }
 
@@ -245,7 +305,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)(LoadObj_Data1), 2, 0, 0, (ObjectFuncPtr)LongSpring_Main },
 	{ (LoadObj)6 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x61C740, "O EV   " } /* "O EV   " */,
 	{ (LoadObj)10 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x61BDC0, "O FOUNT" } /* "O FOUNT" */,
-	{ LoadObj_Data1, 3, 1, 1000000, OCrane },
+	{ (LoadObj)6, 3, 1, 1000000, OCrane },
 	{ (LoadObj)LoadObj_Data1, 3, 1, 1000000, OGlass}, /* "O GLASS " */
 	{ (LoadObj)2 },//3, 1, 2250000, 0, (ObjectFuncPtr)0x61ACA0, "O GLASS2" } /* "O GLASS2" */,
 	{ (LoadObj)6 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E40, "HIGH RAFT A" } /* "HIGH RAFT A" */,
@@ -287,7 +347,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6158D0, "O GREEND" } /* "O GREEND" */,
 	{ (LoadObj)2, 3, 0, 0, nullptr, },// 3, 0, 0, 0, (ObjectFuncPtr)0x6163D0, "O LAMP" } /* "O LAMP" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x616770, "O CLIGHT" } /* "O CLIGHT" */,
-	{ (LoadObj)2, 3, 0, 0, nullptr, },// "o lamp01" },// 3, 0, 0, 0, (ObjectFuncPtr)0x6163D0, "O LAMP01" } /* "O LAMP01" */,
+	{ (LoadObj)2, 3, 0, 0, InitLamp01, } /* "O LAMP01" */,
 	{ (LoadObj)2, 3, 0, 0, nullptr, },
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x616210, "O PinPin" } /* "O PinPin" */,
 	{ (LoadObj)6 },// 3, 1, 4000000, 0, (ObjectFuncPtr)0x616150, "O Escalator1" } /* "O Escalator1" */,
