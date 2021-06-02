@@ -12,15 +12,33 @@ static void __cdecl CountPerfectRings_r()
 	VoidFunc(original, CountPerfectRings_t->Target());
 	original();
 
-	if (CurrentObjectList && SETEntries)
+	if (isSADXLevel())
 	{
-		for (int i = 0; i < *(int*)SETFile; ++i)
+		if (CurrentObjectList && SETEntries)
 		{
-			int flag = CurrentObjectList->List[SETEntries[i].ID & 0x7FFF].ObjectFlags & 0x70;
-
-			if (flag == 0x40)
+			for (int i = 0; i < *(int*)SETFile; ++i)
 			{
-				PerfectRings += min(static_cast<int>(SETEntries[i].Scale.x) + 1, 8);
+				int flag = CurrentObjectList->List[SETEntries[i].ID & 0x7FFF].ObjectFlags & 0x70;
+
+				if (flag == 0x50) // RingGroup
+				{
+					PerfectRings += min(static_cast<int>(SETEntries[i].Scale.x) + 1, 8);
+				}
+				else if (flag == 0x60) // Itemboxes
+				{
+					switch (static_cast<int>(SETEntries[i].Scale.x))
+					{
+					case 2:
+						PerfectRings += 5;
+						break;
+					case 3:
+						PerfectRings += 10;
+						break;
+					case 4:
+						PerfectRings += 20;
+						break;
+					}
+				}
 			}
 		}
 	}
