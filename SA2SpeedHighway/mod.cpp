@@ -41,6 +41,25 @@ static NJS_VECTOR SkyboxScale_SH[3] = { {8.5f, 8.5f, 8.5f},  {1.0f, 1.0f, 1.0f},
 
 int CurrentAct;
 
+void FixCam() {
+
+	if (isSADXLevel())
+	{
+		if (MainCharObj2[0] && !MainCharObj2[1]) {
+
+			if (MainCharObj2[0]->Speed.x >= 1 && MainCharObj2[0]->Speed.x <= 8)
+				CameraData.Position.y += 0.7;
+
+			if (MainCharObj2[0]->Speed.x > 8 && MainCharObj2[0]->Speed.x <= 13)
+				CameraData.Position.y += 1.9;
+
+			if (MainCharObj2[0]->Speed.x > 13)
+				CameraData.Position.y += 2.7;
+		}
+	}
+
+}
+
 void LoadModelBG_SH() {
 	for (Uint8 i = 0; i < LengthOfArray(SH_BG); i++) {
 		std::string str = "BG_SH0" + std::to_string(i);
@@ -233,9 +252,15 @@ extern "C"
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
+
+		if (GameState != GameStates_Ingame)
+			return;
+
 		if (Controllers[0].press & Buttons_Y) {
 			MainCharObj1[0]->Position = { 4095.762207, -1500, 4599.47998 };
 		}
+
+		FixCam();
 	}
 
 	__declspec(dllexport) ModInfo SA2ModInfo = { ModLoaderVer };

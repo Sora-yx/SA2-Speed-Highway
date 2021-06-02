@@ -15,6 +15,19 @@ bool isSADXLevel()
 	return false;
 }
 
+signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2)
+{
+	EntityData1* v2; // ecx
+
+	v2 = MainCharObj1[a1];
+	if (!v2 || (v2->Status & (Status_OnObjectColli | Status_Ground)) == 0)
+	{
+		return 0;
+	}
+	a2 = MainCharObj2[a1]->Speed.x;
+	return 1;
+}
+
 int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
 {
 	int player; // esi
