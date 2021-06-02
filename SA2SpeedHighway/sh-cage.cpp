@@ -87,15 +87,6 @@ void __cdecl sub_442120(float a1, float a2, float a3, float a4)
 
 
 
-void CheckCraneColli(EntityData1* a1) {
-
-	if (IsPlayerInsideSphere(&a1->Position, 570.0)) {
-		a1->Status |= 1u;
-	}
-	else {
-		a1->Status &= 0xFEu;
-	}
-}
 
 void __cdecl DispSHCage(ObjectMaster* a1)
 {
@@ -170,12 +161,11 @@ void __cdecl SHExecCage(ObjectMaster* a1)
 		dynobj->pos[1] = v2->Position.y;
 		dynobj->pos[2] = v2->Position.z;
 
-		DynCol_Add(SurfaceFlag_Solid, a1, dynobj);
+		DynCol_Add((SurfaceFlags)(SurfaceFlag_Solid | SurfaceFlag_Dynamic), a1, dynobj);
 		a1->EntityData2 = (UnknownData2*)dynobj;
 	}
 		break;
 	case 1:
-		CheckCraneColli(v2);
 		if (sub_61B060(a1))
 		{
 			v2->Action = 2;
@@ -184,7 +174,6 @@ void __cdecl SHExecCage(ObjectMaster* a1)
 		}
 		break;
 	case 2:
-		CheckCraneColli(v2);
 		if (v2->Position.y - a2->Position.y > 100.0)
 		{
 			v2->Action = 3;
@@ -196,7 +185,6 @@ void __cdecl SHExecCage(ObjectMaster* a1)
 		v7 = njCos(v2->Rotation.y) * 1.225;
 		goto LABEL_18;
 	case 3:
-		CheckCraneColli(v2);
 		if (sub_61B060(a1))
 		{
 			/*v8 = v2->InvulnerableTime;
@@ -211,7 +199,6 @@ void __cdecl SHExecCage(ObjectMaster* a1)
 		}
 		break;
 	case 4:
-		CheckCraneColli(v2);
 		if (v2->Position.y - a2->Position.y > 0.0)
 		{
 			v9 = njSin(v2->Rotation.y);
@@ -242,7 +229,6 @@ void __cdecl SHExecCage(ObjectMaster* a1)
 		}
 		break;
 	case 5:
-		CheckCraneColli(v2);
 		if (sub_61B060(a1))
 		{
 			v2->Action = 1;
@@ -305,12 +291,12 @@ void __cdecl OCrane(ObjectMaster* obj)
 		{
 			if (v1->Action == 1)
 			{
-				CheckCraneColli(v1);
+				//CheckCraneColli(v1);
 				//dispCrane(obj);
 			}
 			else
 			{
-				ObjectFunc_DynColDelete(obj);
+				//ObjectFunc_DynColDelete(obj);
 			}
 		}
 		else
@@ -324,6 +310,7 @@ void __cdecl OCrane(ObjectMaster* obj)
 
 			NJS_OBJECT* dynobj = GetFreeDynObject();
 			
+
 			memcpy(dynobj, SH_RailCol->getmodel(), sizeof(NJS_OBJECT));
 			dynobj->scl[2] = 1.0;
 			dynobj->scl[1] = 1.0;
@@ -336,6 +323,7 @@ void __cdecl OCrane(ObjectMaster* obj)
 			dynobj->pos[0] = v1->Position.x;
 			dynobj->pos[1] = v1->Position.y;
 			dynobj->pos[2] = v1->Position.z;
+
 
 			DynCol_Add(SurfaceFlag_Solid, obj, dynobj);
 			obj->EntityData2 = (UnknownData2*)dynobj;
