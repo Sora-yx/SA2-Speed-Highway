@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="act.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="PhysicsFunction.cpp" />
     <ClCompile Include="sh-glass.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="obj-common.cpp" />
@@ -178,6 +179,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="sh-cage.cpp" />
+    <ClCompile Include="Sonic.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

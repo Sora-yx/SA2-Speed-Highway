@@ -11,3 +11,4 @@ void __cdecl RingGroup(ObjectMaster* obj);
 void __cdecl sub_46C150(ObjectMaster* a1);
 void LoadSHGlass();
 void __cdecl OGlass(ObjectMaster* obj);
+void __cdecl OGlass2(ObjectMaster* obj);

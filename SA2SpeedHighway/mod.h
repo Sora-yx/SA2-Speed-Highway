@@ -24,3 +24,10 @@ extern int CurrentAct;
 
 void LoadSHAct(int act);
 void SHControlActTrigger(ObjectMaster* obj);
+void SetSonicRunningOnBulding(ObjectMaster* a1);
+
+void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2* data2);
+int PlayerSetPosition(EntityData1* a1, EntityData2* a2, CharObj2Base* a3);
+void PlayerResetPosition(EntityData1* a1, EntityData2* a2, CharObj2Base* a3);
+void PlayerResetAngle(EntityData1* a1, CharObj2Base* co2);
+void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2* data2);

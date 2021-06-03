@@ -19,6 +19,9 @@
     <Filter Include="Source Files\level">
       <UniqueIdentifier>{c2460083-2336-4fc9-85e9-18e1f7d0a2ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Character">
+      <UniqueIdentifier>{d5ef8749-64ff-4502-aaf0-f4b6593a2aa5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -67,6 +70,12 @@
     </ClCompile>
     <ClCompile Include="sh-glass.cpp">
       <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sonic.cpp">
+      <Filter>Source Files\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsFunction.cpp">
+      <Filter>Source Files\Character</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

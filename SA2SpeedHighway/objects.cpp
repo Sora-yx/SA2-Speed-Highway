@@ -332,8 +332,10 @@ void __fastcall ObjectSetupInput(EntityData1* twp, EntityData2* mwp)
 
 void __cdecl sub_46C150(ObjectMaster* a1)
 {
-	a1->SETData->Flags &= ~0x80u;
-	a1->SETData->Flags &= ~1u;
+	if (a1->SETData) {
+		a1->SETData->Flags &= 0x7FFFu;
+		a1->SETData->Flags &= 0xFFFEu;
+	}
 	a1->MainSub = DeleteObject_;
 }
 
@@ -504,7 +506,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)10 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x61BDC0, "O FOUNT" } /* "O FOUNT" */,
 	{ (LoadObj)6, 3, 1, 1000000, OCrane },
 	{ (LoadObj)LoadObj_Data1, 3, 1, 1000000, OGlass}, /* "O GLASS " */
-	{ (LoadObj)2 },//3, 1, 2250000, 0, (ObjectFuncPtr)0x61ACA0, "O GLASS2" } /* "O GLASS2" */,
+	{ (LoadObj)LoadObj_Data1, 3, 1, 2250000, OGlass2}, /* "O GLASS " */
 	{ (LoadObj)6 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E40, "HIGH RAFT A" } /* "HIGH RAFT A" */,
 	{ (LoadObj)6 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E60, "HIGH RAFT C" } /* "HIGH RAFT C" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x61A330, "O TANKA" } /* "O TANKA" */,

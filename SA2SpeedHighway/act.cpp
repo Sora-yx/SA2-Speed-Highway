@@ -1,5 +1,45 @@
 #include "pch.h"
 
+
+void SetSonicRunningOnBulding(ObjectMaster* a1)
+{
+	EntityData1* v1; // esi
+	EntityData1* v2; // edi
+	__int16 v3; // ax
+	__int16 v4; // ax
+
+
+	v1 = a1->Data1.Entity;
+
+	if (CurrentAct != 1 && MainCharObj1[0]->Position.x <= 2.0)
+		return;
+
+	if (a1->Data1.Entity->Action != 30) {
+		for (int i = 0; i < MAXPLAYERS; i++) {
+			v2 = MainCharObj1[i];
+			if (v2)
+			{
+				v3 = v1->field_6;
+				v1->field_6 = v3 + 1;
+
+				if (v2->Position.y <= 25.0)
+				{
+					v4 = v1->Status;
+					if ((v4 & 8) == 0)
+					{
+						v1->Status = v4 | 8;
+						LoadLevelMusic((char*)"highway2.adx");
+						//DoNextAction(i, 85, 0);
+						a1->Data1.Entity->Action = 30;
+					}
+				}
+	
+			}
+		}
+	}
+}
+
+
 static void act3Trigger(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
@@ -52,6 +92,7 @@ void __cdecl SHControlActTrigger(ObjectMaster* obj)
 		act2Trigger(obj);
 		break;
 	case 1:
+		SetSonicRunningOnBulding(obj);	
 		act3Trigger(obj);
 		break;
 	default:
