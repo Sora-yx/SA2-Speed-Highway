@@ -15,6 +15,32 @@ bool isSADXLevel()
 	return false;
 }
 
+int __fastcall SubAngle(int ang0, int ang1)
+{
+	return (__int16)(ang1 - ang0);
+}
+
+int __fastcall AdjustAngle(int ang0, int ang1, int dang)
+{
+	__int16 v3; // r11
+	int result; // r3
+	int v5; // r9
+	unsigned __int16 v6; // r11
+
+	v3 = ang0;
+	result = (unsigned __int16)ang1;
+	v5 = (__int16)(ang1 - v3);
+	if (v5 > dang || v5 < -dang)
+	{
+		if ((v5 & 0x8000) != 0)
+			v6 = v3 - dang;
+		else
+			v6 = v3 + dang;
+		result = v6;
+	}
+	return result;
+}
+
 signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2)
 {
 	EntityData1* v2; // ecx

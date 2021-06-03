@@ -251,6 +251,7 @@ extern "C"
 		HelperFunctionsGlobal = helperFunctions;
 		RadicalHighwayHeader = speedHighwayModule;
 
+		Init_Sonic();
 		SetStartEndPoints(&sh_startpos, &sh_2pintro, &sh_endpos, &sh_endpos23);
 		Objects_Init();
 	}
