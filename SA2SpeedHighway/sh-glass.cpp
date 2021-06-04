@@ -1,30 +1,23 @@
 #include "pch.h"
+#include "sh-glass.h"
 
 static ModelInfo* SH_Glass;
 static ModelInfo* SH_GlassBroken[13];
-extern NJS_TEXLIST highwayObj_TEXLIST;
-CollisionData Col_Glass = { 0, CollisionShape_Cube1, 77, 0xE0, 0, {0.0, -4.0, 0.0}, 20.0, 6.0, 20.0, 0.0, 0, 0, 0 };
-CollisionData Col_Glass2 = { 0, CollisionShape_Sphere, 0xF0, 0, 0, {0.0}, 80.0, 0.0, 0.0, 0.0, 0, 0, 0 };
 
+static CollisionData Col_Glass = { 0, CollisionShape_Cube1, 77, 0xE0, 0, {0.0, -4.0, 0.0}, 20.0, 6.0, 20.0, 0.0, 0, 0, 0 };
+static CollisionData Col_Glass2 = { 0, CollisionShape_Sphere, 0xF0, 0, 0, {0.0}, 80.0, 0.0, 0.0, 0.0, 0, 0, 0 };
 
-void __cdecl DrawGlass(ObjectMaster* a1)
+void __cdecl DrawGlass(ObjectMaster* obj)
 {
-	EntityData1* v1; // esi
-	NJS_OBJECT* v2; // edi
-
-	v1 = a1->Data1.Entity;
-	v2 = (NJS_OBJECT*)a1->field_4C;
+	EntityData1* data = obj->Data1.Entity; // esi
+	
 	njSetTexture(&highwayObj_TEXLIST);
 	njPushMatrix(0);
-	njTranslate(0, v1->Position.x, v1->Position.y, v1->Position.z);
-	njRotateX(0, v1->Rotation.x);
-	njRotateY(0, v1->Rotation.y);
-	njRotateZ(0, v1->Rotation.z);
-
-	DrawObject(v2);
+	njTranslateEx(&data->Position);
+	njRotateXYZ(&data->Rotation);
+	DrawObject((NJS_OBJECT*)obj->field_4C);
 	njPopMatrixEx();
 }
-
 
 void __cdecl ByeByeGlass(ObjectMaster* obj)
 {
@@ -78,8 +71,6 @@ void __cdecl ByeByeGlass(ObjectMaster* obj)
 		obj->MainSub = DeleteObject_;
 	}
 }
-
-
 
 void __cdecl GlassBroken(ObjectMaster* a1)
 {
@@ -173,7 +164,7 @@ void __cdecl BreakGlass(ObjectMaster* a1, signed int timer)
 	if (v10 == 2 || (AddToCollisionList(a1), (unsigned __int16)v3->field_6 > timer))
 	{
 		PlaySoundProbably(3, 0, 0, 0);
-		sub_46C150(a1);
+		UpdateSetDateAndDelete(a1);
 	}
 }
 
@@ -269,7 +260,7 @@ void __cdecl OGlass2(ObjectMaster* obj)
 		switch (v1->Action)
 		{
 		case 0:
-			obj->DisplaySub = SH_GlassDisplay;
+			obj->field_1C = SH_GlassDisplay;
 			InitCollision(obj, &Col_Glass2, 1, 4u);
 			v1->Collision->Range = 200.0;
 		
@@ -295,7 +286,7 @@ void __cdecl OGlass2(ObjectMaster* obj)
 			BreakGlass(obj, 1);
 			return;
 		case 3:
-			sub_46C150(obj);
+			UpdateSetDateAndDelete(obj);
 			goto LABEL_11;
 		default:
 		LABEL_11:
@@ -305,11 +296,21 @@ void __cdecl OGlass2(ObjectMaster* obj)
 	}
 }
 
-void LoadSHGlass() {
+void LoadSHGlass()
+{
 	SH_Glass = LoadMDL("SH-glass", ModelFormat_Chunk);
 
-	for (Uint8 i = 0; i < LengthOfArray(SH_GlassBroken); i++) {
+	for (size_t i = 0; i < LengthOfArray(SH_GlassBroken); i++) {
 		std::string str = "sh-GlassBroken" + std::to_string(i);
 		SH_GlassBroken[i] = LoadMDL(str.c_str(), ModelFormat_Chunk);
+	}
+}
+
+void FreeSHGlass()
+{
+	FreeMDL(SH_Glass);
+
+	for (size_t i = 0; i < LengthOfArray(SH_GlassBroken); i++) {
+		FreeMDL(SH_GlassBroken[i]);
 	}
 }

@@ -1,4 +1,13 @@
 #include "pch.h"
+#include "obj-common.h"
+
+#include "sh-light.h"
+#include "sh-cage.h"
+#include "sh-glass.h"
+#include "sh-lamp.h"
+#include "sh-cone.h"
+#include "sh-bell.h"
+#include "sh-jammer.h"
 
 static NJS_TEXNAME highwayObj_Tex[118]{};
 NJS_TEXLIST highwayObj_TEXLIST = { arrayptrandlength(highwayObj_Tex, Uint32) };
@@ -6,182 +15,56 @@ NJS_TEXLIST highwayObj_TEXLIST = { arrayptrandlength(highwayObj_Tex, Uint32) };
 static NJS_TEXNAME highwayObj2_Tex[54]{};
 NJS_TEXLIST highwayObj2_TEXLIST = { arrayptrandlength(highwayObj2_Tex, Uint32) };
 
-static NJS_TEXNAME JammerTexName[] = {
-	{ (char*)"cone04", 0, 0 },
-	{ (char*)"light2", 0, 0 },
-	{ (char*)"nen_01", 0, 0 },
-	{ (char*)"ref_crome", 0, 0 },
-	{ (char*)"st_slight06", 0, 0 }
-};
-
-static NJS_TEXNAME JammerTexName2[] = {
-	{ (char*)"cone04", 0, 0 },
-	{ (char*)"light2", 0, 0 },
-	{ (char*)"nen_02", 0, 0 },
-	{ (char*)"ref_crome", 0, 0 },
-	{ (char*)"st_slight06", 0, 0 }
-};
-
-static NJS_TEXLIST JammerTexlist = { arrayptrandlength(JammerTexName, Uint32) };
-static NJS_TEXLIST JammerTexlist2 = { arrayptrandlength(JammerTexName2, Uint32) };
-
-static ModelInfo* SH_Cone[2];
-static ModelInfo* SH_Lamp[2];
-static ModelInfo* SH_Bell[2];
-static ModelInfo* SH_Jammer;
-static ModelInfo* SH_SLight;
 static ModelInfo* SH_GFF;
-
-CollisionData Col_Cone = { 0x300, (CollisionShapes)0x6, 0x20, 0xE0, 0, { 0, 2.0, 0 }, 3.0, 1.5, 0.0, 0, 0, 0, 0 };
-
-CollisionData Col_Lamp01 = { 0, CollisionShape_Cyl1, 0x77, 0, 0, {0.0, 22.0, 0.0}, 3.0, 22.0, 0.0, 0.0, 0, 0, 0 };
-
-CollisionData Col_Bell01[] = {
-	{ 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, -30.0, 0.0}, 17.0, 4.0, 0.0, 0.0, 0, 0, 0 },
-	{ 0, CollisionShape_Cyl1, 0x77, 0, 0, {0.0, -48.0, 0}, 19.0, 5.0, 0.0, 0.0, 0, 0, 0 },
-};
-
-CollisionData Col_Bell02 = { 0, (CollisionShapes)0x6, 0x10, 0xEC, 0, {0.0, -60.0, 0.0}, 8.0, 5.0, 0.0, 0.0, 0, 0, 0 };
-
-CollisionData Col_SLight = { 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, 15.0, 0.0}, 7.0, 7.0, 0.0, 0.0, 0, 0, 0 };
 
 CollisionData Col_Fence = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.25, 0.0}, 13.0, 4.25, 2.75, 0.0, 0, 0, 0 };
 
 void LoadModelsSH()
 {
+	LoadTextureList("OBJ_HIGHWAY", &highwayObj_TEXLIST);
+	LoadTextureList("OBJ_HIGHWAY2", &highwayObj2_TEXLIST);
+
+	LoadAssets_Jammer();
 	LoadCraneModels();
+	LoadSHGlass();
 
 	SH_Cone[0] = LoadMDL("cone_cone1", ModelFormat_Chunk);
 	SH_Cone[1] = LoadMDL("cone_cone2", ModelFormat_Chunk);
-
-	LoadSHGlass();
-
 	SH_Lamp[0] = LoadMDL("SH-Lamp01", ModelFormat_Chunk);
-
 	SH_Bell[0] = LoadMDL("SH-Bell0", ModelFormat_Chunk);
 	SH_Bell[1] = LoadMDL("SH-Bell1", ModelFormat_Chunk);
-	SH_Jammer = LoadMDL("SH-Jammer", ModelFormat_Chunk);
 	SH_SLight = LoadMDL("SH-Slight", ModelFormat_Chunk);
 	SH_GFF = LoadMDL("SH-Fence", ModelFormat_Chunk);
 }
 
-void LoadObjSHTex()
+void FreeModelsSH()
 {
-	LoadTextureList("OBJ_HIGHWAY", &highwayObj_TEXLIST);
-	LoadTextureList("OBJ_HIGHWAY2", &highwayObj2_TEXLIST);
-	
-	JammerTexlist.textures[0] = highwayObj2_TEXLIST.textures[34];
-	JammerTexlist.textures[1] = highwayObj2_TEXLIST.textures[35];
-	JammerTexlist.textures[2] = highwayObj2_TEXLIST.textures[31];
-	JammerTexlist.textures[3] = highwayObj2_TEXLIST.textures[32];
-	JammerTexlist.textures[4] = highwayObj2_TEXLIST.textures[33];
+	FreeTexList(&highwayObj_TEXLIST);
+	FreeTexList(&highwayObj2_TEXLIST);
 
-	JammerTexlist2.textures[0] = highwayObj2_TEXLIST.textures[34];
-	JammerTexlist2.textures[1] = highwayObj2_TEXLIST.textures[35];
-	JammerTexlist2.textures[2] = highwayObj2_TEXLIST.textures[36];
-	JammerTexlist2.textures[3] = highwayObj2_TEXLIST.textures[32];
-	JammerTexlist2.textures[4] = highwayObj2_TEXLIST.textures[33];
+	FreeAssets_Jammer();
+	FreeCraneModels();
+	FreeSHGlass();
+
+	FreeMDL(SH_Cone[0]);
+	FreeMDL(SH_Cone[1]);
+	FreeMDL(SH_Lamp[0]);
+	FreeMDL(SH_Bell[0]);
+	FreeMDL(SH_Bell[1]);
+	FreeMDL(SH_SLight);
+	FreeMDL(SH_GFF);
 }
 
-void __cdecl GenericSHDisplay(ObjectMaster* a1)
+void __cdecl GenericSHDisplay(ObjectMaster* obj)
 {
-	EntityData1* v1; // esi
-	Angle rotZ; // eax
-	Angle rotX; // eax
-	Angle rotY; // eax
-
-	v1 = a1->Data1.Entity;
-	if (!ClipSetObject(a1))
-	{
-
-		njSetTexture(&highwayObj_TEXLIST);
-		njPushMatrixEx();
-		njTranslateV(0, &v1->Position);
-		rotZ = v1->Rotation.z;
-		if (rotZ)
-		{
-			njRotateZ(0, (unsigned __int16)rotZ);
-		}
-		rotX = v1->Rotation.x;
-		if (rotX)
-		{
-			njRotateX(0, (unsigned __int16)rotX);
-		}
-		rotY = v1->Rotation.y;
-		if (rotY)
-		{
-			njRotateY(0, (unsigned __int16)rotY);
-		}
-		DrawObject((NJS_OBJECT*)a1->field_4C);
-		njPopMatrixEx();
-	}
-}
-
-void SHSlight_Display(ObjectMaster* obj) {
-
-	EntityData1* v1 = obj->Data1.Entity;
-	unsigned __int64 v3; // rax
-	int v11; // r4
-	double v12; // fp1
-	Angle v4; // eax
-	NJS_OBJECT* v5;
-	__int64 v9;
-	__int64 v10;
+	EntityData1* data = obj->Data1.Entity;
 
 	njSetTexture(&highwayObj_TEXLIST);
 	njPushMatrixEx();
-	njTranslateV(0, &v1->Position);
-	if (v1->Rotation.y) {
-		njRotateY(0, v1->Position.y);
-	}
-
-	DrawChunkModel(SH_SLight->getmodel()->chunkmodel);
-	njTranslate(0, SH_SLight->getmodel()->child->pos[0], SH_SLight->getmodel()->child->pos[1], SH_SLight->getmodel()->child->pos[2]);
-
-	v9 = v1->field_6;
-	v11 = (int)((float)((float)njSin((int)((double)v9 * 65536.0 * 0.002777777777777778)) * (float)23.0)
-		* 65536.0
-		* 0.002777777777777778);
-	if (v11)
-	{
-		(v10) = v1->field_6;
-		v12 = njSin((int)((double)v10 * 65536.0 * 0.002777777777777778));
-		njRotateX(0, (unsigned __int16)(int)((float)((float)v12 * (float)23.0) * 65536.0 * 0.002777777777777778));
-	}
-	v4 = v1->Rotation.y;
-	if (v4)
-	{
-		njRotateY(0, (unsigned __int16)v4);
-	}
-	DrawChunkModel(SH_SLight->getmodel()->child->chunkmodel);
-	v5 = SH_SLight->getmodel()->child->child;
-	njTranslate(0, SH_SLight->getmodel()->child->pos[0], SH_SLight->getmodel()->child->pos[1], SH_SLight->getmodel()->child->pos[2]);
-	DrawChunkModel(v5->chunkmodel);
+	njTranslateEx(&data->Position);
+	njRotateZXY(&data->Rotation);
+	DrawObject((NJS_OBJECT*)obj->field_4C);
 	njPopMatrixEx();
-}
-
-void SHSlight_Main(ObjectMaster* obj) {
-
-	EntityData1* v1 = obj->Data1.Entity;
-
-	if (!ClipObject(obj, 25000000.0))
-	{
-		AddToCollisionList(obj);
-		sub_49CE60(v1, 0);
-		++v1->field_6;
-	}
-}
-
-void LoadSHSlight(ObjectMaster* obj) {
-
-	EntityData1* data = obj->Data1.Entity;
-
-	if (!ClipObject(obj, 25000000.0)) {
-		InitCollision(obj, &Col_SLight, 1, 4u);
-		data->Collision->Range = 25.0;
-		obj->DisplaySub = SHSlight_Display;
-		obj->MainSub = SHSlight_Main;
-	}
 }
 
 void __cdecl SHGFF_Main(ObjectMaster* a1)
@@ -332,473 +215,6 @@ void Load_GFF(ObjectMaster* tp)
 	}
 }
 
-void JammerChangeTex(ObjectMaster* obj)
-{
-	EntityData1* data = obj->Data1.Entity;
-
-	if (++data->field_6 > 0x19u)
-	{
-		data->field_6 = 0;
-
-		if (data->NextAction)
-		{
-			data->NextAction -= 1;
-			obj->field_4C = &JammerTexlist;
-		}
-		else
-		{
-			data->NextAction = 1;
-			obj->field_4C = &JammerTexlist2;
-		}
-	}
-}
-
-void __cdecl OJamerDisplay(ObjectMaster* obj)
-{
-	EntityData1* data = obj->Data1.Entity;
-
-	njSetTexture((NJS_TEXLIST*)obj->field_4C);
-	njPushMatrixEx();
-	njTranslateEx(&data->Position);
-	njRotateZ(0, data->Rotation.z);
-	njRotateX(0, data->Rotation.x);
-	njRotateY(0, data->Rotation.y);
-	DrawObject(SH_Jammer->getmodel());
-	njPopMatrixEx();
-}
-
-void ObjectJammer(ObjectMaster* obj)
-{
-	EntityData1* data = obj->Data1.Entity;
-
-	if (!ClipSetObject(obj))
-	{
-		if (data->Action == 1)
-		{
-			if (IsPlayerInsideSphere(&data->Position, 33.0f))
-			{
-				data->Status | 0x100;
-			}
-			else {
-				data->Status & 0xFEFF;
-			}
-
-			JammerChangeTex(obj);
-		}
-		else
-		{
-			data->Action = 1;
-			obj->field_4C = &JammerTexlist;
-			obj->DisplaySub = OJamerDisplay;
-		}
-	}
-}
-
-void __cdecl Bell_Child(ObjectMaster* obj)
-{
-	ObjectMaster* v1; // ebx
-	EntityData1* v2; // ebp
-	EntityData1* v3; // esi
-	EntityData1* v4; // edi
-	Angle v5; // eax
-	Angle v6; // eax
-	Angle v7; // eax
-	Angle v8; // ebx
-	unsigned __int64 v9; // rax
-	int v10; // eax
-	int v11; // eax
-	Angle v12; // ecx
-
-	v1 = obj;
-	v2 = MainCharObj1[0];
-	v3 = obj->Data1.Entity;
-	v4 = obj->Parent->Data1.Entity;
-	v5 = v3->Rotation.z;
-	if (v5)
-	{
-		njRotateZ(0, (unsigned __int16)v5);
-	}
-	v6 = v3->Rotation.x;
-	if (v6)
-	{
-		njRotateX(0, (unsigned __int16)v6);
-	}
-	v7 = v3->Rotation.y;
-	if (v7)
-	{
-		njRotateY(0, (unsigned __int16)v7);
-	}
-
-	if ((v3->Collision->Flag & 1) == 0 || (v4->Status & 0x100) != 0)
-	{
-		if ((v4->Status & 0x200) != 0)
-		{
-			v10 = v4->Index & 0x3FF00;
-			if (v10)
-			{
-				v11 = v10 & 0xFF00;
-				if (v11 == 49152 || v11 == 0x4000)
-				{
-					PrintDebug("BELL CHILDD");
-					//PlaySound4(93, 0, 0, 64, v4->Position.x, v4->Position.y, v4->Position.z);
-				}
-				v12 = v4->Index - 1024;
-				v4->Index = v12;
-				v3->Rotation.x = (unsigned __int64)(njSin(v12) * *(float*)&v3->field_6 * 3094.0);
-				v3->Rotation.z = (unsigned __int64)(njSin(v4->Index) * v3->Index * 3094.0);
-			}
-			else
-			{
-				v4->Status &= 0xFDFFu;
-			}
-		}
-
-		AddToCollisionList(obj);
-		sub_49CE60(v3, 0);
-	}
-	else
-	{
-		/*GetPlayerRunningSpeed(0, (float*)&obj);
-		if (*(float*)&obj >= 1.0)
-		{
-			v8 = (unsigned __int16)v2->Rotation.y;
-			*(float*)&v3->timer = njSin(v8);
-			v3->LoopData.Single = -njCos(v8);
-			if (*(float*)&obj > 3.0)
-			{
-				*(float*)&obj = 3.0;
-			}
-			v9 = (unsigned __int64)*(float*)&obj;
-			v4->Status |= 3u;
-			v4->Index = (DWORD)v9 << 16;
-		}*/
-	}
-}
-
-
-void Bell_Display(ObjectMaster* obj) {
-	EntityData1* v3 = obj->Data1.Entity;
-	Angle v4;
-
-	njSetTexture(&highwayObj_TEXLIST);
-	njPushMatrixEx();
-	njTranslateV(0, &v3->Position);
-	njPushMatrixEx();
-	v4 = v3->Rotation.y;
-	if (v4)
-	{
-		njRotateY(0, (unsigned __int16)v4);
-	}
-
-	DrawObject(SH_Bell[0]->getmodel());
-	njPopMatrixEx();
-	DrawObject(SH_Bell[1]->getmodel());
-	njPopMatrixEx();
-}
-
-void Bell_Main(ObjectMaster* obj) {
-
-	EntityData1* v2; // ebx
-	EntityData1* v3; // esi
-	Angle v4; // eax
-	CollisionInfo* v5; // eax
-	char v6; // al
-	double v7; // st7
-	CollisionInfo* v8; // eax
-	float y; // [esp+0h] [ebp-1Ch]
-
-	v3 = obj->Data1.Entity;
-
-	v2 = obj->Child->Data1.Entity;
-
-	v5 = v3->Collision;
-
-	if ((v5->Flag & 1) == 0 || (v3->Status & 0x100) != 0)
-	{
-		if ((v3->Status & 0x300) == 256)
-		{
-			if (v5)
-			{
-				if ((v5->Flag & 1) == 0)
-				{
-					if (v2)
-					{
-						v8 = v2->Collision;
-						if (v8)
-						{
-							if ((v8->Flag & 1) == 0 && !v3->Index)
-							{
-								v3->Status &= 0xFEFFu;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		v6 = v3->Action;
-		if (v3->Action)
-		{
-			v7 = v3->Position.y - 70.0;
-			v3->Action = v6 - 1;
-			y = v7;
-
-		}
-		//PlaySound(93, 0, 0, 0);
-		PrintDebug("bellllllll");
-		v3->Status |= 1u;
-	}
-
-	AddToCollisionList(obj);
-	sub_49CE60(v3, 0);
-
-}
-
-void __cdecl OHwBell(ObjectMaster* obj)
-{
-	EntityData1* v1; // esi
-	ObjectMaster* v2; // eax
-	EntityData1* v3; // ecx
-
-	v1 = obj->Data1.Entity;
-	v1->Rotation.z = 0;
-	v1->Rotation.x = 0;
-	InitCollision(obj, Col_Bell01, 2, 4u);
-
-	v2 = LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1 | LoadObj_Data2), Bell_Child, obj);
-	v3 = v2->Data1.Entity;
-	v3->Position = v1->Position;
-	v3->Rotation.z = 0;
-	v3->Rotation.x = 0;
-	v3->Rotation.y = v1->Rotation.y;
-	InitCollision(v2, &Col_Bell02, 1, 4u);
-
-	v1->Status &= 0xFCu;
-	v1->Action = 5;
-	obj->MainSub = Bell_Main;
-	obj->DisplaySub = Bell_Display;
-	obj->DeleteSub = j_DeleteChildObjects;
-}
-
-
-void Lamp_Main(ObjectMaster* a1) {
-
-	EntityData1* v1 = a1->Data1.Entity;
-	AddToCollisionList(a1);
-	v1->Status &= 0xC7u;
-
-}
-void __cdecl LoadLamp01(ObjectMaster* a1)
-{
-	a1->MainSub = Lamp_Main;
-	a1->DisplaySub = GenericSHDisplay;
-}
-
-void InitLamp01(ObjectMaster* obj) {
-	obj->field_4C = SH_Lamp[0]->getmodel();
-	InitCollision(obj, &Col_Lamp01, 1, 4u);
-	obj->Data1.Entity->Status |= 0x8000u;
-	LoadLamp01(obj);
-}
-
-//Ennemies
-static void __cdecl Beetle_Stationary(ObjectMaster* a1)
-{
-	EntityData1* entity = a1->Data1.Entity;
-	entity->Rotation.x = 0;
-	entity->Rotation.z = 0xC1;
-	entity->Scale = { 0.10, 3.50, 51 };
-	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
-}
-
-static void __cdecl Beetle_Attack(ObjectMaster* a1)
-{
-	EntityData1* entity = a1->Data1.Entity;
-	entity->Rotation.x = 0x1;
-	entity->Rotation.z = 0x1C0;
-	entity->Scale = { 4, 1, 150 };
-	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
-}
-
-static void __cdecl Beetle_Electric(ObjectMaster* a1)
-{
-	EntityData1* entity = a1->Data1.Entity;
-	entity->Rotation.x = 0;
-	entity->Rotation.z = 0x101;
-	entity->Scale = { 0.10, 3.50, 51 };
-	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
-}
-
-static void __cdecl Robots(ObjectMaster* a1)
-{
-	EntityData1* entity = a1->Data1.Entity;
-	entity->Rotation.x = 0x1;
-	entity->Rotation.z = 0x100;
-	entity->Scale = { 0, 1, 126 };
-	entity->Position.y -= 6.5;
-	a1->MainSub = (ObjectFuncPtr)E_AI;
-}
-
-void __fastcall ObjectSetupInput(EntityData1* twp, EntityData2* mwp)
-{
-	twp->Status &= 0xFFC7u;
-	if (mwp)
-	{
-		mwp->Acceleration.z = 0.0;
-		mwp->Acceleration.y = 0.0;
-		mwp->Acceleration.x = 0.0;
-	}
-}
-
-void __cdecl sub_46C150(ObjectMaster* a1)
-{
-	if (a1->SETData) {
-		a1->SETData->Flags &= 0x7FFFu;
-		a1->SETData->Flags &= 0xFFFEu;
-	}
-	a1->MainSub = DeleteObject_;
-}
-
-
-
-void __cdecl Cone_Display(ObjectMaster* a2)
-{
-	EntityData1* v1; // esi
-	Angle v2; // eax
-	Angle v3; // eax
-	Angle v4; // eax
-
-	v1 = a2->Data1.Entity;
-
-	njSetTexture(&highwayObj_TEXLIST);
-	njPushMatrix(0);
-	njTranslateV(0, &v1->Position);
-	v2 = v1->Rotation.z;
-	if (v2)
-	{
-		njRotateZ(0, (unsigned __int16)v2);
-	}
-	v3 = v1->Rotation.x;
-	if (v3)
-	{
-		njRotateX(0, (unsigned __int16)v3);
-	}
-	v4 = v1->Rotation.y;
-	if (v4)
-	{
-		njRotateY(0, (unsigned __int16)v4);
-	}
-	if (v1->Action)
-	{
-		DrawObject(SH_Cone[1]->getmodel());
-	}
-	else
-	{
-		DrawObject(SH_Cone[0]->getmodel());
-	}
-	njPopMatrixEx();
-
-}
-
-void __cdecl Cone_Main(ObjectMaster* a1)
-{
-	ObjectMaster* v1; // ebx
-	EntityData1* v2; // esi
-	NJS_POINT3* v3; // edi
-	Angle v4; // edi
-	double v5; // st7
-	ObjectMaster* v6; // ecx
-	Rotation a4; // [esp+Ch] [ebp-Ch] BYREF
-	Float v13 = 0;
-
-	v1 = a1;
-	v2 = a1->Data1.Entity;
-	v3 = &MainCharObj1[0]->Position;
-	if (ClipSetObject(a1))
-	{
-		if (v2->Scale.y != 0.0 || v2->Scale.x != 0.0)
-		{
-			sub_46C150(v1);
-		}
-	}
-	else
-	{
-		if (v2->Scale.y == 0.0 && v2->Scale.x == 0.0)
-		{
-			if ((v2->Collision->Flag & 1) != 0)
-			{
-				GetPlayerRunningSpeed(0, v13);
-				if (v13) {
-					v2->Scale.x = v13 * 1.5;
-					v2->Scale.y = v13 * 0.66666669;
-				}
-				v2->field_6 = (unsigned __int16)(-16384
-					- (unsigned __int64)(atan2(
-						v2->Position.z - v3->z,
-						v2->Position.x - v3->x)
-						* 65536.0
-						* -0.1591549762031479));
-				//PlaySound(118, 0, 0, 0);
-			}
-		}
-		else
-		{
-			v4 = v2->field_6;
-			v2->Position.x = v2->Position.x - njSin(v4) * v2->Scale.x;
-			v2->Position.y = v2->Scale.y + v2->Position.y;
-			v2->Position.z = njCos(v4) * v2->Scale.x + v2->Position.z;
-
-			v5 = v2->Scale.x - 0.5;
-			v2->Scale.x = v5;
-			if (v5 < 0.0)
-			{
-				v2->Scale.x = 0.0;
-			}
-			v6 = a1;
-			if (v2->Scale.y >= -1.0)
-			{
-				v2->Scale.y = 0.0;
-			}
-			else
-			{
-				v2->Scale.y = v2->Scale.y * -0.5;
-			}
-
-		}
-
-		AddToCollisionList(a1);
-		ObjectSetupInput(v2, 0);
-	}
-}
-
-
-void __cdecl OCone2(ObjectMaster* obj)
-{
-	EntityData1* data = obj->Data1.Entity;
-
-	data->Action = 1;
-	data->Scale.x = 0.0;
-	data->Scale.y = 0.0;
-	InitCollision(obj, &Col_Cone, 1, 4u);
-	obj->MainSub = (ObjectFuncPtr)Cone_Main;
-	obj->DisplaySub = (ObjectFuncPtr)Cone_Display;
-}
-
-void __cdecl OCone1(ObjectMaster* obj)
-{
-	EntityData1* data = obj->Data1.Entity;
-
-	data->Action = 0;
-	data->Scale.x = 0.0;
-	data->Scale.y = 0.0;
-	InitCollision(obj, &Col_Cone, 1, 4u);
-	obj->MainSub = (ObjectFuncPtr)Cone_Main;
-	obj->DisplaySub = (ObjectFuncPtr)Cone_Display;
-}
-
-
 static ObjectListEntry SpeedHighwayObjList[] = {
 	{ LoadObj_Data1, 2, 0x10, 0.0, RingMain },
 	{ LoadObj_Data1, 2, 0x20, 0.0, (ObjectFuncPtr)SpringA_Main },
@@ -834,7 +250,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x61A330, "O TANKA" } /* "O TANKA" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x619960, "O SIGNB" } /* "O SIGNB" */,
 	{ (LoadObj)6 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x619340, "O TurnAsi" } /* "O TurnAsi" */,
-	{ (LoadObj)2, 3, 1, 25000000, LoadSHSlight, }, /* "O SLIGHT" */
+	{ (LoadObj)2, 3, 1, 25000000, SHSLIGHT, }, /* "O SLIGHT" */
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6188E0, "O ARCADE01" } /* "O ARCADE01" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6188F0, "O ARCADE02" } /* "O ARCADE02" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x618900, "O ARCADE03" } /* "O ARCADE03" */,
@@ -868,8 +284,8 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6158D0, "O GREEND" } /* "O GREEND" */,
 	{ (LoadObj)2, 3, 0, 0, nullptr, },// 3, 0, 0, 0, (ObjectFuncPtr)0x6163D0, "O LAMP" } /* "O LAMP" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x616770, "O CLIGHT" } /* "O CLIGHT" */,
-	{ (LoadObj)2, 3, 0, 0, InitLamp01, } /* "O LAMP01" */,
-	{ (LoadObj)2, 3, 0, 0, nullptr, },
+	{ (LoadObj)2, 3, 0, 0, SHLAMP01, } /* "O LAMP01" */,
+	{ (LoadObj)2, 3, 0, 0, SHLAMP02, },
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x616210, "O PinPin" } /* "O PinPin" */,
 	{ (LoadObj)6 },// 3, 1, 4000000, 0, (ObjectFuncPtr)0x616150, "O Escalator1" } /* "O Escalator1" */,
 	{ (LoadObj)6 },// 3, 1, 4000000, 0, (ObjectFuncPtr)0x6161B0, "O Escalator2" } /* "O Escalator2" */,

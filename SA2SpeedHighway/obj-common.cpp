@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "obj-common.h"
 
 static Trampoline* goalringt;
 static Trampoline* itembox_t;
@@ -248,7 +249,44 @@ static void __cdecl AirBox_r(ObjectMaster* obj)
 	origin(obj);
 }
 
-void Objects_Init()
+void __cdecl Beetle_Stationary(ObjectMaster* a1)
+{
+	EntityData1* entity = a1->Data1.Entity;
+	entity->Rotation.x = 0;
+	entity->Rotation.z = 0xC1;
+	entity->Scale = { 0.10, 3.50, 51 };
+	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
+}
+
+void __cdecl Beetle_Attack(ObjectMaster* a1)
+{
+	EntityData1* entity = a1->Data1.Entity;
+	entity->Rotation.x = 0x1;
+	entity->Rotation.z = 0x1C0;
+	entity->Scale = { 4, 1, 150 };
+	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
+}
+
+void __cdecl Beetle_Electric(ObjectMaster* a1)
+{
+	EntityData1* entity = a1->Data1.Entity;
+	entity->Rotation.x = 0;
+	entity->Rotation.z = 0x101;
+	entity->Scale = { 0.10, 3.50, 51 };
+	a1->MainSub = (ObjectFuncPtr)Beetle_Main;
+}
+
+void __cdecl Robots(ObjectMaster* a1)
+{
+	EntityData1* entity = a1->Data1.Entity;
+	entity->Rotation.x = 0x1;
+	entity->Rotation.z = 0x100;
+	entity->Scale = { 0, 1, 126 };
+	entity->Position.y -= 6.5;
+	a1->MainSub = (ObjectFuncPtr)E_AI;
+}
+
+void CommonObjects_Init()
 {
 	//SADX Fixes
 	goalringt = new Trampoline((int)GoalRing_Main, (int)GoalRing_Main + 0x6, GoalRing_r);

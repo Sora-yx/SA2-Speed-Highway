@@ -7,9 +7,11 @@
 #include "ModelInfo.h"
 #include "AnimationFile.h"
 #include "Trampoline.h"
-#include "objects.h"
 
 #include "mod.h"
 #include "utils.h"
+#include "ninja-utils.h"
+#include "objects.h"
+#include "obj-common.h"
 
 #endif

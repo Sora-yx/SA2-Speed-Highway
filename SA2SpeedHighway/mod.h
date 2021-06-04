@@ -1,6 +1,7 @@
 #pragma once
 
 #define MAXPLAYERS 2
+#define CURRENT_MATRIX _nj_current_matrix_ptr_
 
 extern HelperFunctions HelperFunctionsGlobal;
 extern ObjectListHead SpeedHighwayObjListH;
@@ -17,7 +18,6 @@ struct EntityData2_R
 	float frict;
 };
 #pragma pack(pop)
-
 
 // Chaos Drive Function Pointers
 DataPointer(void*, dword_1DE4680, 0x1DE4680);

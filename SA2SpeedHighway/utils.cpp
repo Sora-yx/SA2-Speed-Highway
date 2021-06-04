@@ -68,17 +68,16 @@ signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2)
 	return 1;
 }
 
-void __cdecl sub_49CE60(EntityData1* a1, EntityData2* a2)
+void ObjectSetupInput(EntityData1* twp, EntityData2* mwp)
 {
-	(a1->Status) &= Status_Unknown5 | Status_Unknown4 | Status_Hurt | Status_OnObjectColli | Status_Ground;
-	if (a2)
+	twp->Status &= Status_Unknown5 | Status_Unknown4 | Status_Hurt | Status_OnObjectColli | Status_Ground;
+	if (mwp)
 	{
-		a2->Acceleration.z = 0.0;
-		a2->Acceleration.y = 0.0;
-		a2->Acceleration.x = 0.0;
+		mwp->Acceleration.z = 0.0;
+		mwp->Acceleration.y = 0.0;
+		mwp->Acceleration.x = 0.0;
 	}
 }
-
 
 int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
 {
@@ -134,29 +133,6 @@ float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest)
 bool IsPointInsideSphere(NJS_VECTOR* center, NJS_VECTOR* pos, float radius)
 {
 	return GetDistance(center, pos) <= radius;
-}
-
-void njCnkAction(NJS_ACTION* action, float frame)
-{
-	*(int*)0x25EFE54 = 0x25EFE60;
-	njSetMotion(action->motion, frame);
-	MotionDrawCallback = (ObjectFuncPtr)0x42E660;
-	DrawObjMotion(action->object);
-}
-
-void njCnkMotion(NJS_OBJECT* obj, NJS_MOTION* mot, float frame)
-{
-	*(int*)0x25EFE54 = 0x25EFE60;
-	njSetMotion(mot, frame);
-	MotionDrawCallback = (ObjectFuncPtr)0x42E660;
-	DrawObjMotion(obj);
-}
-
-void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs)
-{
-	vd->x += vs->x;
-	vd->y += vs->y;
-	vd->z += vs->z;
 }
 
 const char* ModelFormatStrings[]

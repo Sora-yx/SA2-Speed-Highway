@@ -1,13 +1,13 @@
 #include "pch.h"
-
-extern NJS_TEXLIST highwayObj_TEXLIST;
+#include "sh-cage.h"
 
 static ModelInfo* SH_Cage;
 static ModelInfo* SH_Rail;
 static ModelInfo* SH_CageCol;
 static ModelInfo* SH_RailCol;
 
-void LoadCraneModels() {
+void LoadCraneModels()
+{
 	SH_Cage = LoadMDL("crane_cage", ModelFormat_Chunk);
 	SH_Rail = LoadMDL("crane_rail", ModelFormat_Chunk);
 
@@ -15,6 +15,14 @@ void LoadCraneModels() {
 	SH_CageCol = LoadMDL("crane_cage", ModelFormat_Basic);
 	SH_RailCol = LoadMDL("crane_rail", ModelFormat_Basic);
 	return;
+}
+
+void FreeCraneModels()
+{
+	FreeMDL(SH_Cage);
+	FreeMDL(SH_Rail);
+	FreeMDL(SH_CageCol);
+	FreeMDL(SH_RailCol);
 }
 
 bool sub_61B060(ObjectMaster* a1)
@@ -96,30 +104,18 @@ void CheckCraneColli(EntityData1* a1) {
 	}
 }
 
-void __cdecl DispSHCage(ObjectMaster* a1)
+void __cdecl DispSHCage(ObjectMaster* obj)
 {
-	EntityData1* v1; // esi
-	Angle v2; // eax
-
-	v1 = a1->Data1.Entity;
-
+	EntityData1* data = obj->Data1.Entity;
 
 	njPushMatrixEx();
-	njTranslateV(0, &v1->Position);
-	v2 = v1->Rotation.y;
-	if (v2)
-	{
-		njRotateY(0, (unsigned __int16)v2);
-	}
-
 	njSetTexture(&highwayObj_TEXLIST);
-	njTranslate(0, 0.0, 0.0, -30.0);
+	njTranslateEx(&data->Position);
+	njRotateY(CURRENT_MATRIX, data->Rotation.y);
+	njTranslate(0, 0.0, 0.0, -30.0f);
 	DrawObject(SH_Cage->getmodel());
 	njPopMatrixEx();
-
 }
-
-
 
 void __cdecl SHExecCage(ObjectMaster* a1)
 {
@@ -151,10 +147,10 @@ void __cdecl SHExecCage(ObjectMaster* a1)
 		//v2->timer = //Stock animation here
 		v2->Index = 0;
 		//sub_61B130((int)v2);
-		a1->DeleteSub = ObjectFunc_DynColDelete;
+		a1->DeleteSub = DeleteFunc_DynCol;
 		a1->DisplaySub = DispSHCage;
 
-		NJS_OBJECT* dynobj = GetFreeDynObject();
+		NJS_OBJECT* dynobj = GetFreeDyncolObjectEntry();
 
 		memcpy(dynobj, SH_CageCol->getmodel(), sizeof(NJS_OBJECT));
 		dynobj->scl[2] = 1.0;
@@ -309,14 +305,14 @@ void __cdecl OCrane(ObjectMaster* obj)
 		}
 		else
 		{
-			obj->DeleteSub = ObjectFunc_DynColDelete;
+			obj->DeleteSub = DeleteFunc_DynCol;
 			obj->DisplaySub = dispSHRail;
 
 			v1->Rotation.z = 0;
 			v1->Rotation.x = 0;
 
 
-			NJS_OBJECT* dynobj = GetFreeDynObject();
+			NJS_OBJECT* dynobj = GetFreeDyncolObjectEntry();
 			
 
 			memcpy(dynobj, SH_RailCol->getmodel(), sizeof(NJS_OBJECT));

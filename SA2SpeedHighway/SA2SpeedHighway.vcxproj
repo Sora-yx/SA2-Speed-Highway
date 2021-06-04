@@ -159,14 +159,26 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="mod.h" />
+    <ClInclude Include="ninja-utils.h" />
+    <ClInclude Include="obj-common.h" />
     <ClInclude Include="objects.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="sh-bell.h" />
+    <ClInclude Include="sh-cage.h" />
+    <ClInclude Include="sh-cone.h" />
+    <ClInclude Include="sh-glass.h" />
+    <ClInclude Include="sh-jammer.h" />
+    <ClInclude Include="sh-lamp.h" />
+    <ClInclude Include="sh-light.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="act.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="ninja-utils.cpp" />
     <ClCompile Include="PhysicsFunction.cpp" />
+    <ClCompile Include="sh-bell.cpp" />
+    <ClCompile Include="sh-cone.cpp" />
     <ClCompile Include="sh-glass.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="obj-common.cpp" />
@@ -179,6 +191,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="sh-cage.cpp" />
+    <ClCompile Include="sh-jammer.cpp" />
+    <ClCompile Include="sh-lamp.cpp" />
+    <ClCompile Include="sh-light.cpp" />
     <ClCompile Include="Sonic.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>

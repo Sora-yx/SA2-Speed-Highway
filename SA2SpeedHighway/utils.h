@@ -3,9 +3,6 @@
 bool isSADXLevel();
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 bool IsPointInsideSphere(NJS_VECTOR* center, NJS_VECTOR* pos, float radius);
-void njCnkAction(NJS_ACTION* action, float frame);
-void njCnkMotion(NJS_OBJECT* obj, NJS_MOTION* mot, float frame);
-void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs);
 ModelInfo* LoadMDL(const char* name, ModelFormat format);
 AnimationFile* LoadAnim(const char* name);
 int __cdecl BAMS_SubWrap(__int16 bams_a, unsigned __int16 bams_b, int limit);
@@ -24,7 +21,7 @@ void SetStartEndPoints(const StartPosition* start, const LevelEndPosition* start
 void MovePlayersToStartPos(float x, float y, float z);
 int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
 signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2);
-void __cdecl sub_49CE60(EntityData1* a1, EntityData2* a2);
+void ObjectSetupInput(EntityData1* twp, EntityData2* mwp);
 int __fastcall SubAngle(int ang0, int ang1);
 void DrawChunkModel(NJS_CNK_MODEL* a1);
 

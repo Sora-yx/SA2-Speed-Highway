@@ -63,18 +63,29 @@ void FixCam() {
 
 }
 
-void LoadModelBG_SH() {
-	for (Uint8 i = 0; i < LengthOfArray(SH_BG); i++) {
+void LoadModelBG_SH()
+{
+	LoadTextureList("BG_HIGHWAY", &bg_highway_TEXLIST);
+	LoadTextureList("BG_HIGHWAY01", &bg_highway01_TEXLIST);
+	LoadTextureList("BG_HIGHWAY02", &bg_highway02_TEXLIST);
+	LoadTextureList("BG_HIGHWAY03", &bg_highway03_TEXLIST);
+
+	for (size_t i = 0; i < LengthOfArray(SH_BG); i++) {
 		std::string str = "BG_SH0" + std::to_string(i);
 		SH_BG[i] = LoadMDL(str.c_str(), ModelFormat_Chunk);
 	}
 }
 
-void LoadTextureBG_SH() {
-	LoadTextureList("BG_HIGHWAY", &bg_highway_TEXLIST);
-	LoadTextureList("BG_HIGHWAY01", &bg_highway01_TEXLIST);
-	LoadTextureList("BG_HIGHWAY02", &bg_highway02_TEXLIST);
-	LoadTextureList("BG_HIGHWAY03", &bg_highway03_TEXLIST);
+void FreeModelBG_SH()
+{
+	FreeTexList(&bg_highway_TEXLIST);
+	FreeTexList(&bg_highway01_TEXLIST);
+	FreeTexList(&bg_highway02_TEXLIST);
+	FreeTexList(&bg_highway03_TEXLIST);
+
+	for (size_t i = 0; i < LengthOfArray(SH_BG); i++) {
+		FreeMDL(SH_BG[i]);
+	}
 }
 
 void SpeedHighway_Display(ObjectMaster* obj) {
@@ -137,7 +148,6 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 	case 0:
 		PerfectRings_StartCount = 0;
 		LoadSHAct(CurrentAct);
-		LoadTextureBG_SH();
 		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
 		obj->DisplaySub = SpeedHighway_Display;
 		data->Action = 1;
@@ -164,8 +174,6 @@ void LoadSHAct(int act)
 		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway0-set-s.bin", "SET0048_2P_U.bin");
 		LoadLevelMusic((char*)"highway1.adx");
 		LoadStagePaths(PathList_SpeedHighway0);
-		LoadMLT("se_ac_cg.mlt");
-
 		MovePlayersToStartPos(-673.0f, -10.0f, 5.0f);
 		break;
 	case 1:
@@ -191,6 +199,9 @@ static void __cdecl SpeedHighway_Free()
 	FreeLandTableInfo(&Act1LandInfo);
 	FreeLandTableInfo(&Act2LandInfo);
 	FreeLandTableInfo(&Act3LandInfo);
+	
+	FreeModelBG_SH();
+	FreeModelsSH();
 
 	DropRingsFunc_ptr = nullptr;
 	DisplayItemBoxItemFunc_ptr = nullptr;
@@ -210,6 +221,8 @@ static void __cdecl SpeedHighway_Init()
 	LoadLandTable("resource\\gd_pc\\speed-highway0.sa2lvl", &Act1LandInfo, &HIGHWAY01_TEXINFO);
 	LoadLandTable("resource\\gd_pc\\speed-highway1.sa2lvl", &Act2LandInfo, &HIGHWAY02_TEXINFO);
 	LoadLandTable("resource\\gd_pc\\speed-highway2.sa2lvl", &Act3LandInfo, &HIGHWAY03_TEXINFO);
+
+	LoadMLT("se_ac_cg.mlt");
 
 	DropRingsFunc_ptr = DropRings;
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
@@ -234,7 +247,6 @@ static void __cdecl SpeedHighway_Init()
 	
 	LoadModelBG_SH();
 	LoadModelsSH();
-	LoadObjSHTex();
 	LoadTexPacks((TexPackInfo*)0x109E810, (NJS_TEXLIST***)0x109E748);
 }
 
@@ -256,7 +268,7 @@ extern "C"
 
 		Init_Sonic();
 		SetStartEndPoints(&sh_startpos, &sh_2pintro, &sh_endpos, &sh_endpos23);
-		Objects_Init();
+		CommonObjects_Init();
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
