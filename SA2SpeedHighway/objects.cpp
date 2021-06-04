@@ -47,13 +47,16 @@ void FreeModelsSH()
 	FreeCraneModels();
 	FreeSHGlass();
 
-	FreeMDL(SH_Cone[0]);
-	FreeMDL(SH_Cone[1]);
 	FreeMDL(SH_Lamp[0]);
-	FreeMDL(SH_Bell[0]);
-	FreeMDL(SH_Bell[1]);
-	FreeMDL(SH_SLight);
-	FreeMDL(SH_GFF);
+
+	for (uint8_t i = 0; i < 2; i++) {
+		FreeMDL(SH_Cone[i]);
+		FreeMDL(SH_Bell[i]);
+		}
+
+		FreeMDL(SH_SLight);
+		FreeMDL(SH_GFF);
+	
 }
 
 void __cdecl GenericSHDisplay(ObjectMaster* obj)
