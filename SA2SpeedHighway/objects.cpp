@@ -6,29 +6,41 @@ NJS_TEXLIST highwayObj_TEXLIST = { arrayptrandlength(highwayObj_Tex, Uint32) };
 static NJS_TEXNAME highwayObj2_Tex[54]{};
 NJS_TEXLIST highwayObj2_TEXLIST = { arrayptrandlength(highwayObj2_Tex, Uint32) };
 
-static NJS_TEXNAME JammerTexName[] = {
-	{ (char*)"cone04", 0, 0 },
-	{ (char*)"light2", 0, 0 },
-	{ (char*)"nen_01", 0, 0 },
-	{ (char*)"ref_crome", 0, 0 },
-	{ (char*)"st_slight06", 0, 0 }
+/*NJS_TEXNAME light2 = { "light2", 0, 0 };
+NJS_TEXNAME aNen01 = { "nen_01", 0, 0 };
+NJS_TEXNAME aRefCrome_5 = { "ref_crome", 0, 0 };
+NJS_TEXNAME aStSLight06_2 = { "st_slight06", 0, 0 };*/
+
+
+
+NJS_TEXNAME cone04[5] = { (char*)"cone04", 0, 0, (char*)"light2", 0, 0, (char*)"nen_01", 0, 0, (char*)"ref_crome", 0, 0, (char*)"st_slight06", 0, 0 };
+
+NJS_TEXLIST JammerTexlist = { arrayptrandlength(cone04, Uint32) };
+NJS_TEXLIST JammerTexlist2 = { arrayptrandlength(cone04, Uint32) };
+
+/*NJS_TEXLIST JammerTexlist[5] = {
+	{ &cone04, 0 },
+	{ &light2, 0 },
+	{ &aNen01, 0},
+	{ &aRefCrome_5, 0},
+	{ &aStSLight06_2, 0},
 };
 
-static NJS_TEXNAME JammerTexName2[] = {
-	{ (char*)"cone04", 0, 0 },
-	{ (char*)"light2", 0, 0 },
-	{ (char*)"nen_01", 0, 0 },
-	{ (char*)"ref_crome", 0, 0 },
-	{ (char*)"st_slight06", 0, 0 }
-};
-
-NJS_TEXLIST JammerTexlist = { arrayptrandlength(JammerTexName, Uint32) };
-NJS_TEXLIST JammerTexlist2 = { arrayptrandlength(JammerTexName2, Uint32) };
+NJS_TEXLIST JammerTexlist2[5] = {
+	{ &cone04, 0 },
+	{ &light2, 0 },
+	{ &aNen01, 0},
+	{ &aRefCrome_5, 0},
+	{ &aStSLight06_2, 0},
+};*/
 
 static ModelInfo* SH_Cone[2];
 static ModelInfo* SH_Lamp[2];
+
 static ModelInfo* SH_Bell[2];
+
 static ModelInfo* SH_Jammer;
+
 static ModelInfo* SH_SLight;
 static ModelInfo* SH_GFF;
 
@@ -61,6 +73,13 @@ void LoadModelsSH() {
 	SH_Jammer = LoadMDL("SH-Jammer", ModelFormat_Chunk);
 	SH_SLight = LoadMDL("SH-Slight", ModelFormat_Chunk);
 	SH_GFF = LoadMDL("SH-Fence", ModelFormat_Chunk);
+}
+
+void LoadObjSHTex() {
+	LoadTextureList("OBJ_HIGHWAY", &highwayObj_TEXLIST);
+	LoadTextureList("OBJ_HIGHWAY2", &highwayObj2_TEXLIST);
+	LoadTextureList("OBJ_HIGHWAY2", &JammerTexlist);
+	LoadTextureList("OBJ_HIGHWAY2", &JammerTexlist2);
 }
 
 void __cdecl GenericSHDisplay(ObjectMaster* a1)

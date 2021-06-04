@@ -39,33 +39,6 @@ static NJS_TEXLIST bg_highway03_TEXLIST = { arrayptrandlength(bg_highway03_Tex, 
 
 static NJS_VECTOR SkyboxScale_SH[3] = { {8.5f, 8.5f, 8.5f},  {1.0f, 1.0f, 1.0f}, {1.22f, 1.22f, 1.22f} };
 
-static TexPackInfo SpeedHighway_TexList[]
-{
-	{ "objtex_common", texlist_objtex_common },
-	{ "efftex_common", (NJS_TEXLIST*)0x104D80C },
-	{ "OBJ_HIGHWAY", &highwayObj_TEXLIST },
-	{ "OBJ_HIGHWAY2", &highwayObj2_TEXLIST },
-	nullptr
-};
-
-static NJS_TEXLIST* SpeedHighway_ObjTexLists[]
-{
-	&JammerTexlist,
-	&JammerTexlist2,
-	nullptr
-};
-
-static NJS_TEXLIST** SpeedHighway_SubTexList[]
-{
-	(NJS_TEXLIST**)0x16F78D4,
-	(NJS_TEXLIST**)0xB49408,
-	(NJS_TEXLIST**)0xB4878C,
-	(NJS_TEXLIST**)0xB53338,
-	(NJS_TEXLIST**)0xB4D28C,
-	SpeedHighway_ObjTexLists,
-	nullptr
-};
-
 int CurrentAct;
 
 void FixCam() {
@@ -238,8 +211,6 @@ static void __cdecl SpeedHighway_Init()
 	LoadLandTable("resource\\gd_pc\\speed-highway1.sa2lvl", &Act2LandInfo, &HIGHWAY02_TEXINFO);
 	LoadLandTable("resource\\gd_pc\\speed-highway2.sa2lvl", &Act3LandInfo, &HIGHWAY03_TEXINFO);
 
-	LoadTexPacks(SpeedHighway_TexList, SpeedHighway_SubTexList);
-
 	DropRingsFunc_ptr = DropRings;
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
 
@@ -263,6 +234,8 @@ static void __cdecl SpeedHighway_Init()
 	
 	LoadModelBG_SH();
 	LoadModelsSH();
+	LoadObjSHTex();
+	LoadTexPacks((TexPackInfo*)0x109E810, (NJS_TEXLIST***)0x109E748);
 }
 
 static const LevelHeader speedHighwayModule = { "SPDHIGH", 0, SpeedHighway_Init, SpeedHighway_Free, SpeedHighway_Main };
