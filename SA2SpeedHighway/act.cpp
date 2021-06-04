@@ -1,5 +1,5 @@
 #include "pch.h"
-
+#include "act.h"
 
 void SetSonicRunningOnBulding(ObjectMaster* a1)
 {

@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="act.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="mod.h" />

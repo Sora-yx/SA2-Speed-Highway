@@ -1,6 +1,7 @@
 #include "pch.h"
-#include "objects.h"
 #include "level.h"
+#include "act.h"
+#include "objects.h"
 
 static LandTableInfo* Act1LandInfo = nullptr;
 static LandTableInfo* Act2LandInfo = nullptr;
@@ -38,6 +39,8 @@ static NJS_TEXNAME bg_highway03_Tex[2]{};
 static NJS_TEXLIST bg_highway03_TEXLIST = { arrayptrandlength(bg_highway03_Tex, Uint32) };
 
 static NJS_VECTOR SkyboxScale_SH[3] = { {8.5f, 8.5f, 8.5f},  {1.0f, 1.0f, 1.0f}, {1.22f, 1.22f, 1.22f} };
+
+extern LoopHead* PathList_SpeedHighway0[];
 
 void LoadModelBG_SH()
 {

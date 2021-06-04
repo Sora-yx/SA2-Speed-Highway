@@ -87,6 +87,9 @@
     <ClInclude Include="Sonic.h">
       <Filter>Header Files\Characters</Filter>
     </ClInclude>
+    <ClInclude Include="act.h">
+      <Filter>Header Files\Level</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
