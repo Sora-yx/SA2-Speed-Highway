@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "objects.h"
 #include "sh-lamp.h"
 
 ModelInfo* SH_Lamp[2];

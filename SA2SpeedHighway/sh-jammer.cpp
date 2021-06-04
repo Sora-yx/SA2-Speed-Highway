@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "objects.h"
 #include "sh-jammer.h"
 
 static NJS_TEXNAME JammerTexName[] = {

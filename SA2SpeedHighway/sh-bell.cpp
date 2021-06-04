@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "objects.h"
 #include "sh-bell.h"
 
 static CollisionData Col_Bell01[] = {

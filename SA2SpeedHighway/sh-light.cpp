@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "objects.h"
 #include "sh-light.h"
 
 ModelInfo* SH_SLight = nullptr;

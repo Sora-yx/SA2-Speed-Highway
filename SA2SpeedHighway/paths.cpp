@@ -44,7 +44,7 @@ LoopPoint PathList_SpeedHighway0_0_Entries[] = {
 	{ 0, 0xFB57, 0, { 1127.906f, -1139.242f, 277.0839f } }
 };
 
-LoopHead PathList_SpeedHighway0_0 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_0_Entries), 895.4773f, PathList_SpeedHighway0_0_Entries, LoopController };
+LoopHead PathList_SpeedHighway0_0 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_0_Entries), 895.4773f, PathList_SpeedHighway0_0_Entries, LoopPath };
 
 LoopPoint PathList_SpeedHighway0_1_Entries[] = {
 	{ 0xE404, 0xF820, 0.759416f, { 2129, -1288, 3597 } },
@@ -119,7 +119,7 @@ LoopPoint PathList_SpeedHighway0_1_Entries[] = {
 	{ 0xC34, 0xFA63, 0, { 3310.669f, -1404.462f, 3736.649f } }
 };
 
-LoopHead PathList_SpeedHighway0_1 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_1_Entries), 1395.494f, PathList_SpeedHighway0_1_Entries, LoopController };
+LoopHead PathList_SpeedHighway0_1 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_1_Entries), 1395.494f, PathList_SpeedHighway0_1_Entries, LoopPath };
 
 LoopPoint PathList_SpeedHighway0_2_Entries[] = {
 	{ 0xAAF, 0xE2B4, 6.960056f, { 3063.107f, -1138, -8.9569 } },
@@ -139,7 +139,7 @@ LoopPoint PathList_SpeedHighway0_2_Entries[] = {
 	{ 0x3AC8, 0xC1A1, 0, { 3390, -1046.949f, -285 } }
 };
 
-LoopHead PathList_SpeedHighway0_2 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_2_Entries), 477.109f, PathList_SpeedHighway0_2_Entries, LoopController };
+LoopHead PathList_SpeedHighway0_2 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_2_Entries), 477.109f, PathList_SpeedHighway0_2_Entries, LoopPath };
 
 LoopPoint PathList_SpeedHighway0_3_Entries[] = {
 	{ 0xD78B, 0xC35F, 4.280845f, { 3309.172f, -1284.929f, 1412.711f } },
@@ -325,7 +325,7 @@ LoopPoint PathList_SpeedHighway0_3_Entries[] = {
 	{ 0xF282, 0xDA54, 0, { 3309.172f, -1284.929f, 1412.711f } }
 };
 
-LoopHead PathList_SpeedHighway0_3 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_3_Entries), 2242.728f, PathList_SpeedHighway0_3_Entries, LoopController };
+LoopHead PathList_SpeedHighway0_3 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_3_Entries), 2242.728f, PathList_SpeedHighway0_3_Entries, LoopPath };
 
 LoopPoint PathList_SpeedHighway0_4_Entries[] = {
 	{ 0x23, 0xEDB3, 1.038627f, { 1576.222f, -1163.73f, 307.9041f } },
@@ -367,7 +367,7 @@ LoopPoint PathList_SpeedHighway0_4_Entries[] = {
 	{ 0xDF23, 0x191C, 0, { 2121.173f, -1314.741f, 639.9993f } }
 };
 
-LoopHead PathList_SpeedHighway0_4 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_4_Entries), 842.2321f, PathList_SpeedHighway0_4_Entries, LoopController };
+LoopHead PathList_SpeedHighway0_4 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway0_4_Entries), 842.2321f, PathList_SpeedHighway0_4_Entries, LoopPath };
 
 LoopPoint PathList_SpeedHighway0_5_Entries[] = {
 	{ 0xFEF0, 0, 0.541187f, { 5182.759f, -1200.944f, -120 } },

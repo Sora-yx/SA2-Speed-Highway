@@ -1,5 +1,7 @@
 #pragma once
 
+#define CURRENT_MATRIX _nj_current_matrix_ptr_
+
 void njCnkAction(NJS_ACTION* action, float frame);
 void njCnkMotion(NJS_OBJECT* obj, NJS_MOTION* mot, float frame);
 void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs);

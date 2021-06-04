@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "PhysicsFunction.h"
 
 Trampoline* Sonic_Main_t;
 Trampoline* Sonic_runsActions_t;

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "obj-common.h"
+#include "objects.h"
 
 #include "sh-light.h"
 #include "sh-cage.h"

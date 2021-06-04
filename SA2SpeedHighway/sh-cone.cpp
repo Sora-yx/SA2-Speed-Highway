@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "objects.h"
 #include "sh-cone.h"
 
 ModelInfo* SH_Cone[2];

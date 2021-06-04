@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "objects.h"
 #include "sh-cage.h"
 
 static ModelInfo* SH_Cage;

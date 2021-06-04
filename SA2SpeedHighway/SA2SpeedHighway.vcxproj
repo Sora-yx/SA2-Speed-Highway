@@ -158,11 +158,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="level.h" />
     <ClInclude Include="mod.h" />
     <ClInclude Include="ninja-utils.h" />
     <ClInclude Include="obj-common.h" />
     <ClInclude Include="objects.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PhysicsFunction.h" />
+    <ClInclude Include="sa2-utils.h" />
     <ClInclude Include="sh-bell.h" />
     <ClInclude Include="sh-cage.h" />
     <ClInclude Include="sh-cone.h" />
@@ -170,11 +173,13 @@
     <ClInclude Include="sh-jammer.h" />
     <ClInclude Include="sh-lamp.h" />
     <ClInclude Include="sh-light.h" />
+    <ClInclude Include="Sonic.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="act.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="level.cpp" />
     <ClCompile Include="ninja-utils.cpp" />
     <ClCompile Include="PhysicsFunction.cpp" />
     <ClCompile Include="sh-bell.cpp" />
