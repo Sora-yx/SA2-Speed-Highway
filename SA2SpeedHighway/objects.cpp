@@ -17,8 +17,20 @@ static NJS_TEXNAME highwayObj2_Tex[54]{};
 NJS_TEXLIST highwayObj2_TEXLIST = { arrayptrandlength(highwayObj2_Tex, Uint32) };
 
 static ModelInfo* SH_GFF;
+static ModelInfo* SH_Ogg;
+static ModelInfo* SH_OOStp4S;
+static ModelInfo* SH_OOStp4T;
+static ModelInfo* SH_OOStp4SCol;
+static ModelInfo* SH_OOStp4TCol;
+
 
 CollisionData Col_Fence = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.25, 0.0}, 13.0, 4.25, 2.75, 0.0, 0, 0, 0 };
+
+CollisionData Col_Og[] = { 
+	{ 0, (CollisionShapes)0x1, 0x77, 0, 0, {34.0, 25.0, 0.0}, 2.5, 27.0, 0.0, 0.0, 0, 0, 0 },
+	{ 0, (CollisionShapes)0x1, 0x77, 0, 0, {-34.0, 25.0, 0.0}, 2.5, 27.0, 0.0, 0.0, 0, 0, 0 },
+	{ 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 50.0, 0.0}, 35.0, 10.0, 2.0, 0.0, 0, 0, 0 },
+};
 
 void LoadModelsSH()
 {
@@ -28,14 +40,21 @@ void LoadModelsSH()
 	LoadAssets_Jammer();
 	LoadCraneModels();
 	LoadSHGlass();
+	LoadLampModel();
 
 	SH_Cone[0] = LoadMDL("cone_cone1", ModelFormat_Chunk);
 	SH_Cone[1] = LoadMDL("cone_cone2", ModelFormat_Chunk);
-	SH_Lamp[0] = LoadMDL("SH-Lamp01", ModelFormat_Chunk);
 	SH_Bell[0] = LoadMDL("SH-Bell0", ModelFormat_Chunk);
 	SH_Bell[1] = LoadMDL("SH-Bell1", ModelFormat_Chunk);
 	SH_SLight = LoadMDL("SH-Slight", ModelFormat_Chunk);
 	SH_GFF = LoadMDL("SH-Fence", ModelFormat_Chunk);
+	SH_Ogg = LoadMDL("SH-Ogg", ModelFormat_Chunk);
+
+	//platform stuff
+	SH_OOStp4S = LoadMDL("SH-OOstp4S", ModelFormat_Chunk);
+	SH_OOStp4T = LoadMDL("SH-OOstp4T", ModelFormat_Chunk);
+	SH_OOStp4SCol = LoadMDL("SH-OOstp4SCol", ModelFormat_Basic);
+	SH_OOStp4TCol = LoadMDL("SH-OOstpTCol", ModelFormat_Basic);
 }
 
 void FreeModelsSH()
@@ -56,6 +75,7 @@ void FreeModelsSH()
 
 		FreeMDL(SH_SLight);
 		FreeMDL(SH_GFF);
+		FreeMDL(SH_Ogg);
 	
 }
 
@@ -188,21 +208,10 @@ void __cdecl SHGFF_Main(ObjectMaster* a1)
 	}
 }
 
-void __cdecl MainSubGlobalCol(ObjectMaster* obj)
-{
-	EntityData1* v1; // edi
 
-	v1 = obj->Data1.Entity;
-	if (!ClipSetObject(obj))
-	{
-		AddToCollisionList(obj);
-		v1->Status &= 0xFFC7u;
-	}
-}
 
 void __cdecl OFence(ObjectMaster* obj)
 {
-
 	EntityData1* v1 = obj->Data1.Entity;
 	InitCollision(obj, &Col_Fence, 1, 4u);
 	obj->field_4C = SH_GFF->getmodel();
@@ -218,6 +227,40 @@ void Load_GFF(ObjectMaster* tp)
 		tp->field_1C = OFence;
 	}
 }
+
+void LoadOGG(ObjectMaster* obj) {
+	InitCollision(obj, Col_Og, 3, 4u);
+	obj->field_4C = SH_Ogg->getmodel();
+	obj->MainSub = MainSubGlobalCol;
+	obj->DisplaySub = GenericSHDisplay;
+	return;
+}
+
+void Load_OStp4s(ObjectMaster* obj) {
+
+
+	obj->Data2.Undefined = SH_OOStp4SCol->getmodel();
+	obj->field_4C = SH_OOStp4S->getmodel();
+	obj->MainSub = MainSubGlobalDynCol;
+	obj->DisplaySub = GenericSHDisplay;
+}
+
+
+void Load_OStp4t(ObjectMaster* obj) {
+
+	if (CurrentCharacter == Characters_Tails) {
+		obj->Data2.Undefined = SH_OOStp4TCol->getmodel();
+		obj->field_4C = SH_OOStp4T->getmodel();
+	}
+	else {
+		obj->Data1.Entity->Position.y -= 2;
+		obj->MainSub = Load_OStp4s;
+		return;
+	}
+	obj->MainSub = MainSubGlobalDynCol;
+	obj->DisplaySub = GenericSHDisplay;
+}
+
 
 static ObjectListEntry SpeedHighwayObjList[] = {
 	{ LoadObj_Data1, 2, 0x10, 0.0, RingMain },
@@ -259,8 +302,8 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6188F0, "O ARCADE02" } /* "O ARCADE02" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x618900, "O ARCADE03" } /* "O ARCADE03" */,
 	{ (LoadObj)6, 3, 1, 1000000, ObjectJammer } /* "O JAMER" */,
-	{ (LoadObj)LoadObj_Data1, 3, 1, 2250000, nullptr }, /* "O STP4S" */
-	{ (LoadObj)6 },//3, 1, 2250000, 0, (ObjectFuncPtr)0x617F00, "O STP4T" } /* "O STP4T" */,
+	{ (LoadObj)LoadObj_Data1, 3, 1, 2250000, Load_OStp4s }, /* "O STP4S" */
+	{ (LoadObj)6, 3, 1, 2250000, Load_OStp4t,} /* "O STP4T" */,
 	{ (LoadObj)14 },// 3, 1, 2250000, 0, (ObjectFuncPtr)0x618030, "O FLYST" } /* "O FLYST" */,
 	{ (LoadObj)2 },// 3, 1, 160000, 0, (ObjectFuncPtr)0x617AE0, "O Post1" } /* "O Post1" */,
 	{ (LoadObj)2 },// 3, 1, 160000, 0, (ObjectFuncPtr)0x617B10, "O Post4" } /* "O Post4" */,
@@ -303,7 +346,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x6157D0, "O SIBA02" } /* "O SIBA02" */,
 	{ (LoadObj)6 },// 3, 1, 250000, 0, (ObjectFuncPtr)0x615740, "O Tokei" } /* "O Tokei" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x6155A0, "O Lmpa" } /* "O Lmpa" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615410, "O GG" } /* "O GG" */,
+	{ (LoadObj)2, 3, 0, 0, LoadOGG,  } /* "O GG" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615450, "O FF" } /* "O FF" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x6153C0, "O StPlant01" } /* "O StPlant01" */,
 	{ (LoadObj)2 },//5, 0, 0, 0, (ObjectFuncPtr)0x615310, "O StPlant02" } /* "O StPlant02" */,
@@ -322,7 +365,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 2, 0, 0, (ObjectFuncPtr)SPHERE, }, /* "C SPHERE" */
 	{ (LoadObj)2, 2, 0, 0, (ObjectFuncPtr)CCYL, }, /* "C CYLINDER" */
 	{ (LoadObj)2, 2, 0, 0, (ObjectFuncPtr)CCUBE, }, /* CUBE */
-	{ (LoadObj)2, 2, 0, 0, (ObjectFuncPtr)CCUBE, },
+	{ (LoadObj)2, 2, 0, 0, nullptr },
 	{ (LoadObj)2 },//2, 0, 0, 0, (ObjectFuncPtr)0x7A1AA0, "O TIKAL" } /* "O TIKAL" */,
 	{ (LoadObj)2 },//2, 0, 0, 0, (ObjectFuncPtr)0x7A9C60, "O HINT" } /* "O HINT" */,
 	{ LoadObj_Data1, 2, 0x50, 0.0, RingGroup},

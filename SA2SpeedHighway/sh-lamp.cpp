@@ -4,6 +4,7 @@
 
 ModelInfo* SH_Lamp[2];
 
+
 static CollisionData Col_Lamp01 = { 0, CollisionShape_Cyl1, 0x77, 0, 0, {0.0, 22.0, 0.0}, 3.0, 22.0, 0.0, 0.0, 0, 0, 0 };
 
 void __cdecl Lamp_DisplayLight(ObjectMaster* obj)
@@ -56,5 +57,16 @@ void  __cdecl SHLAMP01(ObjectMaster* obj)
 
 void  __cdecl SHLAMP02(ObjectMaster* obj)
 {
+	obj->MainSub = Lamp_Main;
+	obj->DisplaySub = Lamp_Display;
+	obj->field_1C = Lamp_DisplayLight;
+	obj->field_4C = SH_Lamp[1]->getmodel();
+	obj->Data1.Entity->Status |= 0x8000u;
 
+	InitCollision(obj, &Col_Lamp01, 1, 4u);
+}
+
+void LoadLampModel() {
+	SH_Lamp[0] = LoadMDL("SH-Lamp01", ModelFormat_Chunk);
+	SH_Lamp[1] = LoadMDL("SH-Lamp02", ModelFormat_Chunk);
 }

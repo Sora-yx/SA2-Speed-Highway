@@ -22,3 +22,5 @@ int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
 signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2);
 void ObjectSetupInput(EntityData1* twp, EntityData2* mwp);
 void DynCol_AddFromObject(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECTOR* position, Angle rotY, int flags);
+void __cdecl MainSubGlobalCol(ObjectMaster* obj);
+void __cdecl MainSubGlobalDynCol(ObjectMaster* obj);

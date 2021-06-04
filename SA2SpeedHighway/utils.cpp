@@ -400,3 +400,33 @@ void DynCol_AddFromObject(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECTOR* pos
 		obj->EntityData2 = (UnknownData2*)dynobj;
 	}
 }
+
+void __cdecl MainSubGlobalDynCol(ObjectMaster* obj)
+{
+
+	EntityData1* data = obj->Data1.Entity;
+	if (!ClipSetObject(obj))
+	{
+		if (data->Action == 0) {
+
+			if (obj->Data2.Undefined == nullptr)
+				return;
+
+			obj->DeleteSub = DeleteFunc_DynCol;
+			DynCol_AddFromObject(obj, (NJS_OBJECT*)obj->Data2.Undefined, &data->Position, data->Rotation.y, SurfaceFlag_Solid);
+			data->Action = 1;
+		}
+	}
+}
+
+void __cdecl MainSubGlobalCol(ObjectMaster* obj)
+{
+	EntityData1* v1; // edi
+
+	v1 = obj->Data1.Entity;
+	if (!ClipSetObject(obj))
+	{
+		AddToCollisionList(obj);
+		v1->Status &= 0xFFC7u;
+	}
+}
