@@ -10,5 +10,4 @@ void __cdecl PResetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharO
 void PConvertVector_P2G(EntityData1* a1, NJS_VECTOR* a2);
 void __cdecl PResetAngleForBuilding(EntityData1* a1, EntityData2_R* _18, CharObj2Base* a3);
 signed int Sonic_CheckJump(EntityData1* data, CharObj2Base* a2, SonicCharObj2* a3);
-int __fastcall AdjustAngle(int ang0, int ang1, int dang);
 bool CheckPlayerFall(CharObj2Base* status, EntityData1* _entity);

@@ -15,46 +15,6 @@ bool isSADXLevel()
 	return false;
 }
 
-static const void* const DrawChunkModelPtr = (void*)0x42E6C0;
-static inline void DrawChunkModelASM(NJS_CNK_MODEL* a1)
-{
-	__asm
-	{
-		mov eax, [a1]
-		call DrawChunkModelPtr
-	}
-}
-
-void DrawChunkModel(NJS_CNK_MODEL* a1) {
-	return DrawChunkModelASM(a1);
-}
-
-int __fastcall SubAngle(int ang0, int ang1)
-{
-	return (__int16)(ang1 - ang0);
-}
-
-int __fastcall AdjustAngle(int ang0, int ang1, int dang)
-{
-	__int16 v3; // r11
-	int result; // r3
-	int v5; // r9
-	unsigned __int16 v6; // r11
-
-	v3 = ang0;
-	result = (unsigned __int16)ang1;
-	v5 = (__int16)(ang1 - v3);
-	if (v5 > dang || v5 < -dang)
-	{
-		if ((v5 & 0x8000) != 0)
-			v6 = v3 - dang;
-		else
-			v6 = v3 + dang;
-		result = v6;
-	}
-	return result;
-}
-
 signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2)
 {
 	EntityData1* v2; // ecx
@@ -230,27 +190,6 @@ void FreeMDL(ModelInfo* pointer)
 void FreeAnim(AnimationFile* pointer)
 {
 	if (pointer) delete pointer;
-}
-
-int __cdecl BAMS_SubWrap(__int16 bams_a, unsigned __int16 bams_b, int limit)
-{
-	int result; // eax
-	__int16 v4; // cx
-
-	result = bams_b;
-	v4 = bams_b - bams_a;
-	if ((__int16)(bams_b - bams_a) > limit || v4 < -limit)
-	{
-		if (v4 >= 0)
-		{
-			result = (unsigned __int16)(limit + bams_a);
-		}
-		else
-		{
-			result = (unsigned __int16)(bams_a - limit);
-		}
-	}
-	return result;
 }
 
 void FreeLandTableObj()
@@ -439,5 +378,25 @@ void MovePlayersToStartPos(float x, float y, float z)
 			data->Index = i;
 			data->Position = { x, y, z };
 		}
+	}
+}
+
+void DynCol_AddFromObject(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECTOR* position, Angle rotY, int flags)
+{
+	NJS_OBJECT* dynobj = GetFreeDyncolObjectEntry();
+
+	if (dynobj)
+	{
+		memcpy(dynobj, object, sizeof(NJS_OBJECT));
+
+		dynobj->evalflags &= 0xFFFFFFFC;
+
+		dynobj->ang[1] = rotY;
+		dynobj->pos[0] = position->x;
+		dynobj->pos[1] = position->y;
+		dynobj->pos[2] = position->z;
+
+		DynCol_Add((SurfaceFlags)flags, obj, dynobj);
+		obj->EntityData2 = (UnknownData2*)dynobj;
 	}
 }

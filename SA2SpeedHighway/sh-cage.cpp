@@ -47,7 +47,6 @@ bool sub_61B060(ObjectMaster* a1)
 	return false;
 }
 
-
 void __cdecl sub_442120(float a1, float a2, float a3, float a4)
 {
 	int v4; // edi
@@ -85,6 +84,7 @@ void __cdecl sub_442120(float a1, float a2, float a3, float a4)
 			return;
 		}
 	}
+
 	/*v11 = 32 * (v6->field_12);
 	*(float*)((char*)v6->SurfaceInfo. array_15x32 + v11) = a1;
 	*(float*)((char*)v6->array_15x32 + v11 + 4) = a2;
@@ -92,17 +92,6 @@ void __cdecl sub_442120(float a1, float a2, float a3, float a4)
 	*(float*)((char*)v6->array_15x32 + v11 + 12) = a4;
 	*(float*)((char*)v6->array_15x32 + v11 + 16) = v10;
 	++(v6->field_12);*/
-}
-
-void CheckCraneColli(EntityData1* a1) {
-	if (IsPlayerInsideSphere(&a1->Position, 570.0f))
-	{
-		a1->Status |= 0x100u;
-	}
-	else
-	{
-		a1->Status &= 0xFEFFu;
-	}
 }
 
 void __cdecl DispSHCage(ObjectMaster* obj)
@@ -118,9 +107,9 @@ void __cdecl DispSHCage(ObjectMaster* obj)
 	njPopMatrixEx();
 }
 
-void __cdecl SHExecCage(ObjectMaster* a1)
+void __cdecl SHExecCage(ObjectMaster* obj)
 {
-	EntityData1* v2; // ebp
+	EntityData1* data = obj->Data1.Entity; // ebp
 	ObjUnknownA* v3; // ebx
 	NJS_OBJECT* v4; // eax
 	int* v5; // edx
@@ -132,219 +121,167 @@ void __cdecl SHExecCage(ObjectMaster* a1)
 	float v11; // ecx
 	int* v12; // ecx
 	double v13; // st7
-	EntityData1* a2; // [esp+14h] [ebp+4h]
+	EntityData1* parent; // [esp+14h] [ebp+4h]
 	float a2a; // [esp+14h] [ebp+4h]
 
-	v2 = a1->Data1.Entity;
-	v3 = a1->UnknownA_ptr;
-	a2 = a1->Parent->Data1.Entity;
-	switch (v2->Action)
+	v3 = obj->UnknownA_ptr;
+	parent = obj->Parent->Data1.Entity;
+	switch (data->Action)
 	{
 	case 0:
-	{
-		v2->Rotation.z = 0;
-		v2->Rotation.x = 0;
-		v2->Action = 1;
-		//v2->timer = //Stock animation here
-		v2->Index = 0;
-		//sub_61B130((int)v2);
-		a1->DeleteSub = DeleteFunc_DynCol;
-		a1->DisplaySub = DispSHCage;
+		data->Action = 1;
+		data->Index = 0;
+		//sub_61B130((int)data);
 
-		NJS_OBJECT* dynobj = GetFreeDyncolObjectEntry();
+		obj->DeleteSub = DeleteFunc_DynCol;
+		obj->DisplaySub = DispSHCage;
+		obj->field_4C = SH_Cage->getmodel();
 
-		memcpy(dynobj, SH_CageCol->getmodel(), sizeof(NJS_OBJECT));
-		dynobj->scl[2] = 1.0;
-		dynobj->scl[1] = 1.0;
-		dynobj->scl[0] = 1.0;
-		dynobj->evalflags &= 0xFFFFFFFC;
+		DynCol_AddFromObject(obj, SH_CageCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid | SurfaceFlag_Dynamic);
 
-		dynobj->ang[0] = v2->Rotation.x;
-		dynobj->ang[1] = v2->Rotation.y;
-		dynobj->ang[2] = v2->Rotation.z;
-		dynobj->pos[0] = v2->Position.x;
-		dynobj->pos[1] = v2->Position.y;
-		dynobj->pos[2] = v2->Position.z;
-
-		DynCol_Add((SurfaceFlags)(SurfaceFlag_Solid | SurfaceFlag_Dynamic), a1, dynobj);
-		a1->EntityData2 = (UnknownData2*)dynobj;
-	}
 		break;
 	case 1:
-		if (sub_61B060(a1))
+		if (sub_61B060(obj))
 		{
-			v2->Action = 2;
-			v2->Index = 1;
-			//sub_61B130((int)v2);
+			data->Action = 2;
+			data->Index = 1;
+			//sub_61B130((int)data);
 		}
 		break;
 	case 2:
-		if (v2->Position.y - a2->Position.y > 100.0)
+		if (data->Position.y - parent->Position.y > 100.0f)
 		{
-			v2->Action = 3;
-			goto LABEL_16;
+			data->Action = 3;
+			data->Index = 0;
+			v3->field_10 = 0;
+			v3->field_14 = 0.0;
+			v3->field_18 = 0;
+			//sub_61B130((int)data);
+			//DoSoundQueueThing(103);
+			//PlaySound(104, 0, 0, 0);
 		}
-		v6 = njSin(v2->Rotation.y);
+		v6 = njSin(data->Rotation.y);
 		v3->field_14 = 0.25;
 		*(float*)&v3->field_10 = v6 * 1.225;
-		v7 = njCos(v2->Rotation.y) * 1.225;
-		goto LABEL_18;
+		v7 = njCos(data->Rotation.y) * 1.225;
+		*(float*)&v3->field_18 = v7;
+		data->Position.x = data->Position.x + *(float*)&v3->field_10;
+		v10 = data->Position.x;
+		data->Position.y = v3->field_14 + data->Position.y;
+		v11 = data->Position.y;
+		a2a = data->Position.z + *(float*)&v3->field_18;
+		data->Position.z = a2a;
+		//QueueSound_XYZ(103, data, 1, 0, 2, v10, v11, a2a);
 	case 3:
-		if (sub_61B060(a1))
+		if (sub_61B060(obj))
 		{
-			/*v8 = v2->InvulnerableTime;
-			v2->InvulnerableTime = v8 + 1;
+			/*v8 = data->InvulnerableTime;
+			data->InvulnerableTime = v8 + 1;
 			if ((unsigned __int16)v8 > 0x78u)
 			{
-				v2->Action = 4;
-				v2->Index = 1;
-				v2->InvulnerableTime = 0;
-				sub_61B130((int)v2);
+				data->Action = 4;
+				data->Index = 1;
+				data->InvulnerableTime = 0;
+				sub_61B130((int)data);
 			}*/
 		}
 		break;
 	case 4:
-		if (v2->Position.y - a2->Position.y > 0.0)
+		if (data->Position.y - parent->Position.y > 0.0f)
 		{
-			v9 = njSin(v2->Rotation.y);
+			v9 = njSin(data->Rotation.y);
 			v3->field_14 = -0.25;
 			*(float*)&v3->field_10 = -(v9 * 1.225);
-			v7 = -(njCos(v2->Rotation.y) * 1.225);
-		LABEL_18:
+			v7 = -(njCos(data->Rotation.y) * 1.225);
 			*(float*)&v3->field_18 = v7;
-			v2->Position.x = v2->Position.x + *(float*)&v3->field_10;
-			v10 = v2->Position.x;
-			v2->Position.y = v3->field_14 + v2->Position.y;
-			v11 = v2->Position.y;
-			a2a = v2->Position.z + *(float*)&v3->field_18;
-			v2->Position.z = a2a;
-			//QueueSound_XYZ(103, v2, 1, 0, 2, v10, v11, a2a);
+			data->Position.x = data->Position.x + *(float*)&v3->field_10;
+			v10 = data->Position.x;
+			data->Position.y = v3->field_14 + data->Position.y;
+			v11 = data->Position.y;
+			a2a = data->Position.z + *(float*)&v3->field_18;
+			data->Position.z = a2a;
+			//QueueSound_XYZ(103, data, 1, 0, 2, v10, v11, a2a);
 		}
 		else
 		{
-			v2->Action = 5;
-		LABEL_16:
-			v2->Index = 0;
+			data->Action = 5;
+			data->Index = 0;
 			v3->field_10 = 0;
 			v3->field_14 = 0.0;
 			v3->field_18 = 0;
-			//sub_61B130((int)v2);
+			//sub_61B130((int)data);
 			//DoSoundQueueThing(103);
 			//PlaySound(104, 0, 0, 0);
 		}
 		break;
 	case 5:
-		if (sub_61B060(a1))
+		if (sub_61B060(obj))
 		{
-			v2->Action = 1;
-			//v2->InvulnerableTime = 0;
+			data->Action = 1;
+			//data->InvulnerableTime = 0;
 		}
 		break;
-	default:
-
-		//remove dyncol
-
-		break;
 	}
-	//v12 = v2->timer;
-	/*v13 = v2->Scale.x + 0.2;
-	v2->Scale.x = v13;
+
+	//v12 = data->timer;
+	/*v13 = data->Scale.x + 0.2;
+	data->Scale.x = v13;
 	if (v13 >= (double)*(unsigned int*)(v12[1] + 4))
 	{
-		v2->Scale.x = 0.0;
+		data->Scale.x = 0.0;
 	}*/
+
 	memcpy(&v3->field_1C, v3, 0x1Cu);
-	sub_442120(v2->Position.x, v2->Position.y, v2->Position.z, 15.0);
+	sub_442120(data->Position.x, data->Position.y, data->Position.z, 15.0f);
 }
 
+void CheckCraneColli(EntityData1* data) {
+	if (IsPlayerInsideSphere(&data->Position, 570.0f))
+	{
+		data->Status |= 0x100u;
+	}
+	else
+	{
+		data->Status &= 0xFEFFu;
+	}
+}
 
-
-void __cdecl dispSHRail(ObjectMaster* obj)
+void __cdecl OCrane_Display(ObjectMaster* obj)
 {
-	EntityData1* v1; // esi
-	Angle v2; // eax
-
-	v1 = obj->Data1.Entity;
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* object = (NJS_OBJECT*)obj->field_4C;
 
 	njSetTexture(&highwayObj_TEXLIST);
 	njPushMatrixEx();
-	njTranslateV(0, &v1->Position);
-	v2 = v1->Rotation.y;
-	if (v2)
-	{
-		njRotateY(0, (unsigned __int16)v2);
-	}
-
-	DrawObject(SH_Rail->getmodel());
+	njTranslateEx(&data->Position);
+	njRotateY(0, data->Rotation.y);
+	DrawChunkModel(object->chunkmodel);
 	njPopMatrixEx();
+}
 
+void __cdecl OCrane_Main(ObjectMaster* obj)
+{
+	if (!ClipSetObject(obj))
+	{
+		EntityData1* data = obj->Data1.Entity;
+
+		if (!ClipSetObject(obj))
+		{
+			CheckCraneColli(data);
+		}
+	}
 }
 
 void __cdecl OCrane(ObjectMaster* obj)
 {
-	EntityData1* v1; // esi
-	Angle v2; // eax
-	int* v4; // ecx
-	int v5; // edx
-	ObjectMaster* v6; // eax
-	EntityData1* v7; // eax
+	EntityData1* data = obj->Data1.Entity;
 
-	v1 = obj->Data1.Entity;
-	if (!ClipObject(obj, 1020100.0))
-	{
-		if (v1->Action)
-		{
-			if (v1->Action == 1)
-			{
-				//CheckCraneColli(v1);
-				//dispCrane(obj);
-			}
-			else
-			{
-				//ObjectFunc_DynColDelete(obj);
-			}
-		}
-		else
-		{
-			obj->DeleteSub = DeleteFunc_DynCol;
-			obj->DisplaySub = dispSHRail;
+	obj->MainSub = OCrane_Main;
+	obj->DeleteSub = DeleteFunc_DynCol;
+	obj->DisplaySub = OCrane_Display;
+	obj->field_4C = SH_Rail->getmodel();;
 
-			v1->Rotation.z = 0;
-			v1->Rotation.x = 0;
+	DynCol_AddFromObject(obj, SH_RailCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid);
 
-
-			NJS_OBJECT* dynobj = GetFreeDyncolObjectEntry();
-			
-
-			memcpy(dynobj, SH_RailCol->getmodel(), sizeof(NJS_OBJECT));
-
-			dynobj->scl[2] = 1.0;
-			dynobj->scl[1] = 1.0;
-			dynobj->scl[0] = 1.0;
-			dynobj->evalflags &= 0xFFFFFFFC;
-
-			dynobj->ang[0] = v1->Rotation.x;
-			dynobj->ang[1] = v1->Rotation.y;
-			dynobj->ang[2] = v1->Rotation.z;
-			dynobj->pos[0] = v1->Position.x;
-			dynobj->pos[1] = v1->Position.y - 7;
-			dynobj->pos[2] = v1->Position.z;
-
-
-			DynCol_Add(SurfaceFlag_Solid, obj, dynobj);
-			obj->EntityData2 = (UnknownData2*)dynobj;
-
-
-			v6 = LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1), (void(__cdecl*)(ObjectMaster*))SHExecCage, obj);
-			if (v6)
-			{
-				v7 = v6->Data1.Entity;
-				v7->Rotation.z = 0;
-				v7->Rotation.x = 0;
-			}
-
-
-			v1->Action = 1;
-		}
-	}
+	LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1), SHExecCage, obj);
 }
