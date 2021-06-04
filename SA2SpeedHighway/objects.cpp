@@ -6,46 +6,36 @@ NJS_TEXLIST highwayObj_TEXLIST = { arrayptrandlength(highwayObj_Tex, Uint32) };
 static NJS_TEXNAME highwayObj2_Tex[54]{};
 NJS_TEXLIST highwayObj2_TEXLIST = { arrayptrandlength(highwayObj2_Tex, Uint32) };
 
-/*NJS_TEXNAME light2 = { "light2", 0, 0 };
-NJS_TEXNAME aNen01 = { "nen_01", 0, 0 };
-NJS_TEXNAME aRefCrome_5 = { "ref_crome", 0, 0 };
-NJS_TEXNAME aStSLight06_2 = { "st_slight06", 0, 0 };*/
-
-
-
-NJS_TEXNAME cone04[5] = { (char*)"cone04", 0, 0, (char*)"light2", 0, 0, (char*)"nen_01", 0, 0, (char*)"ref_crome", 0, 0, (char*)"st_slight06", 0, 0 };
-
-NJS_TEXLIST JammerTexlist = { arrayptrandlength(cone04, Uint32) };
-NJS_TEXLIST JammerTexlist2 = { arrayptrandlength(cone04, Uint32) };
-
-/*NJS_TEXLIST JammerTexlist[5] = {
-	{ &cone04, 0 },
-	{ &light2, 0 },
-	{ &aNen01, 0},
-	{ &aRefCrome_5, 0},
-	{ &aStSLight06_2, 0},
+static NJS_TEXNAME JammerTexName[] = {
+	{ (char*)"cone04", 0, 0 },
+	{ (char*)"light2", 0, 0 },
+	{ (char*)"nen_01", 0, 0 },
+	{ (char*)"ref_crome", 0, 0 },
+	{ (char*)"st_slight06", 0, 0 }
 };
 
-NJS_TEXLIST JammerTexlist2[5] = {
-	{ &cone04, 0 },
-	{ &light2, 0 },
-	{ &aNen01, 0},
-	{ &aRefCrome_5, 0},
-	{ &aStSLight06_2, 0},
-};*/
+static NJS_TEXNAME JammerTexName2[] = {
+	{ (char*)"cone04", 0, 0 },
+	{ (char*)"light2", 0, 0 },
+	{ (char*)"nen_02", 0, 0 },
+	{ (char*)"ref_crome", 0, 0 },
+	{ (char*)"st_slight06", 0, 0 }
+};
+
+static NJS_TEXLIST JammerTexlist = { arrayptrandlength(JammerTexName, Uint32) };
+static NJS_TEXLIST JammerTexlist2 = { arrayptrandlength(JammerTexName2, Uint32) };
 
 static ModelInfo* SH_Cone[2];
 static ModelInfo* SH_Lamp[2];
-
 static ModelInfo* SH_Bell[2];
-
 static ModelInfo* SH_Jammer;
-
 static ModelInfo* SH_SLight;
 static ModelInfo* SH_GFF;
 
 CollisionData Col_Cone = { 0x300, (CollisionShapes)0x6, 0x20, 0xE0, 0, { 0, 2.0, 0 }, 3.0, 1.5, 0.0, 0, 0, 0, 0 };
+
 CollisionData Col_Lamp01 = { 0, CollisionShape_Cyl1, 0x77, 0, 0, {0.0, 22.0, 0.0}, 3.0, 22.0, 0.0, 0.0, 0, 0, 0 };
+
 CollisionData Col_Bell01[] = {
 	{ 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, -30.0, 0.0}, 17.0, 4.0, 0.0, 0.0, 0, 0, 0 },
 	{ 0, CollisionShape_Cyl1, 0x77, 0, 0, {0.0, -48.0, 0}, 19.0, 5.0, 0.0, 0.0, 0, 0, 0 },
@@ -57,10 +47,10 @@ CollisionData Col_SLight = { 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, 15.0, 0.
 
 CollisionData Col_Fence = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.25, 0.0}, 13.0, 4.25, 2.75, 0.0, 0, 0, 0 };
 
-
-void LoadModelsSH() {
-
+void LoadModelsSH()
+{
 	LoadCraneModels();
+
 	SH_Cone[0] = LoadMDL("cone_cone1", ModelFormat_Chunk);
 	SH_Cone[1] = LoadMDL("cone_cone2", ModelFormat_Chunk);
 
@@ -75,11 +65,22 @@ void LoadModelsSH() {
 	SH_GFF = LoadMDL("SH-Fence", ModelFormat_Chunk);
 }
 
-void LoadObjSHTex() {
+void LoadObjSHTex()
+{
 	LoadTextureList("OBJ_HIGHWAY", &highwayObj_TEXLIST);
 	LoadTextureList("OBJ_HIGHWAY2", &highwayObj2_TEXLIST);
-	LoadTextureList("OBJ_HIGHWAY2", &JammerTexlist);
-	LoadTextureList("OBJ_HIGHWAY2", &JammerTexlist2);
+	
+	JammerTexlist.textures[0] = highwayObj2_TEXLIST.textures[34];
+	JammerTexlist.textures[1] = highwayObj2_TEXLIST.textures[35];
+	JammerTexlist.textures[2] = highwayObj2_TEXLIST.textures[31];
+	JammerTexlist.textures[3] = highwayObj2_TEXLIST.textures[32];
+	JammerTexlist.textures[4] = highwayObj2_TEXLIST.textures[33];
+
+	JammerTexlist2.textures[0] = highwayObj2_TEXLIST.textures[34];
+	JammerTexlist2.textures[1] = highwayObj2_TEXLIST.textures[35];
+	JammerTexlist2.textures[2] = highwayObj2_TEXLIST.textures[36];
+	JammerTexlist2.textures[3] = highwayObj2_TEXLIST.textures[32];
+	JammerTexlist2.textures[4] = highwayObj2_TEXLIST.textures[33];
 }
 
 void __cdecl GenericSHDisplay(ObjectMaster* a1)
@@ -333,65 +334,48 @@ void Load_GFF(ObjectMaster* tp)
 
 void JammerChangeTex(ObjectMaster* obj)
 {
-	char v1; // cl
-	EntityData1* result = obj->Data1.Entity;
+	EntityData1* data = obj->Data1.Entity;
 
-	if (++result->field_6 > 0x19u)
+	if (++data->field_6 > 0x19u)
 	{
-		v1 = result->NextAction;
-		result->field_6 = 0;
-		if (v1)
+		data->field_6 = 0;
+
+		if (data->NextAction)
 		{
-			result->NextAction = v1 - 1;
+			data->NextAction -= 1;
 			obj->field_4C = &JammerTexlist;
 		}
 		else
 		{
-			result->NextAction = 1;
+			data->NextAction = 1;
 			obj->field_4C = &JammerTexlist2;
 		}
 	}
 }
 
-void __cdecl OJamerDisplay(ObjectMaster* a2)
+void __cdecl OJamerDisplay(ObjectMaster* obj)
 {
-	EntityData1* v1; // esi
-	Angle v2; // eax
-	Angle v3; // eax
-	Angle v4; // eax
+	EntityData1* data = obj->Data1.Entity;
 
-	v1 = a2->Data1.Entity;
-	njSetTexture((NJS_TEXLIST*)&highwayObj2_TEXLIST);
+	njSetTexture((NJS_TEXLIST*)obj->field_4C);
 	njPushMatrixEx();
-	njTranslateV(0, &v1->Position);
-	v2 = v1->Rotation.z;
-	if (v2)
-	{
-		njRotateZ(0, (unsigned __int16)v2);
-	}
-	v3 = v1->Rotation.x;
-	if (v3)
-	{
-		njRotateX(0, (unsigned __int16)v3);
-	}
-	v4 = v1->Rotation.y;
-	if (v4)
-	{
-		njRotateY(0, (unsigned __int16)v4);
-	}
+	njTranslateEx(&data->Position);
+	njRotateZ(0, data->Rotation.z);
+	njRotateX(0, data->Rotation.x);
+	njRotateY(0, data->Rotation.y);
 	DrawObject(SH_Jammer->getmodel());
 	njPopMatrixEx();
 }
 
-void ObjectJammer(ObjectMaster* obj) {
-
+void ObjectJammer(ObjectMaster* obj)
+{
 	EntityData1* data = obj->Data1.Entity;
 
 	if (!ClipSetObject(obj))
 	{
 		if (data->Action == 1)
 		{
-			if (IsPlayerInsideSphere(&data->Position, 33.0))
+			if (IsPlayerInsideSphere(&data->Position, 33.0f))
 			{
 				data->Status | 0x100;
 			}
@@ -401,13 +385,12 @@ void ObjectJammer(ObjectMaster* obj) {
 
 			JammerChangeTex(obj);
 		}
-		else {
+		else
+		{
 			data->Action = 1;
 			obj->field_4C = &JammerTexlist;
 			obj->DisplaySub = OJamerDisplay;
 		}
-
-
 	}
 }
 
