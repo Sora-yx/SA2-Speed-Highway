@@ -26,4 +26,5 @@ int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
 signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2);
 void __cdecl sub_49CE60(EntityData1* a1, EntityData2* a2);
 int __fastcall SubAngle(int ang0, int ang1);
+void DrawChunkModel(NJS_CNK_MODEL* a1);
 

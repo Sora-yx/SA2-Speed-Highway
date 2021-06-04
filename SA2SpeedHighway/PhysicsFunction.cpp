@@ -4,23 +4,6 @@
 
 //SA2 Functions
 
-
-
-static const void* const CrashStarPTR = (void*)0x7543C0;
-static void __declspec(naked) CrashStar_LoadASM(int player)
-{
-    __asm
-    {
-        mov eax, [player]
-        call CrashStarPTR
-    }
-}
-
-void LoadCrashStar(int player) {
-    return CrashStar_LoadASM(player);
-}
-
-
 static const void* const SCheckJumpPtr = (void*)0x721C00;
 static inline signed int Sonic_CheckJumpASM(EntityData1* data, CharObj2Base* a2, SonicCharObj2* a3)
 {
@@ -186,19 +169,6 @@ static inline void PAdjustAngleYS(__int16 ax0, EntityData1* a1, CharObj2Base* a3
     }
 }
 
-/*static const void* const PadAdjustYQ = (void*)0x460570;
-static inline void PAdjustAngleYQ(EntityData1* a1, CharObj2Base* co2, unsigned __int16 a3)
-{
-    __asm
-    {
-        push[a3]
-        mov ebx, [co2]
-        mov eax, [a1]
-        call PadAdjustYQ
-        add esp, 16
-    }
-}*/
-
 void __cdecl PAdjustAngleYQ(EntityData1* twp, CharObj2Base* pwp, int angy)
 {
     float spd_y; // r10
@@ -353,7 +323,7 @@ void __fastcall PGetAccelerationForBuilding(EntityData1* twp, EntityData2_R* mwp
                 (v23) = (twp->Status & 0x100) == 0 ? 2048 : 1024;
             }
             mwp->ang_aim.y = (unsigned __int16)v23;
-            //PAdjustAngleYS(twp, pwp, (unsigned __int16)v23);
+
             PAdjustAngleYS((unsigned __int16)v23, twp, pwp);
         }
         else

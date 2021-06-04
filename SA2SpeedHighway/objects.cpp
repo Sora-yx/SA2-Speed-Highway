@@ -6,10 +6,42 @@ NJS_TEXLIST highwayObj_TEXLIST = { arrayptrandlength(highwayObj_Tex, Uint32) };
 static NJS_TEXNAME highwayObj2_Tex[54]{};
 NJS_TEXLIST highwayObj2_TEXLIST = { arrayptrandlength(highwayObj2_Tex, Uint32) };
 
+/*NJS_TEXNAME light2 = { "light2", 0, 0 };
+NJS_TEXNAME aNen01 = { "nen_01", 0, 0 };
+NJS_TEXNAME aRefCrome_5 = { "ref_crome", 0, 0 };
+NJS_TEXNAME aStSLight06_2 = { "st_slight06", 0, 0 };*/
+
+
+
+NJS_TEXNAME cone04[5] = { (char*)"cone04", 0, 0, (char*)"light2", 0, 0, (char*)"nen_01", 0, 0, (char*)"ref_crome", 0, 0, (char*)"st_slight06", 0, 0 };
+
+NJS_TEXLIST JammerTexlist = { arrayptrandlength(cone04, Uint32) };
+NJS_TEXLIST JammerTexlist2 = { arrayptrandlength(cone04, Uint32) };
+
+/*NJS_TEXLIST JammerTexlist[5] = {
+	{ &cone04, 0 },
+	{ &light2, 0 },
+	{ &aNen01, 0},
+	{ &aRefCrome_5, 0},
+	{ &aStSLight06_2, 0},
+};
+
+NJS_TEXLIST JammerTexlist2[5] = {
+	{ &cone04, 0 },
+	{ &light2, 0 },
+	{ &aNen01, 0},
+	{ &aRefCrome_5, 0},
+	{ &aStSLight06_2, 0},
+};*/
+
 static ModelInfo* SH_Cone[2];
 static ModelInfo* SH_Lamp[2];
 
 static ModelInfo* SH_Bell[2];
+
+static ModelInfo* SH_Jammer;
+
+static ModelInfo* SH_SLight;
 
 CollisionData Col_Cone = { 0x300, (CollisionShapes)0x6, 0x20, 0xE0, 0, { 0, 2.0, 0 }, 3.0, 1.5, 0.0, 0, 0, 0, 0 };
 CollisionData Col_Lamp01 = { 0, CollisionShape_Cyl1, 0x77, 0, 0, {0.0, 22.0, 0.0}, 3.0, 22.0, 0.0, 0.0, 0, 0, 0 };
@@ -19,6 +51,8 @@ CollisionData Col_Bell01[] = {
 };
 
 CollisionData Col_Bell02 = { 0, (CollisionShapes)0x6, 0x10, 0xEC, 0, {0.0, -60.0, 0.0}, 8.0, 5.0, 0.0, 0.0, 0, 0, 0 };
+
+CollisionData Col_SLight = { 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, 15.0, 0.0}, 7.0, 7.0, 0.0, 0.0, 0, 0, 0 };
 
 void LoadModelsSH() {
 
@@ -32,11 +66,162 @@ void LoadModelsSH() {
 
 	SH_Bell[0] = LoadMDL("SH-Bell0", ModelFormat_Chunk);
 	SH_Bell[1] = LoadMDL("SH-Bell1", ModelFormat_Chunk);
+	SH_Jammer = LoadMDL("SH-Jammer", ModelFormat_Chunk);
+	SH_SLight = LoadMDL("SH-Slight", ModelFormat_Chunk);
 }
 
 void LoadObjSHTex() {
 	LoadTextureList("OBJ_HIGHWAY", &highwayObj_TEXLIST);
 	LoadTextureList("OBJ_HIGHWAY2", &highwayObj2_TEXLIST);
+	LoadTextureList("OBJ_HIGHWAY2", &JammerTexlist);
+	LoadTextureList("OBJ_HIGHWAY2", &JammerTexlist2);
+}
+
+void SHSlight_Display(ObjectMaster* obj) {
+
+	EntityData1* v1 = obj->Data1.Entity;
+	unsigned __int64 v3; // rax
+	int v11; // r4
+	double v12; // fp1
+	Angle v4; // eax
+	NJS_OBJECT* v5;
+	__int64 v9;
+	__int64 v10;
+
+	njSetTexture(&highwayObj_TEXLIST);
+	njPushMatrixEx();
+	njTranslateV(0, &v1->Position);
+	if (v1->Rotation.y) {
+		njRotateY(0, v1->Position.y);
+	}
+
+	DrawChunkModel(SH_SLight->getmodel()->chunkmodel);
+	njTranslate(0, SH_SLight->getmodel()->child->pos[0], SH_SLight->getmodel()->child->pos[1], SH_SLight->getmodel()->child->pos[2]);
+
+	v9 = v1->field_6;
+	v11 = (int)((float)((float)njSin((int)((double)v9 * 65536.0 * 0.002777777777777778)) * (float)23.0)
+		* 65536.0
+		* 0.002777777777777778);
+	if (v11)
+	{
+		(v10) = v1->field_6;
+		v12 = njSin((int)((double)v10 * 65536.0 * 0.002777777777777778));
+		njRotateX(0, (unsigned __int16)(int)((float)((float)v12 * (float)23.0) * 65536.0 * 0.002777777777777778));
+	}
+	v4 = v1->Rotation.y;
+	if (v4)
+	{
+		njRotateY(0, (unsigned __int16)v4);
+	}
+	DrawChunkModel(SH_SLight->getmodel()->child->chunkmodel);
+	v5 = SH_SLight->getmodel()->child->child;
+	njTranslate(0, SH_SLight->getmodel()->child->pos[0], SH_SLight->getmodel()->child->pos[1], SH_SLight->getmodel()->child->pos[2]);
+	DrawChunkModel(v5->chunkmodel);
+	njPopMatrixEx();
+}
+
+void SHSlight_Main(ObjectMaster* obj) {
+
+	EntityData1* v1 = obj->Data1.Entity;
+
+	if (!ClipObject(obj, 25000000.0))
+	{
+		AddToCollisionList(obj);
+		sub_49CE60(v1, 0);
+		++v1->field_6;
+	}
+}
+
+void LoadSHSlight(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (!ClipObject(obj, 25000000.0)) {
+		InitCollision(obj, &Col_SLight, 1, 4u);
+		data->Collision->Range = 25.0;
+		obj->DisplaySub = SHSlight_Display;
+		obj->MainSub = SHSlight_Main;
+	}
+}
+
+void JammerChangeTex(ObjectMaster* obj)
+{
+	char v1; // cl
+	EntityData1* result = obj->Data1.Entity;
+
+	if (++result->field_6 > 0x19u)
+	{
+		v1 = result->NextAction;
+		result->field_6 = 0;
+		if (v1)
+		{
+			result->NextAction = v1 - 1;
+			obj->field_4C = &JammerTexlist;
+		}
+		else
+		{
+			result->NextAction = 1;
+			obj->field_4C = &JammerTexlist2;
+		}
+	}
+}
+
+void __cdecl OJamerDisplay(ObjectMaster* a2)
+{
+	EntityData1* v1; // esi
+	Angle v2; // eax
+	Angle v3; // eax
+	Angle v4; // eax
+
+	v1 = a2->Data1.Entity;
+	njSetTexture((NJS_TEXLIST*)&highwayObj2_TEXLIST);
+	njPushMatrixEx();
+	njTranslateV(0, &v1->Position);
+	v2 = v1->Rotation.z;
+	if (v2)
+	{
+		njRotateX(0, (unsigned __int16)v2);
+	}
+	v3 = v1->Rotation.x;
+	if (v3)
+	{
+		njRotateZ(0, (unsigned __int16)v3);
+	}
+	v4 = v1->Rotation.y;
+	if (v4)
+	{
+		njRotateY(0, (unsigned __int16)v4);
+	}
+	DrawObject(SH_Jammer->getmodel());
+	njPopMatrixEx();
+}
+
+void ObjectJammer(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (!ClipSetObject(obj))
+	{
+		if (data->Action == 1)
+		{
+			if (IsPlayerInsideSphere(&data->Position, 33.0))
+			{
+				data->Status | 0x100;
+			}
+			else {
+				data->Status & 0xFEFF;
+			}
+
+			JammerChangeTex(obj);
+		}
+		else {
+			data->Action = 1;
+			obj->field_4C = &JammerTexlist;
+			obj->DisplaySub = OJamerDisplay;
+		}
+
+
+	}
 }
 
 void __cdecl Bell_Child(ObjectMaster* obj)
@@ -315,7 +500,7 @@ static void __cdecl Robots(ObjectMaster* a1)
 	entity->Rotation.x = 0x1;
 	entity->Rotation.z = 0x100;
 	entity->Scale = { 0, 1, 126 };
-	entity->Position.y -= 6;
+	entity->Position.y -= 7;
 	a1->MainSub = (ObjectFuncPtr)E_AI;
 }
 
@@ -512,11 +697,11 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x61A330, "O TANKA" } /* "O TANKA" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x619960, "O SIGNB" } /* "O SIGNB" */,
 	{ (LoadObj)6 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x619340, "O TurnAsi" } /* "O TurnAsi" */,
-	{ (LoadObj)3, 1, 25000000, 0, nullptr, }, /* "O SLIGHT" */
+	{ (LoadObj)2, 3, 1, 25000000, LoadSHSlight, }, /* "O SLIGHT" */
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6188E0, "O ARCADE01" } /* "O ARCADE01" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6188F0, "O ARCADE02" } /* "O ARCADE02" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x618900, "O ARCADE03" } /* "O ARCADE03" */,
-	{ (LoadObj)6 },//3, 1, 1000000, 0, (ObjectFuncPtr)0x6186D0, "O JAMER" } /* "O JAMER" */,
+	{ (LoadObj)6, 3, 1, 1000000, ObjectJammer } /* "O JAMER" */,
 	{ (LoadObj)LoadObj_Data1, 3, 1, 2250000, nullptr }, /* "O STP4S" */
 	{ (LoadObj)6 },//3, 1, 2250000, 0, (ObjectFuncPtr)0x617F00, "O STP4T" } /* "O STP4T" */,
 	{ (LoadObj)14 },// 3, 1, 2250000, 0, (ObjectFuncPtr)0x618030, "O FLYST" } /* "O FLYST" */,

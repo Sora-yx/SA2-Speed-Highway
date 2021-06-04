@@ -15,6 +15,20 @@ bool isSADXLevel()
 	return false;
 }
 
+static const void* const DrawChunkModelPtr = (void*)0x42E6C0;
+static inline void DrawChunkModelASM(NJS_CNK_MODEL* a1)
+{
+	__asm
+	{
+		mov eax, [a1]
+		call DrawChunkModelPtr
+	}
+}
+
+void DrawChunkModel(NJS_CNK_MODEL* a1) {
+	return DrawChunkModelASM(a1);
+}
+
 int __fastcall SubAngle(int ang0, int ang1)
 {
 	return (__int16)(ang1 - ang0);
