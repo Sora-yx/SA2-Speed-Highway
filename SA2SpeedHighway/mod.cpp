@@ -45,6 +45,9 @@ void FixCam() {
 
 	if (isSADXLevel())
 	{
+		if (CurrentLevel == LevelIDs_RadicalHighway && CurrentAct == 1)
+			return;
+
 		if (MainCharObj2[0] && !MainCharObj2[1]) {
 
 			if (MainCharObj2[0]->Speed.x >= 1 && MainCharObj2[0]->Speed.x <= 8)

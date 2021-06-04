@@ -42,6 +42,7 @@ static ModelInfo* SH_Bell[2];
 static ModelInfo* SH_Jammer;
 
 static ModelInfo* SH_SLight;
+static ModelInfo* SH_GFF;
 
 CollisionData Col_Cone = { 0x300, (CollisionShapes)0x6, 0x20, 0xE0, 0, { 0, 2.0, 0 }, 3.0, 1.5, 0.0, 0, 0, 0, 0 };
 CollisionData Col_Lamp01 = { 0, CollisionShape_Cyl1, 0x77, 0, 0, {0.0, 22.0, 0.0}, 3.0, 22.0, 0.0, 0.0, 0, 0, 0 };
@@ -53,6 +54,9 @@ CollisionData Col_Bell01[] = {
 CollisionData Col_Bell02 = { 0, (CollisionShapes)0x6, 0x10, 0xEC, 0, {0.0, -60.0, 0.0}, 8.0, 5.0, 0.0, 0.0, 0, 0, 0 };
 
 CollisionData Col_SLight = { 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, 15.0, 0.0}, 7.0, 7.0, 0.0, 0.0, 0, 0, 0 };
+
+CollisionData Col_Fence = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.25, 0.0}, 13.0, 4.25, 2.75, 0.0, 0, 0, 0 };
+
 
 void LoadModelsSH() {
 
@@ -68,6 +72,7 @@ void LoadModelsSH() {
 	SH_Bell[1] = LoadMDL("SH-Bell1", ModelFormat_Chunk);
 	SH_Jammer = LoadMDL("SH-Jammer", ModelFormat_Chunk);
 	SH_SLight = LoadMDL("SH-Slight", ModelFormat_Chunk);
+	SH_GFF = LoadMDL("SH-Fence", ModelFormat_Chunk);
 }
 
 void LoadObjSHTex() {
@@ -75,6 +80,40 @@ void LoadObjSHTex() {
 	LoadTextureList("OBJ_HIGHWAY2", &highwayObj2_TEXLIST);
 	LoadTextureList("OBJ_HIGHWAY2", &JammerTexlist);
 	LoadTextureList("OBJ_HIGHWAY2", &JammerTexlist2);
+}
+
+void __cdecl GenericSHDisplay(ObjectMaster* a1)
+{
+	EntityData1* v1; // esi
+	Angle rotZ; // eax
+	Angle rotX; // eax
+	Angle rotY; // eax
+
+	v1 = a1->Data1.Entity;
+	if (!ClipSetObject(a1))
+	{
+
+		njSetTexture(&highwayObj_TEXLIST);
+		njPushMatrixEx();
+		njTranslateV(0, &v1->Position);
+		rotZ = v1->Rotation.z;
+		if (rotZ)
+		{
+			njRotateZ(0, (unsigned __int16)rotZ);
+		}
+		rotX = v1->Rotation.x;
+		if (rotX)
+		{
+			njRotateX(0, (unsigned __int16)rotX);
+		}
+		rotY = v1->Rotation.y;
+		if (rotY)
+		{
+			njRotateY(0, (unsigned __int16)rotY);
+		}
+		DrawObject((NJS_OBJECT*)a1->field_4C);
+		njPopMatrixEx();
+	}
 }
 
 void SHSlight_Display(ObjectMaster* obj) {
@@ -144,6 +183,154 @@ void LoadSHSlight(ObjectMaster* obj) {
 	}
 }
 
+void __cdecl SHGFF_Main(ObjectMaster* a1)
+{
+	ObjectMaster* v1; // edi
+	EntityData1* v2; // ebx
+	double v3; // st7
+	double v4; // st7
+	Angle v5; // eax
+	Angle v6; // eax
+	Angle v7; // eax
+	ObjectMaster* v8; // eax
+	Angle v9; // esi
+	ObjectMaster* v10; // eax
+	double v11; // st7
+	double v12; // st7
+	Angle v13; // eax
+	Angle v14; // eax
+	Angle v15; // eax
+	int i; // [esp+18h] [ebp-40h]
+	int j; // [esp+18h] [ebp-40h]
+	Vector3 vs; // [esp+1Ch] [ebp-3Ch] BYREF
+	Vector3 a2; // [esp+28h] [ebp-30h] BYREF
+	Rotation a3; // [esp+34h] [ebp-24h] BYREF
+	Rotation v21; // [esp+40h] [ebp-18h] BYREF
+	Vector3 a; // [esp+4Ch] [ebp-Ch] BYREF
+
+	v1 = a1;
+	v2 = a1->Data1.Entity;
+	a3.x = 0;
+	a3.y = 0;
+	a3.z = 0;
+	vs.x = 0.0;
+	vs.y = 0.0;
+	vs.z = 0.0;
+
+	if (!ClipObject(a1, 2890000.0))
+	{
+		switch ((char)v2->Action)
+		{
+		case 0:
+			for (i = 0; i < (int)((unsigned __int64)v2->Scale.x + 1); i++)
+			{
+				v3 = (double)i;
+				if (i % 2)
+				{
+					v4 = ceil(v3 * 0.5) * v2->Scale.y;
+				}
+				else
+				{
+					v4 = v3 * v2->Scale.y * -0.5;
+				}
+				vs.z = v4;
+				njPushMatrix(_nj_unit_matrix_);
+				njTranslateV(0, &v2->Position);
+				v5 = v2->Rotation.z;
+				if (v5)
+				{
+					njRotateZ(0, (unsigned __int16)v5);
+				}
+				v6 = v2->Rotation.x;
+				if (v6)
+				{
+					njRotateX(0, (unsigned __int16)v6);
+				}
+				v7 = v2->Rotation.y;
+				if (v7)
+				{
+					njRotateY(0, (unsigned __int16)v7);
+				}
+				njCalcVector(0, &vs, &a2, true);
+				njAddVector(&a2, &v2->Position);
+				njPopMatrixEx();
+				a3.y = (unsigned __int64)(v2->Scale.z * 65536.0 * 0.002777777777777778);
+
+
+				v8 = LoadChildObject(
+					(LoadObj)2,
+					(void(__cdecl*)(ObjectMaster*))a1->field_4C,
+					v1);
+				if (v8)
+				{
+					v8->Data1.Entity->Position = a2;
+					v9 = a3.y;
+					v8->Data1.Entity->Rotation.x = 0;
+					v8->Data1.Entity->Rotation.y = v9;
+					v8->Data1.Entity->Rotation.z = 0;
+				}
+
+			}
+
+			v2->Action = 1;
+
+
+			break;
+		case 1:
+
+			v10 = a1->Child;
+			if (v10)
+			{
+				while (v10->MainSub != DeleteObject_)
+				{
+					v10 = v10->NextObject;
+
+				}
+				v2->Action = 3;
+			}
+
+			break;
+		case 3:
+			a1->MainSub = DeleteObject_;
+			break;
+
+		default:
+			return;
+		}
+	}
+}
+
+void __cdecl MainSubGlobalCol(ObjectMaster* obj)
+{
+	EntityData1* v1; // edi
+
+	v1 = obj->Data1.Entity;
+	if (!ClipSetObject(obj))
+	{
+		AddToCollisionList(obj);
+		v1->Status &= 0xFFC7u;
+	}
+}
+
+void __cdecl OFence(ObjectMaster* obj)
+{
+
+	EntityData1* v1 = obj->Data1.Entity;
+	InitCollision(obj, &Col_Fence, 1, 4u);
+	obj->field_4C = SH_GFF->getmodel();
+	obj->MainSub = MainSubGlobalCol;
+	obj->DisplaySub = GenericSHDisplay;
+}
+
+void Load_GFF(ObjectMaster* tp)
+{
+	EntityData1* v1 = tp->Data1.Entity;
+	if (v1->Action == 0) {
+		tp->MainSub = SHGFF_Main;
+		tp->field_1C = OFence;
+	}
+}
+
 void JammerChangeTex(ObjectMaster* obj)
 {
 	char v1; // cl
@@ -180,12 +367,12 @@ void __cdecl OJamerDisplay(ObjectMaster* a2)
 	v2 = v1->Rotation.z;
 	if (v2)
 	{
-		njRotateX(0, (unsigned __int16)v2);
+		njRotateZ(0, (unsigned __int16)v2);
 	}
 	v3 = v1->Rotation.x;
 	if (v3)
 	{
-		njRotateZ(0, (unsigned __int16)v3);
+		njRotateX(0, (unsigned __int16)v3);
 	}
 	v4 = v1->Rotation.y;
 	if (v4)
@@ -412,39 +599,6 @@ void __cdecl OHwBell(ObjectMaster* obj)
 	obj->DeleteSub = j_DeleteChildObjects;
 }
 
-void __cdecl O_HANAB_Main(ObjectMaster* a1)
-{
-	EntityData1* v1; // esi
-	Angle rotZ; // eax
-	Angle rotX; // eax
-	Angle rotY; // eax
-
-	v1 = a1->Data1.Entity;
-	if (!ClipSetObject(a1))
-	{
-
-		njSetTexture(&highwayObj_TEXLIST);
-		njPushMatrixEx();
-		njTranslateV(0, &v1->Position);
-		rotZ = v1->Rotation.z;
-		if (rotZ)
-		{
-			njRotateZ(0, (unsigned __int16)rotZ);
-		}
-		rotX = v1->Rotation.x;
-		if (rotX)
-		{
-			njRotateX(0, (unsigned __int16)rotX);
-		}
-		rotY = v1->Rotation.y;
-		if (rotY)
-		{
-			njRotateY(0, (unsigned __int16)rotY);
-		}
-		DrawObject((NJS_OBJECT*)a1->field_4C);
-		njPopMatrixEx();
-	}
-}
 
 void Lamp_Main(ObjectMaster* a1) {
 
@@ -456,7 +610,7 @@ void Lamp_Main(ObjectMaster* a1) {
 void __cdecl LoadLamp01(ObjectMaster* a1)
 {
 	a1->MainSub = Lamp_Main;
-	a1->DisplaySub = O_HANAB_Main;
+	a1->DisplaySub = GenericSHDisplay;
 }
 
 void InitLamp01(ObjectMaster* obj) {
@@ -500,7 +654,7 @@ static void __cdecl Robots(ObjectMaster* a1)
 	entity->Rotation.x = 0x1;
 	entity->Rotation.z = 0x100;
 	entity->Scale = { 0, 1, 126 };
-	entity->Position.y -= 7;
+	entity->Position.y -= 6.5;
 	a1->MainSub = (ObjectFuncPtr)E_AI;
 }
 
@@ -773,7 +927,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B30, "O GCURB" } /* "O GCURB" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B60, "O GFENCE02" } /* "O GFENCE02" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B90, "O GPINPIN" } /* "O GPINPIN" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614BC0, "O GFF" } /* "O GFF" */,
+	{ (LoadObj)2, 3, 0, 0, Load_GFF, } /* "O GFF" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614BF0, "O GRAFTA" } /* "O GRAFTA" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614C20, "O GRAFTC" } /* "O GRAFTC" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614C50, "O GGRENA" } /* "O GGRENA" */,
