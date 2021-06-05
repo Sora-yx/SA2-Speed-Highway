@@ -152,5 +152,8 @@
     <ClCompile Include="deathzones.cpp">
       <Filter>Source Files\Level</Filter>
     </ClCompile>
+    <ClCompile Include="sh-turnasi.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

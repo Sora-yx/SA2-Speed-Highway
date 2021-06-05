@@ -76,9 +76,9 @@ static void CalcRingPosCircle(EntityData1* data, NJS_VECTOR* pos, int index)
 
 	njPushUnitMatrix();
 	njTranslateV(0, &data->Position);
-	njRotateZ_(_nj_current_matrix_ptr_, data->Rotation.z);
-	njRotateX_(_nj_current_matrix_ptr_, data->Rotation.x);
-	njRotateY_(_nj_current_matrix_ptr_, data->Rotation.y);
+	njRotateZ(_nj_current_matrix_ptr_, data->Rotation.z);
+	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njCalcPoint(&offset, pos, _nj_current_matrix_ptr_);
 	njAddVector(pos, &data->Position);
 	njPopMatrixEx();
@@ -90,9 +90,9 @@ static void CalcRingPosLine(EntityData1* data, NJS_VECTOR* pos, int index)
 	
 	njPushUnitMatrix();
 	njTranslateV(0, &data->Position);
-	njRotateZ_(_nj_current_matrix_ptr_, data->Rotation.z);
-	njRotateX_(_nj_current_matrix_ptr_, data->Rotation.x);
-	njRotateY_(_nj_current_matrix_ptr_, data->Rotation.y);
+	njRotateZ(_nj_current_matrix_ptr_, data->Rotation.z);
+	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
+	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
 	njCalcPoint(&offset, pos, _nj_current_matrix_ptr_);
 	njAddVector(pos, &data->Position);
 	njPopMatrixEx();
@@ -105,7 +105,7 @@ static void __cdecl RingGroup_Main(ObjectMaster* obj)
 		// No rings anymore, delete permanently
 		if (obj->Child == nullptr)
 		{
-			UpdateSetDateAndDelete(obj);
+			UpdateSetDataAndDelete(obj);
 			return;
 		}
 

@@ -25,7 +25,7 @@ void njAddVector(NJS_VECTOR* vd, NJS_VECTOR* vs)
 
 void njRotateZXY(Rotation* rot)
 {
-	njRotateZ_(CURRENT_MATRIX, rot->z);
+	njRotateZ(CURRENT_MATRIX, rot->z);
 	njRotateX(CURRENT_MATRIX, rot->x);
 	njRotateY(CURRENT_MATRIX, rot->y);
 }
@@ -34,7 +34,7 @@ void njRotateXYZ(Rotation* rot)
 {
 	njRotateX(CURRENT_MATRIX, rot->x);
 	njRotateY(CURRENT_MATRIX, rot->y);
-	njRotateZ_(CURRENT_MATRIX, rot->z);
+	njRotateZ(CURRENT_MATRIX, rot->z);
 }
 
 void njTranslateX(float x)
@@ -97,4 +97,70 @@ int BAMS_SubWrap(__int16 bams_a, unsigned __int16 bams_b, int limit)
 		}
 	}
 	return result;
+}
+
+
+static const void* const PConvertVP2GPtr = (void*)0x468E70;
+static inline void PConvertVector_P2GASM(EntityData1* a1, NJS_VECTOR* a2)
+{
+	__asm
+	{
+		mov esi, [a2]
+		mov edi, [a1] // a1
+		call PConvertVP2GPtr
+	}
+}
+
+void PConvertVector_P2G(EntityData1* a1, NJS_VECTOR* a2) {
+	return PConvertVector_P2GASM(a1, a2);
+}
+
+static const void* const PConvertVPtr = (void*)0x468DF0;
+static inline void PConvertVector_G2PASM(EntityData1* a1, NJS_VECTOR* a2)
+{
+	__asm
+	{
+		mov esi, [a2]
+		mov edi, [a1]
+		call PConvertVPtr
+	}
+}
+
+void PConvertVector_G2P(EntityData1* a1, NJS_VECTOR* a2) {
+	return PConvertVector_G2PASM(a1, a2);
+}
+
+void __fastcall njCalcPointSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* vs, NJS_VECTOR* vd)
+{
+	const float* _m; // eax
+	double z; // st5
+	double y; // st6
+	double x; // st7
+
+	x = vs->x;
+	_m = m;
+	y = vs->y;
+	z = vs->z;
+	if (!m)
+	{
+		_m = _nj_current_matrix_ptr_;
+	}
+	vd->x = z * _m[M20] + y * _m[M10] + x * *_m + _m[M30];
+	vd->y = z * _m[M21] + y * _m[M11] + x * _m[M01] + _m[M31];
+	vd->z = z * _m[M22] + y * _m[M12] + x * _m[M02] + _m[M32];
+}
+
+void njTranslateSADX(NJS_MATRIX_PTR m, Float x, Float y, Float z)
+{
+	NJS_MATRIX_PTR v4; // eax
+
+	v4 = m;
+	if (!m)
+	{
+		v4 = _nj_current_matrix_ptr_;
+	}
+	v4[12] = y * v4[4] + z * v4[8] + x * *v4 + v4[12];
+	v4[13] = x * v4[1] + y * v4[5] + z * v4[9] + v4[13];
+	v4[14] = x * v4[2] + y * v4[6] + z * v4[10] + v4[14];
+	v4[15] = x * v4[3] + y * v4[7] + z * v4[11] + v4[15];
 }

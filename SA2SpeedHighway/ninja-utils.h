@@ -23,3 +23,7 @@ void njTranslateZ(float Z);
 int AdjustAngle(int ang0, int ang1, int dang);
 int SubAngle(int ang0, int ang1);
 int BAMS_SubWrap(__int16 bams_a, unsigned __int16 bams_b, int limit);
+void PConvertVector_G2P(EntityData1* a1, NJS_VECTOR* a2);
+void PConvertVector_P2G(EntityData1* a1, NJS_VECTOR* a2);
+void __fastcall njCalcPointSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* vs, NJS_VECTOR* vd);
+void njTranslateSADX(NJS_MATRIX_PTR m, Float x, Float y, Float z);

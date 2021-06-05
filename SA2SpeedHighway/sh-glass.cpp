@@ -165,7 +165,7 @@ void __cdecl BreakGlass(ObjectMaster* a1, signed int timer)
 	if (v10 == 2 || (AddToCollisionList(a1), (unsigned __int16)v3->field_6 > timer))
 	{
 		PlaySoundProbably(3, 0, 0, 0);
-		UpdateSetDateAndDelete(a1);
+		UpdateSetDataAndDelete(a1);
 	}
 }
 
@@ -261,7 +261,7 @@ void __cdecl OGlass2(ObjectMaster* obj)
 		switch (v1->Action)
 		{
 		case 0:
-			obj->field_1C = SH_GlassDisplay;
+			obj->DisplaySub_Delayed1 = SH_GlassDisplay;
 			InitCollision(obj, &Col_Glass2, 1, 4u);
 			v1->Collision->Range = 200.0;
 		
@@ -287,7 +287,7 @@ void __cdecl OGlass2(ObjectMaster* obj)
 			BreakGlass(obj, 1);
 			return;
 		case 3:
-			UpdateSetDateAndDelete(obj);
+			UpdateSetDataAndDelete(obj);
 			goto LABEL_11;
 		default:
 		LABEL_11:

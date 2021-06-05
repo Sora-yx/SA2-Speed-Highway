@@ -25,24 +25,6 @@ signed int Sonic_CheckJump(EntityData1* data, CharObj2Base* a2, SonicCharObj2* a
     return Sonic_CheckJumpASM(data, a2, a3);
 }
 
-
-
-static const void* const PConvertVP2GPtr = (void*)0x468E70;
-static inline void PConvertVector_P2GASM(EntityData1* a1, NJS_VECTOR* a2)
-{
-    __asm
-    {
-        mov esi, [a2]
-        mov edi, [a1] // a1
-        call PConvertVP2GPtr
-    }
-}
-
-void PConvertVector_P2G(EntityData1* a1, NJS_VECTOR* a2) {
-    return PConvertVector_P2GASM(a1, a2);
-}
-
-
 static const void* const PGetAccelAirPtr = (void*)0x45D770;
 static inline void PlayerGetAccelerationAirASM(EntityData1* a1, CharObj2Base* co2, EntityData2* data2)
 {
@@ -137,21 +119,6 @@ static inline void PResetPositionASM(EntityData1* a1, EntityData2* a2, CharObj2B
 
 void PlayerResetPosition(EntityData1* a1, EntityData2* a2, CharObj2Base* a3) {
     PResetPositionASM(a1, a2, a3);
-}
-
-static const void* const PConvertVPtr = (void*)0x468DF0;
-static inline void PConvertVector_G2PASM(EntityData1* a1, NJS_VECTOR* a2)
-{
-    __asm
-    {
-        mov esi, [a2]
-        mov edi, [a1]
-        call PConvertVPtr
-    }
-}
-
-void PConvertVector_G2P(EntityData1* a1, NJS_VECTOR* a2) {
-    return PConvertVector_G2PASM(a1, a2);
 }
 
 

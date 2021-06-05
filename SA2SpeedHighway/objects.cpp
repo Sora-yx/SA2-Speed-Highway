@@ -41,6 +41,7 @@ void LoadModelsSH()
 	LoadCraneModels();
 	LoadSHGlass();
 	LoadLampModel();
+	LoadModel_TurnAsi();
 
 	SH_Cone[0] = LoadMDL("cone_cone1", ModelFormat_Chunk);
 	SH_Cone[1] = LoadMDL("cone_cone2", ModelFormat_Chunk);
@@ -160,7 +161,8 @@ void __cdecl SHGFF_Main(ObjectMaster* a1)
 				{
 					njRotateY(0, (unsigned __int16)v7);
 				}
-				njCalcVector(0, &vs, &a2, true);
+				//njCalcVector(0, &vs, &a2, true);
+				njCalcPoint(&vs, &a2, 0);
 				njAddVector(&a2, &v2->Position);
 				njPopMatrixEx();
 				a3.y = (unsigned __int64)(v2->Scale.z * 65536.0 * 0.002777777777777778);
@@ -225,7 +227,7 @@ void Load_GFF(ObjectMaster* tp)
 	EntityData1* v1 = tp->Data1.Entity;
 	if (v1->Action == 0) {
 		tp->MainSub = SHGFF_Main;
-		tp->field_1C = OFence;
+		tp->DisplaySub_Delayed1 = OFence;
 	}
 }
 
@@ -297,7 +299,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)6 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E60, "HIGH RAFT C" } /* "HIGH RAFT C" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x61A330, "O TANKA" } /* "O TANKA" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x619960, "O SIGNB" } /* "O SIGNB" */,
-	{ (LoadObj)6 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x619340, "O TurnAsi" } /* "O TurnAsi" */,
+	{ (LoadObj)6, 3, 1, 1000000, LoadTurnAsi } /* "O TurnAsi" */,
 	{ (LoadObj)2, 3, 1, 25000000, SHSLIGHT, }, /* "O SLIGHT" */
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6188E0, "O ARCADE01" } /* "O ARCADE01" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6188F0, "O ARCADE02" } /* "O ARCADE02" */,

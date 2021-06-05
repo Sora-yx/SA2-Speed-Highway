@@ -29,6 +29,76 @@ void KillPlayerFall(int a1) {
 	return BGCheckAndKillPlayerASM(a1);
 }
 
+void __cdecl EnemyBounceThing(unsigned __int8 playerID, float speedX, float speedY, float speedZ)
+{
+	int index; // eax
+	EntityData2_R* v5; // ecx
+	EntityData1* data1; // edx
+	CharObj2Base* data2; // esi
+	NJS_VECTOR newSpeed; // [esp+4h] [ebp-Ch] BYREF
+
+	index = playerID;
+	v5 = (EntityData2_R*)MainCharData2[index];
+	data1 = MainCharObj1[index];
+	data2 = MainCharObj2[index];
+	if (v5)
+	{
+		if (data2)
+		{
+			if (data1)
+			{
+				v5->spd.x = speedX;
+				v5->spd.y = speedY;
+				v5->spd.z = speedZ;
+
+				newSpeed.y = speedY;
+				newSpeed.x = speedX;
+				newSpeed.z = speedZ;
+
+				PConvertVector_G2P(data1, &newSpeed);
+
+				if (newSpeed.x <= 0.001 && newSpeed.x >= -0.001)
+				{
+					newSpeed.x = 0.0;
+				}
+				if (newSpeed.z <= 0.001 && newSpeed.z >= -0.001)
+				{
+					newSpeed.z = 0.0;
+				}
+				data2->Speed = newSpeed;
+			}
+		}
+	}
+}
+
+void __cdecl dothedash(unsigned __int8 playerID, NJS_VECTOR* _speed, Rotation* angle, __int16 disableTime)
+{
+	int index; // eax
+	EntityData1* data1; // ecx
+	EntityData2_R* data2; // esi
+	CharObj2Base* co2; // eax
+	Angle wtf_y; // ebx
+	float wtf_z; // edx
+	NJS_VECTOR result; // [esp+Ch] [ebp-Ch] BYREF
+
+	index = playerID;
+	data1 = MainCharObj1[index];
+	data2 = (EntityData2_R*)MainCharData2[index];
+	co2 = MainCharObj2[index];
+	co2->field_12 = disableTime;
+	co2->Speed = *_speed;
+	data1->Rotation.x = angle->x;
+	wtf_y = angle->y;
+	data1->Rotation.y = 0x4000 - wtf_y;
+	data2->ang_aim.y = 0x4000 - wtf_y;
+	data1->Rotation.z = angle->z;
+	result.x = _speed->x;
+	wtf_z = _speed->z;
+	result.y = _speed->y;
+	result.z = wtf_z;
+	PConvertVector_P2G(data1, &result);
+	data2->spd = result;
+}
 
 
 signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2)
@@ -231,7 +301,7 @@ static void FixLand(LandTable* land)
 		COL* col = &land->COLList[i];
 
 		col->field_14 = 0;
-		col->field_18 = 0;
+		col->Chunks = 0;
 
 		if (col->Flags == 0x2)
 		{
@@ -446,3 +516,24 @@ void __cdecl MainSubGlobalCol(ObjectMaster* obj)
 		v1->Status &= 0xFFC7u;
 	}
 }
+
+void __cdecl DeleteObjAndResetSet(ObjectMaster* a1)
+{
+	a1->SETData->Flags &= 0x7FFFu;
+	a1->SETData->Flags &= 0xFFFEu;
+	a1->MainSub = DeleteObject_;
+}
+
+void DoNextAction_r(int playerNum, char action, int unknown)
+{
+	EntityData1* v3; // eax
+
+	v3 = MainCharObj1[playerNum];
+	if (v3)
+	{
+		v3->Status |= Status_DoNextAction;
+		v3->NextAction = action;
+		MainCharObj2[playerNum]->field_28 = unknown;
+	}
+}
+

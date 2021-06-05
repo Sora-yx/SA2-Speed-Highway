@@ -192,6 +192,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 			//DoSoundQueueThing(103);
 			//PlaySound(104, 0, 0, 0);
 		}
+
 		v6 = njSin(data->Rotation.y);
 		v3->field_14 = 0.25;
 		*(float*)&v3->field_10 = v6 * 1.225;

@@ -50,7 +50,8 @@ extern "C"
 			return;
 
 		if (Controllers[0].press & Buttons_Y) {
-			MainCharObj1[0]->Position = { 4095.762207, -1500, 4599.47998 };
+			MainCharObj1[0]->Position = { 5512.210938, -1778, 1215 };
+			//MainCharObj1[0]->Position = { 4095.762207, -1500, 4599.47998 };
 		}
 
 		FixCam();

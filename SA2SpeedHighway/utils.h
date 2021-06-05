@@ -25,3 +25,7 @@ void DynCol_AddFromObject(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECTOR* pos
 void __cdecl MainSubGlobalCol(ObjectMaster* obj);
 void __cdecl MainSubGlobalDynCol(ObjectMaster* obj);
 void KillPlayerFall(int a1);
+void __cdecl dothedash(unsigned __int8 playerID, NJS_VECTOR* _speed, Rotation* angle, __int16 disableTime);
+void __cdecl EnemyBounceThing(unsigned __int8 playerID, float speedX, float speedY, float speedZ);
+void __cdecl DeleteObjAndResetSet(ObjectMaster* a1);
+void DoNextAction_r(int playerNum, char action, int unknown);

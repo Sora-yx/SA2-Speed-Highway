@@ -45,7 +45,7 @@ void __cdecl Cone_Main(ObjectMaster* a1)
 	{
 		if (v2->Scale.y != 0.0 || v2->Scale.x != 0.0)
 		{
-			UpdateSetDateAndDelete(v1);
+			UpdateSetDataAndDelete(v1);
 		}
 	}
 	else

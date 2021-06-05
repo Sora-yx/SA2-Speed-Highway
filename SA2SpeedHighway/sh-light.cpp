@@ -15,7 +15,7 @@ void SHSlight_DisplayLight(ObjectMaster* obj)
 	njTranslateEx(&data->Position);
 	njRotateY(CURRENT_MATRIX, data->Rotation.y);
 	njTranslateEx((NJS_VECTOR*)&SH_SLight->getmodel()->child->pos);
-	njRotateZ_(CURRENT_MATRIX, static_cast<Angle>(njSin((static_cast<float>(FrameCountIngame) * 65536.0f * 0.00278f)) * 23.0f * 65536.0f * 0.002777777777777778f));
+	njRotateZ(CURRENT_MATRIX, static_cast<Angle>(njSin((static_cast<float>(FrameCountIngame) * 65536.0f * 0.00278f)) * 23.0f * 65536.0f * 0.002777777777777778f));
 	njRotateY(CURRENT_MATRIX, data->Rotation.y);
 	njTranslateEx((NJS_VECTOR*)&SH_SLight->getmodel()->child->child->pos);
 	DrawChunkModel(SH_SLight->getmodel()->child->child->chunkmodel);
@@ -32,7 +32,7 @@ void SHSlight_Display(ObjectMaster* obj)
 	njRotateY(CURRENT_MATRIX, data->Rotation.y);
 	DrawChunkModel(SH_SLight->getmodel()->chunkmodel);
 	njTranslateEx((NJS_VECTOR*)&SH_SLight->getmodel()->child->pos);
-	njRotateZ_(CURRENT_MATRIX, static_cast<Angle>(njSin((static_cast<float>(FrameCountIngame) * 65536.0f * 0.00278f)) * 23.0f * 65536.0f * 0.002777777777777778f));
+	njRotateZ(CURRENT_MATRIX, static_cast<Angle>(njSin((static_cast<float>(FrameCountIngame) * 65536.0f * 0.00278f)) * 23.0f * 65536.0f * 0.002777777777777778f));
 	njRotateY(CURRENT_MATRIX, data->Rotation.y);
 	DrawChunkModel(SH_SLight->getmodel()->child->chunkmodel);
 	njPopMatrixEx();
@@ -57,6 +57,6 @@ void __cdecl SHSLIGHT(ObjectMaster* obj)
 	data->Collision->Range = 25.0f;
 
 	obj->DisplaySub = SHSlight_Display;
-	obj->SomethingSub = SHSlight_DisplayLight;
+	obj->DisplaySub_Delayed3 = SHSlight_DisplayLight;
 	obj->MainSub = SHSlight_Main;
 }
