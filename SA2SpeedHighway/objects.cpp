@@ -55,6 +55,7 @@ void LoadModelsSH()
 	SH_OOStp4T = LoadMDL("SH-OOstp4T", ModelFormat_Chunk);
 	SH_OOStp4SCol = LoadMDL("SH-OOstp4SCol", ModelFormat_Basic);
 	SH_OOStp4TCol = LoadMDL("SH-OOstpTCol", ModelFormat_Basic);
+
 }
 
 void FreeModelsSH()

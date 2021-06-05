@@ -23,7 +23,7 @@ void SetSonicRunningOnBulding(ObjectMaster* a1)
 				v3 = v1->field_6;
 				v1->field_6 = v3 + 1;
 
-				if (++v1->field_2 < 100)
+				if (++v1->field_2 < 40)
 					return;
 
 				if (v2->Position.y <= 25.0)

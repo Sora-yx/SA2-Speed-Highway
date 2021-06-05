@@ -147,11 +147,11 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 				data->Action = 2;
 			}
 		}
-
 		break;
 	}
 
 }
+
 
 void LoadSHAct(int act)
 {
@@ -162,7 +162,6 @@ void LoadSHAct(int act)
 	StopMusic();
 	DeleteSetHandler();
 	DeleteSETObjects();
-
 	CurrentAct = act;
 
 	switch (act)
@@ -200,7 +199,7 @@ static void __cdecl SpeedHighway_Free()
 
 	FreeModelBG_SH();
 	FreeModelsSH();
-
+	DeleteDeathZones();
 	DropRingsFunc_ptr = nullptr;
 	DisplayItemBoxItemFunc_ptr = nullptr;
 
@@ -243,6 +242,7 @@ static void __cdecl SpeedHighway_Init()
 		CurrentAct = 0;
 	}
 
+	LoadSH_DeathZonesModel();
 	LoadModelBG_SH();
 	LoadModelsSH();
 	LoadTexPacks((TexPackInfo*)0x109E810, (NJS_TEXLIST***)0x109E748);

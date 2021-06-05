@@ -179,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="act.cpp" />
+    <ClCompile Include="deathzones.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="level.cpp" />
     <ClCompile Include="ninja-utils.cpp" />
