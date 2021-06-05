@@ -26,7 +26,7 @@ static ModelInfo* SH_OOStp4TCol;
 
 CollisionData Col_Fence = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.25, 0.0}, 13.0, 4.25, 2.75, 0.0, 0, 0, 0 };
 
-CollisionData Col_Og[] = { 
+CollisionData Col_Og[] = {
 	{ 0, (CollisionShapes)0x1, 0x77, 0, 0, {34.0, 25.0, 0.0}, 2.5, 27.0, 0.0, 0.0, 0, 0, 0 },
 	{ 0, (CollisionShapes)0x1, 0x77, 0, 0, {-34.0, 25.0, 0.0}, 2.5, 27.0, 0.0, 0.0, 0, 0, 0 },
 	{ 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 50.0, 0.0}, 35.0, 10.0, 2.0, 0.0, 0, 0, 0 },
@@ -73,12 +73,12 @@ void FreeModelsSH()
 	for (uint8_t i = 0; i < 2; i++) {
 		FreeMDL(SH_Cone[i]);
 		FreeMDL(SH_Bell[i]);
-		}
+	}
 
-		FreeMDL(SH_SLight);
-		FreeMDL(SH_GFF);
-		FreeMDL(SH_Ogg);
-	
+	FreeMDL(SH_SLight);
+	FreeMDL(SH_GFF);
+	FreeMDL(SH_Ogg);
+
 }
 
 void __cdecl GenericSHDisplay(ObjectMaster* obj)
@@ -91,6 +91,24 @@ void __cdecl GenericSHDisplay(ObjectMaster* obj)
 	njRotateZXY(&data->Rotation);
 	DrawObject((NJS_OBJECT*)obj->field_4C);
 	njPopMatrixEx();
+}
+
+
+
+void __cdecl OFence(ObjectMaster* obj)
+{
+	EntityData1* v1 = obj->Data1.Entity;
+	InitCollision(obj, &Col_Fence, 1, 4u);
+	obj->field_4C = SH_GFF->getmodel();
+	obj->MainSub = MainSubGlobalCol;
+	obj->DisplaySub = GenericSHDisplay;
+}
+
+void __fastcall njAddVectorSADX(NJS_VECTOR* vd, const NJS_VECTOR* vs)
+{
+	vd->x = vd->x + vs->x;
+	vd->y = vs->y + vd->y;
+	vd->z = vs->z + vd->z;
 }
 
 void __cdecl SHGFF_Main(ObjectMaster* a1)
@@ -132,7 +150,7 @@ void __cdecl SHGFF_Main(ObjectMaster* a1)
 		switch ((char)v2->Action)
 		{
 		case 0:
-			for (i = 0; i < (int)((unsigned __int64)v2->Scale.x + 1); i++)
+			for (i = 0; i < (int)((unsigned __int64)v2->Scale.x + 1); ++i)
 			{
 				v3 = (double)i;
 				if (i % 2)
@@ -145,7 +163,7 @@ void __cdecl SHGFF_Main(ObjectMaster* a1)
 				}
 				vs.z = v4;
 				njPushMatrix(_nj_unit_matrix_);
-				njTranslateV(0, &v2->Position);
+				njTranslateVSADX(0, &v2->Position);
 				v5 = v2->Rotation.z;
 				if (v5)
 				{
@@ -161,17 +179,13 @@ void __cdecl SHGFF_Main(ObjectMaster* a1)
 				{
 					njRotateY(0, (unsigned __int16)v7);
 				}
-				//njCalcVector(0, &vs, &a2, true);
-				njCalcPoint(&vs, &a2, 0);
-				njAddVector(&a2, &v2->Position);
+				njCalcVectorSADX(0, &vs, &a2);
+				njAddVectorSADX(&a2, &v2->Position);
 				njPopMatrixEx();
 				a3.y = (unsigned __int64)(v2->Scale.z * 65536.0 * 0.002777777777777778);
 
 
-				v8 = LoadChildObject(
-					(LoadObj)2,
-					(void(__cdecl*)(ObjectMaster*))a1->field_4C,
-					v1);
+				v8 = LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1), OFence, a1);
 				if (v8)
 				{
 					v8->Data1.Entity->Position = a2;
@@ -184,27 +198,26 @@ void __cdecl SHGFF_Main(ObjectMaster* a1)
 			}
 
 			v2->Action = 1;
-
-
 			break;
 		case 1:
 
 			v10 = a1->Child;
 			if (v10)
 			{
-				while (v10->MainSub != DeleteObject_)
-				{
-					v10 = v10->NextObject;
+				if (v10->MainSub != DeleteObject_) {
 
+					return;
 				}
-				v2->Action = 3;
+				else {
+					break;
+				}
 			}
 
+			v2->Action = 3;
 			break;
 		case 3:
 			a1->MainSub = DeleteObject_;
 			break;
-
 		default:
 			return;
 		}
@@ -213,22 +226,11 @@ void __cdecl SHGFF_Main(ObjectMaster* a1)
 
 
 
-void __cdecl OFence(ObjectMaster* obj)
-{
-	EntityData1* v1 = obj->Data1.Entity;
-	InitCollision(obj, &Col_Fence, 1, 4u);
-	obj->field_4C = SH_GFF->getmodel();
-	obj->MainSub = MainSubGlobalCol;
-	obj->DisplaySub = GenericSHDisplay;
-}
-
 void Load_GFF(ObjectMaster* tp)
 {
 	EntityData1* v1 = tp->Data1.Entity;
-	if (v1->Action == 0) {
-		tp->MainSub = SHGFF_Main;
-		tp->DisplaySub_Delayed1 = OFence;
-	}
+	tp->MainSub = SHGFF_Main;
+
 }
 
 void LoadOGG(ObjectMaster* obj) {

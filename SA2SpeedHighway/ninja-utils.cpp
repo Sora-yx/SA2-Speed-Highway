@@ -164,3 +164,51 @@ void njTranslateSADX(NJS_MATRIX_PTR m, Float x, Float y, Float z)
 	v4[14] = x * v4[2] + y * v4[6] + z * v4[10] + v4[14];
 	v4[15] = x * v4[3] + y * v4[7] + z * v4[11] + v4[15];
 }
+
+void __fastcall njTranslateVSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* v)
+{
+	double x; // st7
+	NJS_MATRIX_PTR _m; // eax
+	double y; // st6
+	double z; // st5
+
+	x = v->x;
+	_m = m;
+	y = v->y;
+	z = v->z;
+	if (!m)
+	{
+		_m = _nj_current_matrix_ptr_;
+	}
+	_m[M30] = z * _m[M20] + y * _m[M10] + x * *_m + _m[M30];
+	_m[M31] = z * _m[M21] + y * _m[M11] + x * _m[M01] + _m[M31];
+	_m[M32] = z * _m[M22] + y * _m[M12] + x * _m[M02] + _m[M32];
+	_m[M33] = z * _m[M23] + y * _m[M13] + x * _m[M03] + _m[M33];
+}
+
+void __fastcall njCalcVectorSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* vs, NJS_VECTOR* vd)
+{
+	double vsx; // st7
+	NJS_MATRIX_PTR _m; // eax
+	double vsy; // st6
+	double vsz; // st5
+	double length; // st7
+	float magnitude; // [esp+0h] [ebp-10h]
+	float vdy; // [esp+8h] [ebp-8h]
+	float vdz; // [esp+Ch] [ebp-4h]
+	float vdx; // [esp+14h] [ebp+4h]
+
+	vsx = vs->x;
+	_m = m;
+	vsy = vs->y;
+	vsz = vs->z;
+	if (!m)
+	{
+		_m = _nj_current_matrix_ptr_;
+	}
+	vd->x = vsz * _m[M20] + vsy * _m[M10] + vsx * *_m;
+	vd->y = vsz * _m[M21] + vsy * _m[M11] + vsx * _m[M01];
+	vd->z = vsz * _m[M22] + vsy * _m[M12] + vsx * _m[M02];
+
+
+}
