@@ -210,5 +210,12 @@ void __fastcall njCalcVectorSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* vs, NJS_VEC
 	vd->y = vsz * _m[M21] + vsy * _m[M11] + vsx * _m[M01];
 	vd->z = vsz * _m[M22] + vsy * _m[M12] + vsx * _m[M02];
 
+}
 
+
+void __fastcall njAddVectorSADX(NJS_VECTOR* vd, const NJS_VECTOR* vs)
+{
+	vd->x = vd->x + vs->x;
+	vd->y = vs->y + vd->y;
+	vd->z = vs->z + vd->z;
 }

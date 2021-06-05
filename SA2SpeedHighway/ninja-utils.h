@@ -29,3 +29,4 @@ void __fastcall njCalcPointSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* vs, NJS_VECT
 void njTranslateSADX(NJS_MATRIX_PTR m, Float x, Float y, Float z);
 void __fastcall njTranslateVSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* v);
 void __fastcall njCalcVectorSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* vs, NJS_VECTOR* vd);
+void __fastcall njAddVectorSADX(NJS_VECTOR* vd, const NJS_VECTOR* vs);
