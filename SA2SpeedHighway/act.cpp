@@ -15,12 +15,16 @@ void SetSonicRunningOnBulding(ObjectMaster* a1)
 		return;
 
 	if (a1->Data1.Entity->Action < 3) {
+
 		for (int i = 0; i < MAXPLAYERS; i++) {
 			v2 = MainCharObj1[i];
 			if (v2)
 			{
 				v3 = v1->field_6;
 				v1->field_6 = v3 + 1;
+
+				if (++v1->field_2 < 100)
+					return;
 
 				if (v2->Position.y <= 25.0)
 				{

@@ -132,7 +132,25 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 		obj->DisplaySub = SpeedHighway_Display;
 		data->Action = 1;
 		break;
+	case 1:
+		if (CurrentAct == 0) {
+			if (MainCharObj1[0]->Position.y < -3176)
+			{
+				KillPlayerFall(0);
+				data->Action = 2;
+			}
+		}
+		else if (CurrentAct == 2) {
+			if (MainCharObj1[0]->Position.y < -100)
+			{
+				KillPlayerFall(0);
+				data->Action = 2;
+			}
+		}
+
+		break;
 	}
+
 }
 
 void LoadSHAct(int act)
@@ -216,7 +234,7 @@ static void __cdecl SpeedHighway_Init()
 	dword_1DE468C = (void*)0x6BC4A0;
 
 	// Get starting act
-	if (CurrentCharacter == Characters_Knuckles || CurrentCharacter == Characters_Tikal || CurrentCharacter == Characters_Rouge)
+	if (CurrentCharacter == Characters_Knuckles || CurrentCharacter == Characters_Rouge)
 	{
 		CurrentAct = 2;
 	}

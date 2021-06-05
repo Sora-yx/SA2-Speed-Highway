@@ -24,3 +24,4 @@ void ObjectSetupInput(EntityData1* twp, EntityData2* mwp);
 void DynCol_AddFromObject(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECTOR* position, Angle rotY, int flags);
 void __cdecl MainSubGlobalCol(ObjectMaster* obj);
 void __cdecl MainSubGlobalDynCol(ObjectMaster* obj);
+void KillPlayerFall(int a1);

@@ -26,24 +26,54 @@ void FreeCraneModels()
 	FreeMDL(SH_RailCol);
 }
 
-bool sub_61B060(ObjectMaster* a1)
-{
-	/*EntityData1* v1; // esi
-	Vector3 a2; // [esp+4h] [ebp-18h] BYREF
-	Vector3 a3; // [esp+10h] [ebp-Ch] BYREF
-
-	v1 = a1->Data1.Entity;
-	a2.x = MainCharObj1[0]->Position.x - v1->Position.x;
-	a2.y = MainCharObj1[0]->Position.y - v1->Position.y - 20.0;
-	a2.z = MainCharObj1[0]->Position.z - v1->Position.z;
-	njPushMatrix(_nj_unit_matrix_);
-	if (v1->Rotation.y != 0x10000)
+void CheckCraneColli(EntityData1* data) {
+	if (IsPlayerInsideSphere(&data->Position, 570.0f))
 	{
-		njRotateY(0, (unsigned __int16)-LOWORD(v1->Rotation.y));
+		data->Status |= 0x100u;
 	}
-	//njCalcVector(0, &a2, &a3, false);
-	njPopMatrixEx();
-	return (MainCharObj1[0]->Status & 1) != 0 && fabs(a3.x) < 20.0 && fabs(a3.y) < 10.0 && fabs(a3.z) < 20.0;*/
+	else
+	{
+		data->Status &= 0xFEFFu;
+	}
+}
+
+void CalcShit(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3)
+{
+	Float v3; // [esp+0h] [ebp-8h]
+	Float v4; // [esp+4h] [ebp-4h]
+
+	v3 = a3[4] * a1->x + a3[5] * a1->y + a3[6] * a1->z;
+	v4 = a3[8] * a1->x + a3[9] * a1->y + a3[10] * a1->z;
+	a2->x = a3[1] * a1->y + *a3 * a1->x + a3[2] * a1->z;
+	a2->y = v3;
+	a2->z = v4;
+}
+
+
+bool isPlayerOnPlatform(ObjectMaster* a1)
+{
+	EntityData1* v3; // r30
+	bool result = false; // r3
+	NJS_VECTOR v5; // [sp+50h] [-40h] BYREF
+	NJS_VECTOR v6; // [sp+60h] [-30h] BYREF
+	NJS_VECTOR a2;
+
+	v3 = a1->Data1.Entity;
+	a2.x = MainCharObj1[0]->Position.x - v3->Position.x;
+	a2.y = MainCharObj1[0]->Position.y - v3->Position.y - 20.0;
+	a2.z = MainCharObj1[0]->Position.z - v3->Position.z;
+
+	if (v3->Rotation.y != 0x10000)
+		njRotateY(0, (unsigned __int16)-HIWORD(v3->Rotation.y));
+
+	if (fabs(a2.x) < 20.0 && fabs(a2.y) < 10.0 && fabs(a2.z) < 20.0) {
+
+		if ((v3->Status & 0x100u))
+		{
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -85,13 +115,13 @@ void __cdecl sub_442120(float a1, float a2, float a3, float a4)
 		}
 	}
 
-	/*v11 = 32 * (v6->field_12);
-	*(float*)((char*)v6->SurfaceInfo. array_15x32 + v11) = a1;
+	v11 = 32 * (v6->field_12);
+	/**(float*)((char*)v6->SurfaceInfo. array_15x32 + v11) = a1;
 	*(float*)((char*)v6->array_15x32 + v11 + 4) = a2;
 	*(float*)((char*)v6->array_15x32 + v11 + 8) = a3;
 	*(float*)((char*)v6->array_15x32 + v11 + 12) = a4;
-	*(float*)((char*)v6->array_15x32 + v11 + 16) = v10;
-	++(v6->field_12);*/
+	*(float*)((char*)v6->array_15x32 + v11 + 16) = v10;*/
+	++(v6->field_12);
 }
 
 void __cdecl DispSHCage(ObjectMaster* obj)
@@ -141,7 +171,8 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 
 		break;
 	case 1:
-		if (sub_61B060(obj))
+		CheckCraneColli(data);
+		if (isPlayerOnPlatform(obj))
 		{
 			data->Action = 2;
 			data->Index = 1;
@@ -149,6 +180,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 		}
 		break;
 	case 2:
+		CheckCraneColli(data);
 		if (data->Position.y - parent->Position.y > 100.0f)
 		{
 			data->Action = 3;
@@ -173,20 +205,21 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 		data->Position.z = a2a;
 		//QueueSound_XYZ(103, data, 1, 0, 2, v10, v11, a2a);
 	case 3:
-		if (sub_61B060(obj))
+		CheckCraneColli(data);
+		if (isPlayerOnPlatform(obj))
 		{
-			/*v8 = data->InvulnerableTime;
-			data->InvulnerableTime = v8 + 1;
+			v8 = data->field_6;
+			data->field_6 = v8 + 1;
 			if ((unsigned __int16)v8 > 0x78u)
 			{
 				data->Action = 4;
 				data->Index = 1;
-				data->InvulnerableTime = 0;
-				sub_61B130((int)data);
-			}*/
+				data->field_6 = 0;
+			}
 		}
 		break;
 	case 4:
+		CheckCraneColli(data);
 		if (data->Position.y - parent->Position.y > 0.0f)
 		{
 			v9 = njSin(data->Rotation.y);
@@ -215,7 +248,8 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 		}
 		break;
 	case 5:
-		if (sub_61B060(obj))
+		CheckCraneColli(data);
+		if (isPlayerOnPlatform(obj))
 		{
 			data->Action = 1;
 			//data->InvulnerableTime = 0;
@@ -235,16 +269,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 	sub_442120(data->Position.x, data->Position.y, data->Position.z, 15.0f);
 }
 
-void CheckCraneColli(EntityData1* data) {
-	if (IsPlayerInsideSphere(&data->Position, 570.0f))
-	{
-		data->Status |= 0x100u;
-	}
-	else
-	{
-		data->Status &= 0xFEFFu;
-	}
-}
+
 
 void __cdecl OCrane_Display(ObjectMaster* obj)
 {
@@ -279,7 +304,7 @@ void __cdecl OCrane(ObjectMaster* obj)
 	obj->MainSub = OCrane_Main;
 	obj->DeleteSub = DeleteFunc_DynCol;
 	obj->DisplaySub = OCrane_Display;
-	obj->field_4C = SH_Rail->getmodel();;
+	obj->field_4C = SH_Rail->getmodel();
 
 	DynCol_AddFromObject(obj, SH_RailCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid);
 

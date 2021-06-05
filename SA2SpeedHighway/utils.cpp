@@ -15,6 +15,22 @@ bool isSADXLevel()
 	return false;
 }
 
+static const void* const KillPlayerFallPtr = (void*)0x46B330;
+static inline void  BGCheckAndKillPlayerASM(int a1)
+{
+	__asm
+	{
+		mov ebx, a1 // a2
+		call KillPlayerFallPtr
+	}
+}
+
+void KillPlayerFall(int a1) {
+	return BGCheckAndKillPlayerASM(a1);
+}
+
+
+
 signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2)
 {
 	EntityData1* v2; // ecx
