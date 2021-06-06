@@ -99,6 +99,18 @@ int BAMS_SubWrap(__int16 bams_a, unsigned __int16 bams_b, int limit)
 	return result;
 }
 
+int __cdecl BAMS_Subtract(int a1, int a2)
+{
+	int result; // eax
+
+	(result) = a2 - a1;
+	if ((__int16)(a2 - a1) < 0)
+	{
+		(result) = a1 - a2;
+	}
+	return (unsigned __int16)result;
+}
+
 
 static const void* const PConvertVP2GPtr = (void*)0x468E70;
 static inline void PConvertVector_P2GASM(EntityData1* a1, NJS_VECTOR* a2)
@@ -218,4 +230,9 @@ void __fastcall njAddVectorSADX(NJS_VECTOR* vd, const NJS_VECTOR* vs)
 	vd->x = vd->x + vs->x;
 	vd->y = vs->y + vd->y;
 	vd->z = vs->z + vd->z;
+}
+
+float __fastcall njInnerProduct(const NJS_VECTOR* v1, const NJS_VECTOR* v2)
+{
+	return v1->z * v2->z + v1->y * v2->y + v1->x * v2->x;
 }

@@ -474,3 +474,285 @@ void __cdecl PResetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharO
     }
 }
 
+struct csts
+{
+    float radius;
+    NJS_POINT3 pos;
+    NJS_POINT3 spd;
+    NJS_POINT3 tnorm;
+    unsigned __int16 find_count;
+    unsigned __int16 selected_nmb;
+    float yt;
+    float yb;
+    int angx;
+    int angz;
+    NJS_POINT3 normal;
+    NJS_POINT3 normal2;
+    NJS_POINT3 onpoly;
+    NJS_POINT3 pshbk;
+    NJS_POINT3 anaspdh;
+    NJS_POINT3 anaspdv;
+};
+
+
+/*int __cdecl PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
+{
+    CollisionInfo* v4; // eax
+    __int16 v5; // cx
+    EntityData2_R* v6; // ebx
+    float v7; // eax
+    float v8; // edx
+    CharObj2Base* v9; // ebp
+    __int16 v10; // ax
+  
+    csts* v11; // edi
+    Angle v12; // eax
+    Angle v13; // eax
+    Angle v14; // eax
+    double v15; // st7
+    int v16; // eax
+    CharObj2Base* v17; // edx
+    unsigned __int64 v18; // rax
+    __int16 v19; // bx
+    unsigned __int64 v20; // rax
+    int v21; // ebp
+    int v22; // ebx
+    int v23; // eax
+    Angle v24; // edx
+    int v25; // eax
+    ObjectMaster* v26; // eax
+    unsigned __int8 v28; // c0
+    unsigned __int8 v29; // c3
+    float v30; // eax
+    float v31; // edx
+    double v32; // st7
+    float v33; // edx
+    float v34; // ecx
+    int v36; // [esp+10h] [ebp-4Ch]
+    int v37; // [esp+14h] [ebp-48h]
+    char v38; // [esp+18h] [ebp-44h]
+    int v39; // [esp+1Ch] [ebp-40h]
+    int v40; // [esp+20h] [ebp-3Ch]
+    int v41; // [esp+24h] [ebp-38h]
+    int v42; // [esp+28h] [ebp-34h]
+    Vector3 a2a; // [esp+2Ch] [ebp-30h] BYREF
+    Vector3 a3a; // [esp+38h] [ebp-24h] BYREF
+    Vector3 a1a; // [esp+44h] [ebp-18h] BYREF
+    Vector3 v1; // [esp+50h] [ebp-Ch] BYREF
+    char v47; // [esp+60h] [ebp+4h]
+
+    v4 = a1->Collision;
+    v5 = v4->Flag;
+    v36 = 0;
+    if ((v5 & 0x10) != 0
+        && (a1->Status & 4) == 0
+        && (v5 & 4) != 0
+        && (v4->CollidingObject->CollisionArray[v4->hit_num].push & 7) != 0)
+    {
+        sub_41BED0(a1, &v1);
+        v6 = a2;
+        v7 = a2->spd.x;
+        v8 = a2->spd.z;
+        a1a.y = a2->spd.y;
+        a1a.x = v7;
+        a1a.z = v8;
+        if (njScalor(&a1a) != 0.0)
+        {
+            njUnitVector(&a1a);
+        }
+        if (njInnerProduct(&v1, &a1a) < 0.0)
+        {
+            a2->spd.x = 0.0;
+            a2->spd.z = 0.0;
+        }
+        v9 = a3;
+        if (a3->Speed.x < (double)a3->PhysData.RunSpeed)
+        {
+            v36 = 1;
+        }
+        else
+        {
+            v36 = 2;
+        }
+    }
+    else
+    {
+        v6 = a2;
+        v9 = a3;
+    }
+    v10 = a1->Status;
+    v38 = v10;
+    if ((v10 & 2) != 0)
+    {
+        a1->Status = v10 & 0xFFFC;
+        a1->Position.x = v6->spd.x + a1->Position.x;
+    LABEL_46:
+        a1->Position.z = v6->spd.z + a1->Position.z;
+        return v36;
+    }
+    a1->Status = v10 & 0xFFFC;
+    v11 = (csts*)v9->csts;
+    v47 = 0;
+    njPushUnitMatrix();
+    v12 = a1->Rotation.z;
+    if (v12)
+    {
+        njRotateZ(0, (unsigned __int16)v12);
+    }
+    v13 = a1->Rotation.x;
+    if (v13)
+    {
+        njRotateX(0, (unsigned __int16)v13);
+    }
+    if (a1->Rotation.y)
+    {
+        njRotateY(0, (unsigned __int16)-LOWORD(a1->Rotation.y));
+    }
+    v14 = a1->Rotation.x;
+    a2a.z = 0.0;
+    a2a.x = 0.0;
+    a2a.y = 1.0;
+    v11->angx = v14;
+    v11->angz = a1->Rotation.z;
+    njCalcPoint(&a2a, &v11->tnorm, CURRENT_MATRIX); //njcalcvector
+    a2a.y = v9->PhysData.Height * 0.5;
+    a2a.z = 0.0;
+    a2a.x = 0.0;
+    //njCalcVector(0, &a2a, &a3a);
+    njCalcPoint(&a2a, &a3a, CURRENT_MATRIX);
+    v15 = v9->PhysData.Height * 0.5 - v9->PhysData.FloorGrip * 0.5;
+    a2a.z = 0.0;
+    a2a.x = 0.0;
+    a2a.y = v15;
+    //jCalcVector(0, &a2a, &v1);
+    njCalcPoint(&a2a, &v1, CURRENT_MATRIX);
+    njPopMatrix(1u);
+    v11->radius = v9->PhysData.Height * 0.5;
+    v11->pos.x = v1.x + a1->Position.x;
+    v11->pos.y = v1.y + a1->Position.y;
+    v11->pos.z = v1.z + a1->Position.z;
+    v11->spd.x = v6->spd.x;
+    v11->spd.y = v6->spd.y;
+    v11->spd.z = v6->spd.z;
+    CL_ColPolListUpNear(v11);
+    v16 = 0;
+    v37 = 0;
+    if ((__int16)DynamicCOLCount_B <= 0)
+    {
+        goto LABEL_45;
+    }
+    do
+    {
+        v42 = v16;
+        if (CL_ColPolCheckTouchRe(v11, DynamicCOLArray_LandTable[v16].Model))
+        {
+            a2a.x = 1.0;
+            a2a.z = 0.0;
+            a2a.y = 0.0;
+            if (VectorAngle(&a2a, &v11->normal2, 0) > 11264)
+            {
+                a1a.x = -v6->spd.x;
+                a1a.y = -v6->spd.y;
+                a1a.z = -v6->spd.z;
+                if (njScalor(&a1a) != 0.0)
+                {
+                    njUnitVector(&a1a);
+                    if (VectorAngle(&a1a, &v11->normal2, 0) <= 11264)
+                    {
+                        v36 = 2;
+                        if (a3->Speed.x < (double)a3->PhysData.KnockbackSpeed)
+                        {
+                            v36 = 1;
+                        }
+                    }
+                }
+                v32 = v11->pshbk.x;
+                v11->pos.x = v11->pshbk.x;
+                v33 = v11->pshbk.z;
+                v11->pos.y = v11->pshbk.y;
+                v11->pos.z = v33;
+                a1->Position.x = v32 - a3a.x;
+                a1->Position.y = v11->pshbk.y - a3a.y;
+                a1->Position.z = v11->pshbk.z - a3a.z;
+                v11->spd.x = v11->anaspdh.x;
+                v34 = v11->anaspdh.z;
+                v11->spd.y = v11->anaspdh.y;
+                v11->spd.z = v34;
+            }
+            else
+            {
+                v17 = a3;
+                if (a3->Speed.y <= 0.0 || (v38 & 3) == 0)
+                {
+                    v47 = 1;
+                    if (v6->spd.x != 0.0 || v6->spd.z != 0.0)
+                    {
+                        v18 = (unsigned __int64)(asin(v11->normal2.z) * 65536.0 * 0.1591549762031479);
+                        v19 = v18;
+                        v41 = v18;
+                        v20 = (unsigned __int64)(asin(v11->normal2.x) * 65536.0 * -0.1591549762031479);
+                        v40 = v20;
+                        if (v11->normal2.y < 0.0)
+                        {
+                            v21 = (unsigned __int16)(0x8000 - v19);
+                            v22 = (unsigned __int16)(0x8000 - v20);
+                            v39 = BAMS_Subtract(a1->Rotation.x, v21);
+                            if (v39 >= BAMS_Subtract(a1->Rotation.z, v22))
+                            {
+                                v11->angx = v41;
+                                v11->angz = v22;
+                            }
+                            else
+                            {
+                                v11->angx = v21;
+                                v11->angz = v40;
+                            }
+                        }
+                        v23 = BAMS_SubWrap(a1->Rotation.x, v11->angx, 4096);
+                        v24 = a1->Rotation.z;
+                        a1->Rotation.x = v23;
+                        v25 = BAMS_SubWrap(v24, v11->angz, 4096);
+                        v6 = a2;
+                        v17 = a3;
+                        a1->Rotation.z = v25;
+                    }
+                    v6->ang_aim.x = v11->angx;
+                    v6->ang_aim.z = v11->angz;
+                    v11->pos.x = v11->anaspdh.x + v11->pshbk.x;
+                    v11->pos.y = v11->anaspdh.y + v11->pshbk.y;
+                    v11->pos.z = v11->anaspdh.z + v11->pshbk.z;
+                    v26 = DynamicCOLArray_LandTable[v42].Entity;
+                    if (v26)
+                    {
+                        v17->field_6C = v26;
+                        sub_43CA40(v17, &a3a, (int)a1, (int)v11);
+                    }
+                    a2a.x = v11->pos.x - a3a.x;
+                    a2a.y = v11->pos.y - a3a.y;
+                    a2a.z = v11->pos.z - a3a.z;
+                    if (!(v28 | v29))
+                    {
+                        v30 = a2a.y;
+                        a1->Position.x = a2a.x;
+                        v31 = a2a.z;
+                        a1->Position.y = v30;
+                        a1->Position.z = v31;
+                    }
+                    v11->spd.z = 0.0;
+                    v11->spd.y = 0.0;
+                    v11->spd.x = 0.0;
+                    a1->Status |= 1u;
+                }
+            }
+        }
+        v16 = (unsigned __int16)++v37;
+    }     while ((unsigned __int16)v37 < (__int16)DynamicCOLCount_B);
+    if (v47 != 1)
+    {
+    LABEL_45:
+        a1->Position.x = a1->Position.x + v6->spd.x;
+        a1->Position.y = v6->spd.y + a1->Position.y;
+        goto LABEL_46;
+    }
+    return v36;
+}*/

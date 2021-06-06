@@ -376,8 +376,8 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615450, "O FF" } /* "O FF" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x6153C0, "O StPlant01" } /* "O StPlant01" */,
 	{ (LoadObj)2 },//5, 0, 0, 0, (ObjectFuncPtr)0x615310, "O StPlant02" } /* "O StPlant02" */,
-	{ (LoadObj)2 },//3, 1, 1000000, 0, (ObjectFuncPtr)0x613E30, "O HeliA" } /* "O HeliA" */,
-	{ (LoadObj)2 },//3, 1, 1000000, 0, (ObjectFuncPtr)0x613E80, "O HeliB" } /* "O HeliB" */,
+	{ (LoadObj)2, 3, 1, 1000000, OHelia} /* "O HeliA" */,
+	{ (LoadObj)2, 3, 1, 1000000, OHelib} /* "O HeliA" */,
 	{ (LoadObj)2, 3, 1, 1000000, OHwBell, }, /* "O HW BELL" */
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614ED0, "O HELIP L" } /* "O HELIP L" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E80, "O TUNAGI" } /* "O TUNAGI" */,

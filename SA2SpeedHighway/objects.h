@@ -11,3 +11,5 @@ void OTurnasi(ObjectMaster* obj);
 void __cdecl LoadTurnAsi(ObjectMaster* obj);
 void LoadHelicoModel();
 void Load_Helico(ObjectMaster* a1);
+void __cdecl OHelia(ObjectMaster* obj);
+void __cdecl OHelib(ObjectMaster* obj);

@@ -18,8 +18,13 @@ int HeliAngleY = 0;
 float floatWriteIDK = 0.0;
 float floatWriteIDK2 = 0.0;
 float floatWriteIDK3 = 0.0;
-int writeIDK = 0;
 
+void Heli_ApplyPositionStuff(RotInfo* dataNewRot, EntityData1* v2) {
+	int v25;
+	v25 = (unsigned __int16)v2->field_6 + dataNewRot->info01;
+	v2->Position.y = v2->Scale.z + v2->Position.y;
+	dataNewRot->info01 = v25;
+}
 
 void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
 {
@@ -46,7 +51,6 @@ void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
 	double v22; // st7
 	__int16 v23; // cx
 	double v24; // st7
-	int v25;
 	float square_mag; // [esp+0h] [ebp-Ch]
 	float v27; // [esp+0h] [ebp-Ch]
 	dataNewRot = (RotInfo*)a2->field_4C;
@@ -114,7 +118,6 @@ void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
 				- (unsigned __int64)(atan2(floatWriteIDK, floatWriteIDK2)
 					* 65536.0
 					* 0.1591549762031479));
-			writeIDK = v13;
 			if (v13 > 384)
 			{
 				if (v13 >= 0x8000)
@@ -129,10 +132,11 @@ void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
 			}
 			break;
 		}
+
 		v20 = v2->Status;
 		if ((v20 & 0x2000) == 0)
 		{
-			goto LABEL_29;
+			Heli_ApplyPositionStuff(dataNewRot, v2);
 		}
 		v21 = v2->Scale.z;
 		if ((v20 & 0x4000) != 0)
@@ -143,9 +147,8 @@ void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
 			{
 				v2->Scale.z = 2.0;
 				v23 = v20 + 0x4000;
-			LABEL_28:
 				v2->Status = v23;
-				goto LABEL_29;
+				Heli_ApplyPositionStuff(dataNewRot, v2);
 			}
 		}
 		else
@@ -156,13 +159,11 @@ void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
 			{
 				v2->Scale.z = -2.0;
 				v23 = v20 - 0x4000;
-				goto LABEL_28;
+				Heli_ApplyPositionStuff(dataNewRot, v2);
 			}
 		}
-	LABEL_29:
-		v25 = (unsigned __int16)v2->field_6 + dataNewRot->info01;
-		v2->Position.y = v2->Scale.z + v2->Position.y;
-		dataNewRot->info01 = v25;
+
+		Heli_ApplyPositionStuff(dataNewRot, v2);
 	}
 }
 
@@ -255,31 +256,12 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 	int v24; // edx
 	bool v25; // zf
 	pathinfo heliPath = {}; // [esp-4Ch] [ebp-CCh] BYREF
-	int v27; // [esp-48h] [ebp-C8h]
-	int v28; // [esp-44h] [ebp-C4h]
+
 	int v29; // [esp-40h] [ebp-C0h]
 	int v30; // [esp-3Ch] [ebp-BCh]
 	int v31; // [esp-38h] [ebp-B8h]
-	int v32; // [esp-34h] [ebp-B4h]
-	int v33; // [esp-30h] [ebp-B0h]
-	int v34; // [esp-2Ch] [ebp-ACh]
-	int v35; // [esp-28h] [ebp-A8h]
-	int v36; // [esp-24h] [ebp-A4h]
-	int v37; // [esp-20h] [ebp-A0h]
-	int v38; // [esp-1Ch] [ebp-9Ch]
-	int v39; // [esp-18h] [ebp-98h]
-	int v40; // [esp-14h] [ebp-94h]
-	int v41; // [esp-10h] [ebp-90h]
-	int v42; // [esp-Ch] [ebp-8Ch]
-	float v43; // [esp-8h] [ebp-88h]
-	int v44; // [esp-4h] [ebp-84h]
-	float v45; // [esp+0h] [ebp-80h]
 	EntityData1* P1Data; // [esp+14h] [ebp-6Ch]
 	float HelicoPosX; // [esp+18h] [ebp-68h]
-	float v48; // [esp+20h] [ebp-60h]
-	float v49; // [esp+24h] [ebp-5Ch]
-	float v50; // [esp+2Ch] [ebp-54h]
-
 
 	v1 = MainCharObj1[0];
 	Data = a1->Data1.Entity;
@@ -449,23 +431,19 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 		//sub_424920(96, Data, 1, 0, 2, Data);
 	}
 	return;
-
 }
 
 void SH_DisplayHelico(ObjectMaster* a1) {
 
-	EntityData1* v1; // esi
 	Angle v2; // eax
 	Angle v3; // eax
 	int v4;
 	int v5;
 	int v6; // eax
-	RotInfo* getrot;
-	
-	
-	getrot = (RotInfo*)a1->field_4C;
+	RotInfo* getrot;	
+	getrot = (RotInfo*)a1->field_4C; //get rotation stored in the object for propeller
+	EntityData1* v1 = a1->Data1.Entity;
 
-	v1 = a1->Data1.Entity;
 	njSetTexture(&highwayObj_TEXLIST);
 	njPushMatrix(0);
 	njTranslateV(0, &v1->Position);
@@ -506,7 +484,7 @@ void SH_DisplayHelico(ObjectMaster* a1) {
 	njPopMatrix(1u);
 }
 
-void __cdecl HelicoChild(ObjectMaster* a1)
+void __cdecl HelicoChildHelper(ObjectMaster* a1)
 {
 	EntityData1* v1; // esi
 	EntityData1* v2; // eax
@@ -541,10 +519,7 @@ void Init_Helico(ObjectMaster* a1) {
 	EntityData1* v1; // esi
 	ObjectMaster* v2; // eax
 	ObjectMaster* v3; // eax
-	RotInfo* getrot = new RotInfo();
-
-
-
+	RotInfo* getrot = new RotInfo(); //custom struct used to save propellers rotation/animation in the display
 
 	v1 = a1->Data1.Entity;
 	v1->Status &= 0x80FF;
@@ -562,10 +537,10 @@ void Init_Helico(ObjectMaster* a1) {
 	v1->field_2 = 0;
 	v1->NextAction = 3;
 	InitCollision(a1, &HeliCol, 1, 4u);
-	v2 = LoadChildObject(LoadObj_Data1, HelicoChild, a1);
+	v2 = LoadChildObject(LoadObj_Data1, HelicoChildHelper, a1);
 	v2->Data1.Entity->Action = 0;
 	InitCollision(v2, &HeliGrabCol, 1, 4u);
-	v3 = LoadChildObject(LoadObj_Data1, HelicoChild, a1);
+	v3 = LoadChildObject(LoadObj_Data1, HelicoChildHelper, a1);
 	v3->Data1.Entity->Action = 1;
 	InitCollision(v3, &HeliGrabCol, 1, 4u);
 	a1->DeleteSub = j_DeleteChildObjects;
@@ -574,11 +549,61 @@ void Init_Helico(ObjectMaster* a1) {
 }
 
 void Load_Helico(ObjectMaster* a1) {
-
-
 	LoadObject((LoadObj)3, "Init_Helico", Init_Helico, LoadObj_Data1);
 	a1->MainSub = DeleteObject_;
+}
 
+void __cdecl OHelia_Main(ObjectMaster* a2)
+{
+	EntityData1* v1; // esi
+	EntityData1* v2; // edi
+
+	v1 = a2->Data1.Entity;
+	v2 = MainCharObj1[0];
+
+	if (v2->Status >= 0)
+	{
+		AddToCollisionList(a2);
+		sub_49CE60(v1, 0);
+	}
+	HeliWriteSub(v2, a2);
+	//sub_424920(96, v1, 1, 0, 2, v1);
+}
+
+void __cdecl OHelib(ObjectMaster* obj)
+{
+	EntityData1* v1; // esi
+	RotInfo* getrot = new RotInfo();
+	v1 = obj->Data1.Entity;
+	v1->Status |= 0x20u;
+	getrot->info01 = 0.0;
+	getrot->info02 = 0.0;
+	getrot->info03 = 2048;
+	obj->field_4C = getrot;
+	v1->field_6 = 4096;
+	InitCollision(obj, &HeliCol, 1, 4u);
+	obj->DeleteSub = j_DeleteChildObjects;
+	obj->MainSub = OHelia_Main;
+	obj->DisplaySub = SH_DisplayHelico;
+	v1->NextAction = 3;
+}
+
+void __cdecl OHelia(ObjectMaster* obj)
+{
+	EntityData1* v1; // esi
+	RotInfo* getrot = new RotInfo();
+	v1 = obj->Data1.Entity;
+	v1->Status |= 0x20u;
+	getrot->info01 = 0.0;
+	getrot->info02 = 0.0;
+	getrot->info03 = 2048;
+	obj->field_4C = getrot;
+	v1->field_6 = 4096;
+	InitCollision(obj, &HeliCol, 1, 4u);
+	obj->DeleteSub = j_DeleteChildObjects;
+	obj->MainSub = OHelia_Main;
+	obj->DisplaySub = SH_DisplayHelico;
+	v1->NextAction = 1;
 }
 
 
@@ -586,5 +611,5 @@ void LoadHelicoModel() {
 	SH_Helico[0] = LoadMDL("sh-heliBody", ModelFormat_Chunk);
 	SH_Helico[1] = LoadMDL("sh-heliHane", ModelFormat_Chunk);
 	SH_Helico[2] = LoadMDL("sh-heliLight", ModelFormat_Chunk);
-
+	return;
 }

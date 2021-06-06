@@ -30,3 +30,5 @@ void njTranslateSADX(NJS_MATRIX_PTR m, Float x, Float y, Float z);
 void __fastcall njTranslateVSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* v);
 void __fastcall njCalcVectorSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* vs, NJS_VECTOR* vd);
 void __fastcall njAddVectorSADX(NJS_VECTOR* vd, const NJS_VECTOR* vs);
+int __cdecl BAMS_Subtract(int a1, int a2);
+float __fastcall njInnerProduct(const NJS_VECTOR* v1, const NJS_VECTOR* v2);
