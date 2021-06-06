@@ -242,6 +242,7 @@ static void __cdecl SpeedHighway_Init()
 		CurrentAct = 0;
 	}
 
+	LoadGreenForestCharAnims(); //used for helico grab animation
 	LoadSH_DeathZonesModel();
 	LoadModelBG_SH();
 	LoadModelsSH();

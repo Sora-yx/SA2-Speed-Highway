@@ -23,3 +23,22 @@ DataPointer(void*, dword_1DE468C, 0x1DE468C);
 
 
 FunctionPointer(void, DrawObject, (NJS_OBJECT* a1), 0x42E730);
+
+
+struct pathinfo
+{
+	int slangx;
+	int slangz;
+	int slangax;
+	int slangaz;
+	float onpathpos;
+	NJS_POINT3 pos;
+	float xpos;
+	float ypos;
+	float zpos;
+	NJS_POINT3 normal;
+	NJS_POINT3 normala;
+	NJS_POINT3 front;
+};
+
+FunctionPointer(int, GetStatusOnPath, (LoopHead* a1, pathinfo* a2), 0x4905A0);

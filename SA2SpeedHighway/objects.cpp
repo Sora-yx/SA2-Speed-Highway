@@ -60,6 +60,7 @@ void LoadModelsSH()
 	SH_OOStp4SCol = LoadMDL("SH-OOstp4SCol", ModelFormat_Basic);
 	SH_OOStp4TCol = LoadMDL("SH-OOstpTCol", ModelFormat_Basic);
 
+	LoadHelicoModel();
 }
 
 void FreeModelsSH()
@@ -273,6 +274,17 @@ void Load_OStp4t(ObjectMaster* obj) {
 	}
 	obj->MainSub = MainSubGlobalDynCol;
 	obj->DisplaySub = GenericSHDisplay;
+}
+
+void __cdecl sub_49CE60(EntityData1* a1, EntityData2* a2)
+{
+	a1->Status &= 0xFFC7u;
+	if (a2)
+	{
+		a2->Acceleration.z = 0.0;
+		a2->Acceleration.y = 0.0;
+		a2->Acceleration.x = 0.0;
+	}
 }
 
 
