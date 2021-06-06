@@ -15,6 +15,157 @@ int HeliStackA = 0;
 int HeliAngY_Spd = 0;
 int HeliAngleY = 0;
 
+float floatWriteIDK = 0.0;
+float floatWriteIDK2 = 0.0;
+float floatWriteIDK3 = 0.0;
+int writeIDK = 0;
+
+
+void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
+{
+	EntityData1* v2; // esi
+	double delta_z; // st7
+	double delta_y; // st6
+	double delta_x; // st5
+	double v7; // st7
+	double v8; // st7
+	unsigned __int64 v9; // rax
+	int v10; // ecx
+	int v11; // ecx
+	RotInfo* dataNewRot;
+	int v12; // edi
+	int v13; // eax
+	int v14;
+	int v15; // eax
+	int v16;
+	int v17; // eax
+	int v18; // edx
+	bool v19; // sf
+	__int16 v20; // cx
+	double v21; // st7
+	double v22; // st7
+	__int16 v23; // cx
+	double v24; // st7
+	int v25;
+	float square_mag; // [esp+0h] [ebp-Ch]
+	float v27; // [esp+0h] [ebp-Ch]
+	dataNewRot = (RotInfo*)a2->field_4C;
+
+	v2 = a2->Data1.Entity;
+	delta_z = CameraData.Position.z - v2->Position.z;
+	delta_y = CameraData.Position.y - v2->Position.y;
+	delta_x = CameraData.Position.x - v2->Position.x;
+	square_mag = delta_y * delta_y + delta_z * delta_z + delta_x * delta_x;
+
+	if (sqrt(square_mag) < 1000.0)
+	{
+		switch (v2->NextAction)
+		{
+		case 1:
+			v17 = dataNewRot->info03 + 96;
+			v18 = dataNewRot->info02 + 256;
+			v19 = (int)(dataNewRot->info03 - 1440) < 0;
+			dataNewRot->info03 = v17;
+			dataNewRot->info02 = v18;
+			
+			if (v17 < 6444)
+			{
+				v2->NextAction = 2;
+			}
+			break;
+		case 2:
+			v15 = dataNewRot->info03 - 96;
+			v16 = dataNewRot->info02 - 256;
+			dataNewRot->info03 = v15;
+			dataNewRot->info02 = v16;
+			if ((int)v15 <= -6144)
+			{
+				v2->NextAction = 1;
+			}
+			break;
+		case 3:
+			floatWriteIDK = v2->Position.x - a1->Position.x - -28.884884;
+			v7 = v2->Position.z - a1->Position.z;
+			floatWriteIDK2 = v7;
+			v27 = v7 * floatWriteIDK2 + floatWriteIDK * floatWriteIDK;
+			v8 = sqrt(v27);
+			floatWriteIDK3 = v8;
+			if (v8 > 50.0)
+			{
+				floatWriteIDK3 = 50.0;
+			}
+			v9 = (unsigned __int64)(floatWriteIDK3 * 65536.0 * 0.002777777777777778);
+			v10 = dataNewRot->info03;
+			if ((int)v10 > (int)v9 + 64 || (int)v10 < (int)v9 - 64)
+			{
+				if ((int)v10 <= (int)v9)
+				{
+					v11 = v10 + 16;
+				}
+				else
+				{
+					v11 = v10 - 16;
+				}
+				dataNewRot->info03 = v11;
+			}
+			v12 = dataNewRot->info02;
+			v13 = (unsigned __int16)(v12
+				+ v2->Rotation.y
+				- (unsigned __int64)(atan2(floatWriteIDK, floatWriteIDK2)
+					* 65536.0
+					* 0.1591549762031479));
+			writeIDK = v13;
+			if (v13 > 384)
+			{
+				if (v13 >= 0x8000)
+				{
+					v14 = v12 + 384;
+				}
+				else
+				{
+					v14 = v12 - 384;
+				}
+				dataNewRot->info02 = v14;
+			}
+			break;
+		}
+		v20 = v2->Status;
+		if ((v20 & 0x2000) == 0)
+		{
+			goto LABEL_29;
+		}
+		v21 = v2->Scale.z;
+		if ((v20 & 0x4000) != 0)
+		{
+			v22 = v21 + 0.2;
+			v2->Scale.z = v22;
+			if (v22 >= 2.0)
+			{
+				v2->Scale.z = 2.0;
+				v23 = v20 + 0x4000;
+			LABEL_28:
+				v2->Status = v23;
+				goto LABEL_29;
+			}
+		}
+		else
+		{
+			v24 = v21 - 0.2;
+			v2->Scale.z = v24;
+			if (v24 <= -2.0)
+			{
+				v2->Scale.z = -2.0;
+				v23 = v20 - 0x4000;
+				goto LABEL_28;
+			}
+		}
+	LABEL_29:
+		v25 = (unsigned __int16)v2->field_6 + dataNewRot->info01;
+		v2->Position.y = v2->Scale.z + v2->Position.y;
+		dataNewRot->info01 = v25;
+	}
+}
+
 void HeliPosCopyPlayer(EntityData1* data, EntityData1* P1)
 {
 	Angle v2; // edi
@@ -103,7 +254,7 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 	double v23; // st7
 	int v24; // edx
 	bool v25; // zf
-	pathinfo* pathArray; // [esp-4Ch] [ebp-CCh] BYREF
+	pathinfo heliPath = {}; // [esp-4Ch] [ebp-CCh] BYREF
 	int v27; // [esp-48h] [ebp-C8h]
 	int v28; // [esp-44h] [ebp-C4h]
 	int v29; // [esp-40h] [ebp-C0h]
@@ -128,12 +279,11 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 	float v48; // [esp+20h] [ebp-60h]
 	float v49; // [esp+24h] [ebp-5Ch]
 	float v50; // [esp+2Ch] [ebp-54h]
-	int* v51[20]; // [esp+30h] [ebp-50h] BYREF
+
 
 	v1 = MainCharObj1[0];
 	Data = a1->Data1.Entity;
-	v51[0] = 0;
-	memset(&v51, 0, 0x4Cu);
+
 	v3 = (unsigned __int8)Data->Action;
 	CurAction = Data->Action;
 	P1Data = MainCharObj1[0];
@@ -284,10 +434,9 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 		sub_49CE60(Data, 0);
 	}
 
-	memcpy(&pathArray, &v51, sizeof(pathArray));
-	HelicoFollowPath(&PathList_SpeedHighway0_3, Data, (pathinfo*)v51);
+	HelicoFollowPath(&PathList_SpeedHighway0_3, Data, &heliPath);
 
-	// HeliWriteSub(v1, a1);
+	HeliWriteSub(v1, a1);
 	Data->Position.x = Floatidk1;
 	Data->Position.y = Floatidk2;
 	v24 = Floatidk3;
@@ -308,34 +457,51 @@ void SH_DisplayHelico(ObjectMaster* a1) {
 	EntityData1* v1; // esi
 	Angle v2; // eax
 	Angle v3; // eax
-
+	int v4;
+	int v5;
+	int v6; // eax
+	RotInfo* getrot;
+	
+	
+	getrot = (RotInfo*)a1->field_4C;
 
 	v1 = a1->Data1.Entity;
 	njSetTexture(&highwayObj_TEXLIST);
 	njPushMatrix(0);
 	njTranslateV(0, &v1->Position);
-
-	njRotateZYX(v1->Rotation.x, v1->Rotation.y, 0, v1->Rotation.z);
-
+	v2 = v1->Rotation.y;
+	if (v2)
+	{
+		njRotateY(0, (unsigned __int16)v2);
+	}
+	v3 = v1->Rotation.z;
+	if (v3)
+	{
+		njRotateZ(0, (unsigned __int16)v3);
+	}
 	DrawObject(SH_Helico[0]->getmodel());
+
 	njPushMatrix(0);
-
-
-	if (v1->field_6 >= 0xC00u)
+	v4 = getrot->info01;
+	if (v4)
 	{
-		//add animation later
-		DrawObject(SH_Helico[1]->getmodel());
-		//ProcessModelNode_C_WrapperB(&object_0268C7DC, 0);
+		njRotateY(0, v4);
 	}
-	else
-	{
-		DrawObject(SH_Helico[1]->getmodel());
-	}
+	DrawObject(SH_Helico[1]->getmodel());
 	njPopMatrix(1u);
 	njTranslate(0, -28.884884, -11.80179, 0.0);
+	v5 = getrot->info02;
+	if (v5)
+	{
+		njRotateY(0, v5);
+	}
 
+	v6 = getrot->info03;
 
-
+	if (v6)
+	{
+		njRotateX(0, (unsigned __int16)v6);
+	}
 	DrawObject(SH_Helico[2]->getmodel());
 	njPopMatrix(1u);
 }
@@ -375,6 +541,10 @@ void Init_Helico(ObjectMaster* a1) {
 	EntityData1* v1; // esi
 	ObjectMaster* v2; // eax
 	ObjectMaster* v3; // eax
+	RotInfo* getrot = new RotInfo();
+
+
+
 
 	v1 = a1->Data1.Entity;
 	v1->Status &= 0x80FF;
@@ -384,6 +554,11 @@ void Init_Helico(ObjectMaster* a1) {
 	v1->Scale.y = 0.0;
 	v1->field_6 = 0;
 	// v1->timer = (int*)2048;
+	getrot->info01 = 0.0;
+	getrot->info02 = 0.0;
+	getrot->info03 = 2048;
+
+	a1->field_4C = getrot;
 	v1->field_2 = 0;
 	v1->NextAction = 3;
 	InitCollision(a1, &HeliCol, 1, 4u);
