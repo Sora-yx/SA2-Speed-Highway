@@ -15,7 +15,7 @@ int HeliStackA = 0;
 int HeliAngY_Spd = 0;
 int HeliAngleY = 0;
 
-void HeliPosCopyPlayer(EntityData1* a1, EntityData1* a2)
+void HeliPosCopyPlayer(EntityData1* data, EntityData1* P1)
 {
 	Angle v2; // edi
 	__int16 v3; // ax
@@ -24,39 +24,39 @@ void HeliPosCopyPlayer(EntityData1* a1, EntityData1* a2)
 	Angle v6; // ecx
 	double v7; // st7
 
-	v2 = a1->Rotation.y;
-	a2->Position.y = a1->Position.y - 27.0 + a1->Scale.z;
-	v3 = a1->Status;
+	v2 = data->Rotation.y;
+	P1->Position.y = data->Position.y - 27.0 + data->Scale.z;
+	v3 = data->Status;
 	if ((v3 & 0x100) != 0)
 	{
-		a2->Position.x = njSin(v2 - 0x8000) * 11.2 + a1->Position.x;
-		v4 = njCos(v2 - 0x8000) * 11.2 + a1->Position.z;
-		a2->Rotation.y = 0x8000 - v2;
-		a2->Position.z = v4;
+		P1->Position.x = njSin(v2 - 0x8000) * 11.2 + data->Position.x;
+		v4 = njCos(v2 - 0x8000) * 11.2 + data->Position.z;
+		P1->Rotation.y = 0x8000 - v2;
+		P1->Position.z = v4;
 	}
 	else if ((v3 & 0x200) != 0)
 	{
-		a2->Position.x = njSin(v2 - 0x8000) * 13.8 + a1->Position.x;
-		v5 = njCos(v2 - 0x8000) * 13.8 + a1->Position.z;
-		a2->Rotation.y = -v2;
-		a2->Position.z = v5;
+		P1->Position.x = njSin(v2 - 0x8000) * 13.8 + data->Position.x;
+		v5 = njCos(v2 - 0x8000) * 13.8 + data->Position.z;
+		P1->Rotation.y = -v2;
+		P1->Position.z = v5;
 	}
 	else
 	{
 		v6 = v2 + 0x8000;
 		if ((v3 & 0x400) != 0)
 		{
-			a2->Position.x = a1->Position.x - njSin(v6) * 14.2;
-			v7 = a1->Position.z - njCos(v2 + 0x8000) * 14.2;
-			a2->Rotation.y = 0x8000 - v2;
+			P1->Position.x = data->Position.x - njSin(v6) * 14.2;
+			v7 = data->Position.z - njCos(v2 + 0x8000) * 14.2;
+			P1->Rotation.y = 0x8000 - v2;
 		}
 		else
 		{
-			a2->Position.x = a1->Position.x - njSin(v6) * 12.0;
-			v7 = a1->Position.z - njCos(v2 + 0x8000) * 12.0;
-			a2->Rotation.y = -v2;
+			P1->Position.x = data->Position.x - njSin(v6) * 12.0;
+			v7 = data->Position.z - njCos(v2 + 0x8000) * 12.0;
+			P1->Rotation.y = -v2;
 		}
-		a2->Position.z = v7;
+		P1->Position.z = v7;
 	}
 }
 
@@ -72,7 +72,7 @@ void HelicoFollowPath(LoopHead* a1, EntityData1* a2, pathinfo* a3) {
 	Floatidk2 = a3->pos.y;
 	Floatidk3 = a3->pos.z;
 	getRotY = a2->Rotation.y;
-	HeliAngleY = (unsigned __int16)(0x4000 - (unsigned __int64)(atan2(a3->slangx, a3->slangz) * 65536.0 * -0.1591549762031479));
+	HeliAngleY = (unsigned __int16)(0x4000 - (unsigned __int64)(atan2(a3->normala.x, a3->normala.z) * 65536.0 * -0.1591549762031479));
 	HeliStackA = BAMS_SubWrap(getRotY, HeliAngleY, 240);
 	HeliAngY_Spd = SubAngle(HeliStackA, HeliAngY_Spd);
 }
@@ -141,25 +141,31 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 	switch (CurAction)
 	{
 	case 0:
-		v5 = Data->field_6;
-		if ((unsigned __int16)v5 >= 0xF00u)
-		{
-			if (Data->Scale.x >= 30.0)
-			{
-				Data->Status |= 0x30u;
 
-				v6 = Data->Action;
-				Data->Status &= 0xEFu;
-				Data->Action = v6 + 1;
+		if (MainCharObj1[0]->Position.x > 3120.0
+			&& MainCharObj1[0]->Position.x < 3500.0
+			&& MainCharObj1[0]->Position.z > 1220.0
+			&& MainCharObj1[0]->Position.z < 1600.0) {
+			v5 = Data->field_6;
+			if ((unsigned __int16)v5 >= 0xF00u)
+			{
+				if (Data->Scale.x >= 30.0)
+				{
+					Data->Status |= 0x30u;
+
+					v6 = Data->Action;
+					Data->Status &= 0xEFu;
+					Data->Action = v6 + 1;
+				}
+				else
+				{
+					Data->Scale.x = Data->Scale.x + 0.5;
+				}
 			}
 			else
 			{
-				Data->Scale.x = Data->Scale.x + 0.5;
+				Data->field_6 = v5 + 64;
 			}
-		}
-		else
-		{
-			Data->field_6 = v5 + 64;
 		}
 		break;
 	case 1:
@@ -198,7 +204,7 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 
 			if (IsPlayerInsideSphere(&a1->Child->Data1.Entity->Position, 20)) {
 				DoNextAction_r(0, 9, 0);
-	
+
 				v13 = Data->Action;
 				Data->Status &= 0xDFu;
 				Data->Action = v13 + 1;
@@ -230,7 +236,6 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 			{
 
 				v1 = P1Data;
-				break;
 			}
 			v21 = Data->Rotation.z + 32;
 			Data->Scale.y = Data->Scale.y + 0.059999999;
@@ -244,7 +249,6 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 				v22 = P1Data;
 				Data->Rotation.z = 0;
 				v1 = v22;
-				break;
 			}
 			v21 = v20 - 96;
 		}
@@ -253,7 +257,7 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 		HeliPosCopyPlayer(Data, P1Data);
 
 		break;
-	case 4:
+	case 3:
 		if (Data->Scale.x < 2200.0)
 		{
 			if (Data->Scale.y < 4.0)
@@ -268,7 +272,7 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 			Data->Scale.y = 0.0;
 			Data->Scale.x = 30.0;
 			Data->Rotation.z = 0;
-			Data->Action = 1;
+			Data->Action = 0;
 		}
 		break;
 	}
@@ -310,42 +314,29 @@ void SH_DisplayHelico(ObjectMaster* a1) {
 	njSetTexture(&highwayObj_TEXLIST);
 	njPushMatrix(0);
 	njTranslateV(0, &v1->Position);
-	v2 = v1->Rotation.y;
-	if (v2)
-	{
-		njRotateY(0, (unsigned __int16)v2);
-	}
-	v3 = v1->Rotation.z;
-	if (v3)
-	{
-		njRotateZ(0, (unsigned __int16)v3);
-	}
-	DrawChunkModel(SH_Helico[0]->getmodel()->getchunkmodel());
+
+	njRotateZYX(v1->Rotation.x, v1->Rotation.y, 0, v1->Rotation.z);
+
+	DrawObject(SH_Helico[0]->getmodel());
 	njPushMatrix(0);
 
-
-	njRotateY(0, v1->Rotation.y);
 
 	if (v1->field_6 >= 0xC00u)
 	{
 		//add animation later
-		DrawChunkModel(SH_Helico[1]->getmodel()->getchunkmodel());
+		DrawObject(SH_Helico[1]->getmodel());
 		//ProcessModelNode_C_WrapperB(&object_0268C7DC, 0);
 	}
 	else
 	{
-		DrawChunkModel(SH_Helico[1]->getmodel()->getchunkmodel());
+		DrawObject(SH_Helico[1]->getmodel());
 	}
 	njPopMatrix(1u);
 	njTranslate(0, -28.884884, -11.80179, 0.0);
 
 
-	njRotateY(0, v1->Rotation.y);
 
-
-	njRotateX(0, (unsigned __int16)2048);
-
-	DrawChunkModel(SH_Helico[2]->getmodel()->getchunkmodel());
+	DrawObject(SH_Helico[2]->getmodel());
 	njPopMatrix(1u);
 }
 
@@ -409,14 +400,10 @@ void Init_Helico(ObjectMaster* a1) {
 
 void Load_Helico(ObjectMaster* a1) {
 
-	if (MainCharObj1[0]->Position.x > 3120.0
-		&& MainCharObj1[0]->Position.x < 3500.0
-		&& MainCharObj1[0]->Position.z > 1220.0
-		&& MainCharObj1[0]->Position.z < 1600.0) {
 
-		LoadObject((LoadObj)3, "Init_Helico", Init_Helico, LoadObj_Data1);
-		a1->MainSub = DeleteObject_;
-	}
+	LoadObject((LoadObj)3, "Init_Helico", Init_Helico, LoadObj_Data1);
+	a1->MainSub = DeleteObject_;
+
 }
 
 
