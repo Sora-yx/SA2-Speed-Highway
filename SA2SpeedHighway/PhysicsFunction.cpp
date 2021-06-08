@@ -365,7 +365,10 @@ void __cdecl PResetAngleForBuilding(EntityData1* a1, EntityData2_R* _18, CharObj
     v4 = a3->Speed.y;
     a2.z = a3->Speed.z;
     a2.y = v4;
-    if (v3 * v3 >= a2.z * a2.z + v4 * v4 + a2.x * a2.x)
+
+    double result = a2.z * a2.z + v4 * v4 + a2.x * a2.x;
+
+    if (v3 * v3 >= result)
     {
         PConvertVector_P2G(a1, &a2);
         v5 = BAMS_SubWrap(a1->Rotation.x, 0, 2048);
@@ -624,7 +627,7 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
     do
     {
         v42 = v16;
-        if (CL_ColPolCheckTouchRe(LandColList[v16].Object, v11, LandColList[v16].Attribute))
+        if (CL_ColPolCheckTouchRe(LandColList[v16].Object, v11, false))
         {
             a2a.x = 1.0;
             a2a.z = 0.0;
@@ -716,8 +719,9 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
 
                     double posX = (float)(a1->Position.x - a2a.x);
 
+                    float result = (float)(posX * posX) + (float)(v29 - a2a.z) * (float)(v29 - a2a.z) + (float)(v28 - a2a.y) * (float)(a2a.y - a2a.y);
 
-                    if ( (float)(posX * posX) + (float)(v29 - a2a.z) * (float)(v29 - a2a.z) + (float)(v28 - a2a.y) * (float)(a2a.y - a2a.y) > 0.000099999997)
+                    if ( result > 0.000099999997)
                     {
                         v30 = a2a.y;
                         a1->Position.x = a2a.x;

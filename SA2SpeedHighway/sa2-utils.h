@@ -94,7 +94,7 @@ struct DynColInfo
 	ObjectMaster* Task;
 };
 
-int CL_ColPolCheckTouchRe(NJS_OBJECT* object, csts* a1, SurfaceFlags attribute);
+int CL_ColPolCheckTouchRe(NJS_OBJECT* object, csts* a1, bool attribute);
 DataPointer(DynColInfo*, LandColList, 0x1A5A2DC);
 
 DataPointer(unsigned __int16, LandColList_Count, 0x1DE9484);

@@ -540,7 +540,7 @@ void DoNextAction_r(int playerNum, char action, int unknown)
 
 // signed int __usercall CL_ColPolCheckTouchRe@<eax>(csts* a1@<eax>, NJS_OBJECT* object, SurfaceFlags attribute)
 static const void* const CL_ColPolCheckTouchRePtr = (void*)0x48CE40;
-static inline int CL_ColPolCheckTouchReASM(NJS_OBJECT* object, csts* a1, SurfaceFlags attribute)
+static inline int CL_ColPolCheckTouchReASM(NJS_OBJECT* object, csts* a1, bool attribute)
 {
 	int result;
 	__asm
@@ -555,7 +555,7 @@ static inline int CL_ColPolCheckTouchReASM(NJS_OBJECT* object, csts* a1, Surface
 	return result;
 }
 
-int CL_ColPolCheckTouchRe(NJS_OBJECT* object, csts* a2, SurfaceFlags attribute) {
+int CL_ColPolCheckTouchRe(NJS_OBJECT* object, csts* a2, bool attribute) {
 	return CL_ColPolCheckTouchReASM(object, a2, attribute);
 }
 
