@@ -1007,11 +1007,11 @@ LoopHead* PathList_SpeedHighway0[] = {
 	&PathList_SpeedHighway0_3, //helico
 	&PathList_SpeedHighway0_4,
 	&PathList_SpeedHighway0_5,
-	&PathList_SpeedHighway0_6,
+	/*&PathList_SpeedHighway0_6,
 	&PathList_SpeedHighway0_7,
 	//&PathList_SpeedHighway0_8,
 	//&PathList_SpeedHighway2_0,
-	//&PathList_SpeedHighway2_1,
+	//&PathList_SpeedHighway2_1,*/
 
 	nullptr
 };

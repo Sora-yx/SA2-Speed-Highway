@@ -474,41 +474,20 @@ void __cdecl PResetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharO
     }
 }
 
-struct csts
-{
-    float radius;
-    NJS_POINT3 pos;
-    NJS_POINT3 spd;
-    NJS_POINT3 tnorm;
-    unsigned __int16 find_count;
-    unsigned __int16 selected_nmb;
-    float yt;
-    float yb;
-    int angx;
-    int angz;
-    NJS_POINT3 normal;
-    NJS_POINT3 normal2;
-    NJS_POINT3 onpoly;
-    NJS_POINT3 pshbk;
-    NJS_POINT3 anaspdh;
-    NJS_POINT3 anaspdv;
-};
 
-
-/*int __cdecl PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
+int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
 {
     CollisionInfo* v4; // eax
-    __int16 v5; // cx
+    unsigned __int16 v5; // cx
     EntityData2_R* v6; // ebx
     float v7; // eax
     float v8; // edx
     CharObj2Base* v9; // ebp
     __int16 v10; // ax
-  
     csts* v11; // edi
     Angle v12; // eax
     Angle v13; // eax
-    Angle v14; // eax
+    int v14; // eax
     double v15; // st7
     int v16; // eax
     CharObj2Base* v17; // edx
@@ -549,7 +528,7 @@ struct csts
         && (v5 & 4) != 0
         && (v4->CollidingObject->CollisionArray[v4->hit_num].push & 7) != 0)
     {
-        sub_41BED0(a1, &v1);
+        //CCL_GetHitFaceNormal(a1, &v1);
         v6 = a2;
         v7 = a2->spd.x;
         v8 = a2->spd.z;
@@ -593,7 +572,9 @@ struct csts
     a1->Status = v10 & 0xFFFC;
     v11 = (csts*)v9->csts;
     v47 = 0;
-    njPushUnitMatrix();
+    njPushMatrixEx();
+    njUnitMatrix_();
+    //njUnitMatrix(0);
     v12 = a1->Rotation.z;
     if (v12)
     {
@@ -614,7 +595,8 @@ struct csts
     a2a.y = 1.0;
     v11->angx = v14;
     v11->angz = a1->Rotation.z;
-    njCalcPoint(&a2a, &v11->tnorm, CURRENT_MATRIX); //njcalcvector
+   // njCalcVector(0, &a2a, &v11->tnorm);
+    njCalcPoint(&a2a, &v11->tnorm, CURRENT_MATRIX);
     a2a.y = v9->PhysData.Height * 0.5;
     a2a.z = 0.0;
     a2a.x = 0.0;
@@ -624,27 +606,25 @@ struct csts
     a2a.z = 0.0;
     a2a.x = 0.0;
     a2a.y = v15;
-    //jCalcVector(0, &a2a, &v1);
+    //njCalcVector(0, &a2a, &v1);
     njCalcPoint(&a2a, &v1, CURRENT_MATRIX);
     njPopMatrix(1u);
     v11->radius = v9->PhysData.Height * 0.5;
     v11->pos.x = v1.x + a1->Position.x;
     v11->pos.y = v1.y + a1->Position.y;
     v11->pos.z = v1.z + a1->Position.z;
-    v11->spd.x = v6->spd.x;
-    v11->spd.y = v6->spd.y;
-    v11->spd.z = v6->spd.z;
+    v11->spd = v6->spd;
     CL_ColPolListUpNear(v11);
     v16 = 0;
     v37 = 0;
-    if ((__int16)DynamicCOLCount_B <= 0)
+    if ((__int16)ActiveLandTableColCount <= 0)
     {
         goto LABEL_45;
     }
     do
     {
         v42 = v16;
-        if (CL_ColPolCheckTouchRe(v11, DynamicCOLArray_LandTable[v16].Model))
+        if (CL_ColPolCheckTouchRe(LandColList[v16].Object, v11, LandColList[v16].Attribute))
         {
             a2a.x = 1.0;
             a2a.z = 0.0;
@@ -721,16 +701,23 @@ struct csts
                     v11->pos.x = v11->anaspdh.x + v11->pshbk.x;
                     v11->pos.y = v11->anaspdh.y + v11->pshbk.y;
                     v11->pos.z = v11->anaspdh.z + v11->pshbk.z;
-                    v26 = DynamicCOLArray_LandTable[v42].Entity;
+                    v26 = LandColList[v42].Task;
                     if (v26)
                     {
-                        v17->field_6C = v26;
-                        sub_43CA40(v17, &a3a, (int)a1, (int)v11);
+                        v17->HoldTarget = v26;
+                        //PSSGCollisionForceWorkEffect(v17, &a3a, a1, v11);
                     }
                     a2a.x = v11->pos.x - a3a.x;
                     a2a.y = v11->pos.y - a3a.y;
                     a2a.z = v11->pos.z - a3a.z;
-                    if (!(v28 | v29))
+
+                    v28 = a1->Position.y;
+                    v29 = a1->Position.z;
+
+                    double posX = (float)(a1->Position.x - a2a.x);
+
+
+                    if ( (float)(posX * posX) + (float)(v29 - a2a.z) * (float)(v29 - a2a.z) + (float)(v28 - a2a.y) * (float)(a2a.y - a2a.y) > 0.000099999997)
                     {
                         v30 = a2a.y;
                         a1->Position.x = a2a.x;
@@ -746,7 +733,7 @@ struct csts
             }
         }
         v16 = (unsigned __int16)++v37;
-    }     while ((unsigned __int16)v37 < (__int16)DynamicCOLCount_B);
+    }     while ((unsigned __int16)v37 < (__int16)ActiveLandTableColCount);
     if (v47 != 1)
     {
     LABEL_45:
@@ -755,4 +742,4 @@ struct csts
         goto LABEL_46;
     }
     return v36;
-}*/
+}

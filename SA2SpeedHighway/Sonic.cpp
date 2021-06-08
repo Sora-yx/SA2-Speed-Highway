@@ -67,6 +67,7 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 
 		return;
 	case Saction::RollBuilding:
+
 		if (Sonic_CheckNextActions(SonicCO2, data1, data2, co2)) {
 			return;
 		}
@@ -151,11 +152,12 @@ void Sonic_Main_r(ObjectMaster* obj)
 		PGetAccelerationForBuilding(data1, data2R, co2);
 		PlayerGetSpeed(data1, co2, data2);
 
-		if (PlayerSetPosition(data1, data2, co2) == 2) {
+		if (PSetPositionForBuilding(data1, data2R, co2) == 2) {
 			HurtPlayerBuilding(data1, co2);
 		}
 		else {
 			PResetPositionForBuilding(data1, data2R, co2);
+			PhysicsAndAnimCheck(co2, data1);
 		}
 
 		
@@ -164,7 +166,7 @@ void Sonic_Main_r(ObjectMaster* obj)
 		PGetAccelerationForBuilding(data1, data2R, co2);
 		PlayerGetSpeed(data1, co2, data2);
 
-		if (PlayerSetPosition(data1, data2, co2) == 2) {
+		if (PSetPositionForBuilding(data1, data2R, co2) == 2) {
 
 			HurtPlayerBuilding(data1, co2);
 		}
@@ -178,15 +180,14 @@ void Sonic_Main_r(ObjectMaster* obj)
 		PGetAccelerationForBuilding(data1, data2R, co2);
 		PlayerGetSpeed(data1, co2, data2);
 
-		if (PlayerSetPosition(data1, data2, co2) != 2) {
+		if (PSetPositionForBuilding(data1, data2R, co2) != 2) {
 			PResetPositionForBuilding(data1, data2R, co2);
 			PResetPositionForBuilding(data1, data2R, co2);
-			break;
 		}
 		else {
 
 			HurtPlayerBuilding(data1, co2);
-
+			PResetPositionForBuilding(data1, data2R, co2);
 		}
 
 		//LoadCrashStar(co2->PlayerNum);
@@ -196,11 +197,12 @@ void Sonic_Main_r(ObjectMaster* obj)
 		PGetAccelerationForBuilding(data1, data2R, co2);
 		PlayerGetSpeed(data1, co2, data2);
 
-		if (PlayerSetPosition(data1, data2, co2) == 2) {
+		if (PSetPositionForBuilding(data1, data2R, co2) == 2) {
 
 			HurtPlayerBuilding(data1, co2);
 		}
 		else {
+			PResetPositionForBuilding(data1, data2R, co2);
 			PResetPositionForBuilding(data1, data2R, co2);
 		}
 
@@ -208,18 +210,9 @@ void Sonic_Main_r(ObjectMaster* obj)
 	case Saction::HurtBuilding:
 		PGetAccelerationForBuilding(data1, data2R, co2);
 		PlayerGetSpeed(data1, co2, data2);
+		data1->Position.y = data2R->spd.y + data1->Position.y;
 		PResetPositionForBuilding(data1, data2R, co2);
-
-		if (PlayerSetPosition(data1, data2, co2) == 2) {
-
-			HurtPlayerBuilding(data1, co2);
-		}
-		else {
-			PResetPositionForBuilding(data1, data2R, co2);
-		}
 		break;
-
-
 	}
 }
 

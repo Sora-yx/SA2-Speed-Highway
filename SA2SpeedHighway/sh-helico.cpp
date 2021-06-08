@@ -137,6 +137,7 @@ void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
 		if ((v20 & 0x2000) == 0)
 		{
 			Heli_ApplyPositionStuff(dataNewRot, v2);
+			return;
 		}
 		v21 = v2->Scale.z;
 		if ((v20 & 0x4000) != 0)
@@ -149,6 +150,7 @@ void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
 				v23 = v20 + 0x4000;
 				v2->Status = v23;
 				Heli_ApplyPositionStuff(dataNewRot, v2);
+				return;
 			}
 		}
 		else
@@ -160,6 +162,7 @@ void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
 				v2->Scale.z = -2.0;
 				v23 = v20 - 0x4000;
 				Heli_ApplyPositionStuff(dataNewRot, v2);
+				return;
 			}
 		}
 
@@ -529,9 +532,9 @@ void Init_Helico(ObjectMaster* a1) {
 	v1->Scale.y = 0.0;
 	v1->field_6 = 0;
 	// v1->timer = (int*)2048;
-	getrot->info01 = 0.0;
-	getrot->info02 = 0.0;
-	getrot->info03 = 2048;
+	getrot->info01 = 0.0; //CharIndex
+	getrot->info02 = 0.0; //LoopData
+	getrot->info03 = 2048; //Timer/Object
 
 	a1->field_4C = getrot;
 	v1->field_2 = 0;

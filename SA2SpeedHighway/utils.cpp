@@ -537,3 +537,89 @@ void DoNextAction_r(int playerNum, char action, int unknown)
 	}
 }
 
+
+// signed int __usercall CL_ColPolCheckTouchRe@<eax>(csts* a1@<eax>, NJS_OBJECT* object, SurfaceFlags attribute)
+static const void* const CL_ColPolCheckTouchRePtr = (void*)0x48CE40;
+static inline int CL_ColPolCheckTouchReASM(NJS_OBJECT* object, csts* a1, SurfaceFlags attribute)
+{
+	int result;
+	__asm
+	{
+		push[attribute]
+		push[a1]
+		mov eax, [object]
+		call CL_ColPolCheckTouchRePtr
+		add esp, 8
+		mov result, eax
+	}
+	return result;
+}
+
+int CL_ColPolCheckTouchRe(NJS_OBJECT* object, csts* a2, SurfaceFlags attribute) {
+	return CL_ColPolCheckTouchReASM(object, a2, attribute);
+}
+
+double __fastcall sub_7889F0(NJS_VECTOR* a1, NJS_VECTOR* a2, NJS_VECTOR* a3)
+{
+	double v3; // st7
+	double v4; // st6
+	double v5; // st5
+	float v7; // [esp+0h] [ebp-4h]
+
+	v3 = a2->z * a1->y - a2->y * a1->z;
+	v4 = a2->x * a1->z - a2->z * a1->x;
+	v5 = a2->y * a1->x - a2->x * a1->y;
+	a3->x = v3;
+	a3->y = v4;
+	a3->z = v5;
+	v7 = v5 * v5 + v4 * v4 + v3 * v3;
+	return sqrt(v7);
+}
+
+int VectorAngle(NJS_VECTOR* a1, NJS_VECTOR* a2, NJS_VECTOR* a3)
+{
+	double v3; // st7
+	int v5; // esi
+	float v6; // [esp+8h] [ebp-10h]
+	NJS_VECTOR a3a; // [esp+Ch] [ebp-Ch] BYREF
+
+	v3 = njInnerProduct(a1, a2);
+	v6 = v3;
+	if (v3 <= -1.0)
+	{
+		return 0x8000;
+	}
+	if (v6 >= 1.0)
+	{
+		return 0;
+	}
+	v5 = (unsigned __int64)(acos(v6) * 65536.0 * 0.1591549762031479);
+	sub_7889F0(a1, a2, &a3a);
+	if (a3)
+	{
+		if (njInnerProduct(a3, &a3a) < 0.0)
+		{
+			v5 = 0x10000 - v5;
+		}
+	}
+	return v5;
+}
+
+static const void* const PhysicsAnimCheckPtr = (void*)0x474F80;
+static inline void PhysicsAndAnimCheckASM(CharObj2Base* a1, EntityData1* a2)
+{
+
+	__asm
+	{
+		push[a2]
+		mov ebx, [a1]
+		call PhysicsAnimCheckPtr
+		add esp, 4
+	}
+}
+
+
+void PhysicsAndAnimCheck(CharObj2Base* a1, EntityData1* a2) {
+	return PhysicsAndAnimCheckASM(a1, a2);
+
+}
