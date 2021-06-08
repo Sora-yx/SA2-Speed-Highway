@@ -6,6 +6,8 @@ extern HelperFunctions HelperFunctionsGlobal;
 
 extern int CurrentAct;
 
+void CheckAndSetControl(ObjectMaster* obj);
+void CheckAndKillPlayer(ObjectMaster* obj);
 
 struct RotInfo
 {

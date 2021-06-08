@@ -5,7 +5,7 @@ Trampoline* Sonic_Main_t;
 Trampoline* Sonic_runsActions_t;
 
 enum class Saction {
-	RunBuilding = 86,
+	RunBuilding = 90,
 	RollBuilding,
 	FallBuilding,
 	JumpBuilding,
@@ -52,8 +52,13 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 		if (CheckPlayerFall(co2, data1))
 		{
 			data1->Action = (char)Saction::FallBuilding;
+			return;
 		}
 		else {
+
+			if (co2->Speed.x < 1.0 && !GetAnalog(data1, co2, 0, 0))
+				co2->Speed.x = 1.0;
+
 			if (Sonic_CheckJump(data1, co2, SonicCO2)) {
 				co2->Speed.y = co2->PhysData.JumpSpeed * 1.05;
 				data1->Action = (char)Saction::JumpBuilding;
@@ -61,7 +66,7 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 			else if (Action_Pressed[co2->PlayerNum]) {
 				data1->Action = (char)Saction::RollBuilding;
 				co2->AnimInfo.Next = 12;
-				data1->Status |= 0x500u;
+				data1->Status |= Status_Ball;
 			}
 		}
 
@@ -83,7 +88,8 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 			}
 			else if (Action_Pressed[co2->PlayerNum]) {
 				data1->Action = (char)Saction::RunBuilding;
-				co2->AnimInfo.Next = 9;
+				PhysicsAndAnimCheck(co2, data1);
+				data1->Status &= 0xDAFFu;
 			}
 
 		}
@@ -92,13 +98,16 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 	case Saction::FallBuilding:
 		if (Sonic_CheckNextActions(SonicCO2, data1, data2, co2) || (data1->Status & (Status_OnObjectColli | Status_Ground)) == 0) {
 
+			if (co2->Speed.x >= 0)
+				co2->Speed.x = -1;
+
 			return;
 		}
 
 		data1->Rotation.x = data2R->ang_aim.x;
 		data1->Rotation.z = data2R->ang_aim.z;
 		data1->Action = (char)Saction::RunBuilding;
-		co2->AnimInfo.Next = 9;
+		PhysicsAndAnimCheck(co2, data1);
 
 		return;
 	case Saction::JumpBuilding:
@@ -109,7 +118,7 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 		data1->Rotation.x = data2R->ang_aim.x;
 		data1->Rotation.z = data2R->ang_aim.z;
 		data1->Action = (char)Saction::RunBuilding;
-		co2->AnimInfo.Next = 9;
+		PhysicsAndAnimCheck(co2, data1);
 
 		return;
 	case Saction::HurtBuilding:

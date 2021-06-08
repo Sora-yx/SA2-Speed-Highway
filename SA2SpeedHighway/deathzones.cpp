@@ -11,6 +11,29 @@ DeathZone SHDeathZonesAct3;
 
 uint32_t charaFlag = CharacterFlags_Sonic | CharacterFlags_Shadow | CharacterFlags_Tails | CharacterFlags_Eggman | CharacterFlags_Knuckles | CharacterFlags_Rouge | CharacterFlags_MechTails | CharacterFlags_MechEggman;
 
+void CheckAndKillPlayer(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+	switch (CurrentLevel) {
+	case LevelIDs_RadicalHighway:
+
+		if (CurrentAct == 0) {
+			if (MainCharObj1[0]->Position.y < -3176)
+			{
+				KillPlayerFall(0);
+				data->Action = 2;
+			}
+		}
+		else if (CurrentAct == 2) {
+			if (MainCharObj1[0]->Position.y < -100)
+			{
+				KillPlayerFall(0);
+				data->Action = 2;
+			}
+		}
+		break;
+	}
+}
 
 void LoadSH_DeathZonesModel() {
 

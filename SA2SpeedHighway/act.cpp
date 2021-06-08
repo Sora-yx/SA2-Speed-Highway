@@ -1,50 +1,92 @@
 #include "pch.h"
 #include "act.h"
 
+void CheckAndSetControl(ObjectMaster* obj) {
+
+	EntityData1* v1 = obj->Data1.Entity;
+
+	for (int i = 0; i < MAXPLAYERS; i++) {
+		switch (v1->Action) {
+		case 0:
+			v1->field_6 = 0;
+
+			ControllerEnabled[i] = false;
+			if (MainCharObj2[i]) {
+				if (MainCharObj2[i]->Speed.x >= 2.0) {
+					MainCharObj2[i]->Speed.x = 1.5;
+				}
+				v1->Action = 1;
+			}
+			break;
+		case 1:
+			if (++v1->field_6 == 100) {
+				ControllerEnabled[i] = true;
+				v1->Action = 2;
+			}
+			break;
+		}
+	}
+
+}
+
 void SetSonicRunningOnBulding(ObjectMaster* a1)
 {
-	EntityData1* v1; // esi
-	EntityData1* v2; // edi
-	__int16 v3; // ax
-	__int16 v4; // ax
+	EntityData1* data; // esi
+	EntityData1* player; // edi
+	int v4;
+
+	data = a1->Data1.Entity;
 
 
-	v1 = a1->Data1.Entity;
+	for (int i = 0; i < MAXPLAYERS; i++) {
 
-	if (CurrentAct != 1 && MainCharObj1[0]->Position.x <= 2.0)
-		return;
+		player = MainCharObj1[i];
 
-	if (a1->Data1.Entity->Action < 3) {
+		if (!player || CurrentAct != 1)
+			break;
 
-		for (int i = 0; i < MAXPLAYERS; i++) {
-			v2 = MainCharObj1[i];
-			if (v2)
-			{
-				v3 = v1->field_6;
-				v1->field_6 = v3 + 1;
+		switch (data->Action) {
 
-				if (++v1->field_2 < 40)
-					return;
-
-				if (v2->Position.y <= 25.0)
-				{
-					v4 = v1->Status;
-					if ((v4 & 8) == 0)
-					{
-
-						v1->Status = v4 | 8;
-						LoadLevelMusic((char*)"highway2.adx");
-						
-						if (MainCharObj2[i]->CharID <= Characters_Shadow) {
-							v2->Action = 88;
-							MainCharObj2[i]->AnimInfo.Next = 68;
-							v2->Status &= Status_Ball;
-						}
-						a1->Data1.Entity->Action = 3;
-					}
-				}
-	
+		case 0:
+			StopMusic();
+			if (++data->field_2 == 40) {
+				data->Action = 1;
 			}
+			break;
+		case 1:
+			if (player->Position.y <= -50.0)
+			{
+				v4 = player->Status;
+				if ((v4 & 8) != 0)
+					break;
+
+				ControllerEnabled[i] = 0;
+				player->Status = v4 | 8;
+				LoadLevelMusic((char*)"highway2.adx");
+
+				if (MainCharObj2[i]->CharID <= Characters_Shadow) {
+					player->Action = 92;
+					MainCharObj2[i]->AnimInfo.Next = 68;
+					player->Status &= 0xDAFFu;
+				}
+				data->field_2 = 0;
+				data->Action = 2;
+
+			}
+			break;
+		case 2:
+			if (++data->field_6 == 60) {
+				ControllerEnabled[i] = 1;
+				data->Action = 3;
+			}
+			break;
+		case 3:
+			if (player->Position.y <= -18000)
+			{
+				player->Action = 10;
+				data->Action = 4;
+			}
+			break;
 		}
 	}
 }
@@ -53,7 +95,7 @@ void SetSonicRunningOnBulding(ObjectMaster* a1)
 static void act3Trigger(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
-	
+
 	for (int i = 0; i < MAXPLAYERS; i++)
 	{
 		EntityData1* player = MainCharObj1[i];
@@ -95,15 +137,6 @@ static void act2Trigger(ObjectMaster* obj)
 void __cdecl SHControlActTrigger(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
-	
-
-	if (data->Action == 3 && CurrentAct == 1) {
-		if (MainCharObj1[0]->Position.y <= -18000)
-		{
-			MainCharObj1[0]->Action = 10;
-			data->Action = 4;
-		}
-	}
 
 	switch (CurrentAct)
 	{
@@ -111,7 +144,6 @@ void __cdecl SHControlActTrigger(ObjectMaster* obj)
 		act2Trigger(obj);
 		break;
 	case 1:
-		SetSonicRunningOnBulding(obj);	
 		act3Trigger(obj);
 		break;
 	default:

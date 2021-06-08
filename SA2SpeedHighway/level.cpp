@@ -124,6 +124,8 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
 
+
+
 	switch (data->Action)
 	{
 	case 0:
@@ -134,23 +136,22 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 		data->Action = 1;
 		break;
 	case 1:
-		if (CurrentAct == 0) {
-			if (MainCharObj1[0]->Position.y < -3176)
-			{
-				KillPlayerFall(0);
-				data->Action = 2;
-			}
+		if (CurrentAct == 1) {
+
+			LoadChildObject(LoadObj_Data1, CheckAndSetControl, obj);
+			LoadChildObject(LoadObj_Data1, SetSonicRunningOnBulding, obj);
+			data->Action = 2;
 		}
-		else if (CurrentAct == 2) {
-			if (MainCharObj1[0]->Position.y < -100)
-			{
-				KillPlayerFall(0);
-				data->Action = 2;
-			}
+		break;
+	case 2:
+		if (CurrentAct == 2) {
+			LoadChildObject(LoadObj_Data1, CheckAndSetControl, obj);
+			data->Action = 3;
 		}
 		break;
 	}
-
+	
+	CheckAndKillPlayer(obj);
 }
 
 

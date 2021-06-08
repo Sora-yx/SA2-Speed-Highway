@@ -237,6 +237,7 @@ void __fastcall PGetAccelerationForBuilding(EntityData1* twp, EntityData2_R* mwp
             {
                 if ((twp->Status & 0x100) != 0 || pwp->Speed.x <= (double)pwp->PhysData.SpeedMaxH)
                     goto LABEL_14;
+
                 v14 = (float)(pwp->Speed.x - pwp->PhysData.SpeedMaxH);
             }
             else
@@ -267,7 +268,7 @@ void __fastcall PGetAccelerationForBuilding(EntityData1* twp, EntityData2_R* mwp
             (v19) = v18;
             if ((float)((PDS_PERIPHERAL*)&Controllers[0].x1, v18) < 0.0)
                 v20 = (float)((float)((PDS_PERIPHERAL*)&Controllers[0].x1, v18) + (float)3072.0);
-            else                                                   
+            else
                 v20 = (float)((float)((PDS_PERIPHERAL*)&Controllers[0].x1, v18) - (float)3072.0);
             if ((float)v19 < 0.0)
                 v21 = (float)((float)v19 + (float)3072.0);
@@ -568,7 +569,6 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
     {
         a1->Status = v10 & 0xFFFC;
         a1->Position.x = v6->spd.x + a1->Position.x;
-    LABEL_46:
         a1->Position.z = v6->spd.z + a1->Position.z;
         return v36;
     }
@@ -622,7 +622,10 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
     v37 = 0;
     if ((__int16)ActiveLandTableColCount <= 0)
     {
-        goto LABEL_45;
+        a1->Position.x = a1->Position.x + v6->spd.x;
+        a1->Position.y = v6->spd.y + a1->Position.y;
+        a1->Position.z = v6->spd.z + a1->Position.z;
+        return v36;
     }
     do
     {
@@ -740,10 +743,9 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
     }     while ((unsigned __int16)v37 < (__int16)ActiveLandTableColCount);
     if (v47 != 1)
     {
-    LABEL_45:
         a1->Position.x = a1->Position.x + v6->spd.x;
         a1->Position.y = v6->spd.y + a1->Position.y;
-        goto LABEL_46;
+        a1->Position.z = v6->spd.z + a1->Position.z;
     }
     return v36;
 }

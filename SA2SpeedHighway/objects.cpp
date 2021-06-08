@@ -24,7 +24,7 @@ static ModelInfo* SH_OOStp4SCol;
 static ModelInfo* SH_OOStp4TCol;
 static ModelInfo* SH_Fence02;
 static ModelInfo* SH_Escalator[2];
-static ModelInfo* SH_EscalatorCol;
+static ModelInfo* SH_EscalatorCol[2];
 static ModelInfo* SH_Bench;
 static ModelInfo* SH_Plant1;
 static ModelInfo* SH_Plant2;
@@ -72,6 +72,7 @@ void LoadModelsSH()
 	SH_OOStp4S = LoadMDL("SH-OOstp4S", ModelFormat_Chunk);
 	SH_OOStp4T = LoadMDL("SH-OOstp4T", ModelFormat_Chunk);
 
+	SH_Escalator[0] = LoadMDL("SH-Escalator1", ModelFormat_Chunk);
 	SH_Escalator[1] = LoadMDL("SH-Escalator2", ModelFormat_Chunk);
 	SH_Bench = LoadMDL("SH-Bench", ModelFormat_Chunk);
 	SH_Plant1 = LoadMDL("SH-Plant1", ModelFormat_Chunk);
@@ -81,7 +82,8 @@ void LoadModelsSH()
 	//Load Collisions model for DynCol
 	SH_OOStp4SCol = LoadMDL("SH-OOstp4SCol", ModelFormat_Basic);
 	SH_OOStp4TCol = LoadMDL("SH-OOstpTCol", ModelFormat_Basic);
-	SH_EscalatorCol = LoadMDL("SH-EscalatorCol", ModelFormat_Basic);
+	SH_EscalatorCol[0] = LoadMDL("SH-EscalatorCol1", ModelFormat_Basic);
+	SH_EscalatorCol[1] = LoadMDL("SH-EscalatorCol2", ModelFormat_Basic);
 
 
 	LoadHelicoModel();
@@ -309,9 +311,13 @@ void __cdecl sub_49CE60(EntityData1* a1, EntityData2* a2)
 	}
 }
 
+void Escalator_Display(ObjectMaster* obj) {
+
+}
+
 void __cdecl OEscalator2(ObjectMaster* obj)
 {
-	obj->Data2.Undefined = SH_EscalatorCol;
+	obj->Data2.Undefined = SH_EscalatorCol[1]->getmodel();
 	obj->field_4C = SH_Escalator[1]->getmodel();
 	obj->MainSub = MainSubGlobalDynCol;
 	obj->DisplaySub = GenericSHDisplay;
