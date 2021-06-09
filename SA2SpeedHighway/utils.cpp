@@ -71,6 +71,16 @@ void __cdecl EnemyBounceThing(unsigned __int8 playerID, float speedX, float spee
 	}
 }
 
+void __cdecl EnemyBounceThing_Wrapper(unsigned __int8 playerID, float a2, float a3, float a4)
+{
+	EntityData1* data1; // eax
+
+	data1 = MainCharObj1[playerID];
+	data1->Status |= 0x10u;
+	data1->NextAction = 3;
+	EnemyBounceThing(playerID, a2, a3, a4);
+}
+
 void __cdecl dothedash(unsigned __int8 playerID, NJS_VECTOR* _speed, Rotation* angle, __int16 disableTime)
 {
 	int index; // eax
@@ -621,5 +631,22 @@ static inline void PhysicsAndAnimCheckASM(CharObj2Base* a1, EntityData1* a2)
 
 void PhysicsAndAnimCheck(CharObj2Base* a1, EntityData1* a2) {
 	return PhysicsAndAnimCheckASM(a1, a2);
+}
 
+int __cdecl DoRotationStuff(unsigned __int8 a1, int a2, int a3, int a4)
+{
+	int v4; // eax
+	EntityData1* v5; // edx
+	EntityData2_R* v6; // eax
+	int result; // eax
+
+	v4 = a1;
+	v5 = MainCharObj1[v4];
+	v6 = (EntityData2_R*)MainCharData2[v4];
+	v5->Rotation.x = a2;
+	v5->Rotation.y = 0x4000 - a3;
+	v6->ang_aim.y = 0x4000 - a3;
+	result = a4;
+	v5->Rotation.z = a4;
+	return result;
 }

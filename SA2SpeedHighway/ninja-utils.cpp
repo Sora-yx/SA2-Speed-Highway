@@ -236,3 +236,26 @@ float __fastcall njInnerProduct(const NJS_VECTOR* v1, const NJS_VECTOR* v2)
 {
 	return v1->z * v2->z + v1->y * v2->y + v1->x * v2->x;
 }
+
+float __cdecl VectorMaxAbs(NJS_VECTOR* y)
+{
+	double result; // st7
+	float x; // [esp+0h] [ebp-4h]
+	float v4; // [esp+8h] [ebp+4h]
+
+	x = fabs(y->x);
+	v4 = fabs(y->y);
+	result = fabs(y->z);
+	if (x <= (double)v4)
+	{
+		if (v4 > result)
+		{
+			result = v4;
+		}
+	}
+	else if (x > result)
+	{
+		result = x;
+	}
+	return result;
+}

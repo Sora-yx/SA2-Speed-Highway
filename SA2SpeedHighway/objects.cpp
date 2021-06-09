@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "obj-common.h"
 #include "objects.h"
-
 #include "sh-light.h"
 #include "sh-cage.h"
 #include "sh-glass.h"
@@ -9,6 +8,7 @@
 #include "sh-cone.h"
 #include "sh-bell.h"
 #include "sh-jammer.h"
+#include "SH-Fountain.h"
 
 static NJS_TEXNAME highwayObj_Tex[118]{};
 NJS_TEXLIST highwayObj_TEXLIST = { arrayptrandlength(highwayObj_Tex, Uint32) };
@@ -102,7 +102,7 @@ void LoadModelsSH()
 	SH_HighRaftCol[0] = LoadMDL("sh-highraftA", ModelFormat_Basic);
 	SH_HighRaftCol[1] = LoadMDL("sh-highraftC", ModelFormat_Basic);
 
-
+	LoadFountainModel();
 	LoadHelicoModel();
 }
 
@@ -114,6 +114,7 @@ void FreeModelsSH()
 	FreeAssets_Jammer();
 	FreeCraneModels();
 	FreeSHGlass();
+	DeleteFountainModel();
 
 	FreeMDL(SH_Lamp[0]);
 
@@ -545,7 +546,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x7A9140, "O KN HINT" } /* "O KN HINT" */,
 	{ (LoadObj)(LoadObj_Data1), 2, 0, 0, (ObjectFuncPtr)LongSpring_Main },
 	{ (LoadObj)6 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x61C740, "O EV   " } /* "O EV   " */,
-	{ (LoadObj)10 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x61BDC0, "O FOUNT" } /* "O FOUNT" */,
+	{ (LoadObj)10, 3, 1, 1000000, LoadFountain,} /* "O FOUNT" */,
 	{ (LoadObj)6, 3, 1, 1000000, OCrane },
 	{ (LoadObj)LoadObj_Data1, 3, 1, 1000000, OGlass}, /* "O GLASS " */
 	{ (LoadObj)LoadObj_Data1, 3, 1, 2250000, OGlass2}, /* "O GLASS " */

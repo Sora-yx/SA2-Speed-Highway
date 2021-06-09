@@ -170,6 +170,7 @@
     <ClInclude Include="sh-bell.h" />
     <ClInclude Include="sh-cage.h" />
     <ClInclude Include="sh-cone.h" />
+    <ClInclude Include="SH-Fountain.h" />
     <ClInclude Include="sh-glass.h" />
     <ClInclude Include="sh-jammer.h" />
     <ClInclude Include="sh-lamp.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="PhysicsFunction.cpp" />
     <ClCompile Include="sh-bell.cpp" />
     <ClCompile Include="sh-cone.cpp" />
+    <ClCompile Include="sh-fountain.cpp" />
     <ClCompile Include="sh-glass.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="obj-common.cpp" />
