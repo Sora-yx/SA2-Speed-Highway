@@ -29,6 +29,10 @@ static ModelInfo* SH_Bench;
 static ModelInfo* SH_Plant1;
 static ModelInfo* SH_Plant2;
 static ModelInfo* SH_Lmpa;
+static ModelInfo* SH_Kanban[2];
+static ModelInfo* SH_Siba[2];
+static ModelInfo* SH_HighRaft[2];
+static ModelInfo* SH_HighRaftCol[2];
 
 
 
@@ -47,6 +51,11 @@ CollisionData BenchCol[] = {
 };
 
 CollisionData LmpaCol = { 0, (CollisionShapes)0x0, 0x77, 0, 0, {0.0, -1.0, 7.0}, 2.0, 0.0, 0.0, 0.0, 0, 0, 0 };
+
+CollisionData KanbanaCol = { 0, (CollisionShapes)0x0, 0x77, 0, 0, {0.0, -5.0, 0.0}, 5.0, 0.0, 0.0, 0.0, 0, 0, 0 };
+
+CollisionData Siba01col = { 0, (CollisionShapes)3, 0x77, 0, 0, {0}, 20.0, 2.0, 20.0, 0.0, 0, 0, 0 };
+CollisionData Siba02col = { 0, (CollisionShapes)0, 1, 0x77, 0, 0, {0}, 40.0, 2.0, 0.0, 0.0, 0, 0, 0 };
 
 void LoadModelsSH()
 {
@@ -78,12 +87,20 @@ void LoadModelsSH()
 	SH_Plant1 = LoadMDL("SH-Plant1", ModelFormat_Chunk);
 	SH_Plant2 = LoadMDL("SH-Plant2", ModelFormat_Chunk);
 	SH_Lmpa = LoadMDL("SH-Lmpa", ModelFormat_Chunk);
+	SH_Kanban[0] = LoadMDL("SH-Kanbana", ModelFormat_Chunk);
+	SH_Kanban[1] = LoadMDL("SH-Kanbanb", ModelFormat_Chunk);
+	SH_Siba[0] = LoadMDL("SH-Siba01", ModelFormat_Chunk);
+	SH_Siba[1] = LoadMDL("SH-Siba02", ModelFormat_Chunk);
+	SH_HighRaft[0] = LoadMDL("sh-highraftA", ModelFormat_Chunk);
+	SH_HighRaft[1] = LoadMDL("sh-highraftC", ModelFormat_Chunk);
 
 	//Load Collisions model for DynCol
 	SH_OOStp4SCol = LoadMDL("SH-OOstp4SCol", ModelFormat_Basic);
 	SH_OOStp4TCol = LoadMDL("SH-OOstpTCol", ModelFormat_Basic);
 	SH_EscalatorCol[0] = LoadMDL("SH-EscalatorCol1", ModelFormat_Basic);
-	SH_EscalatorCol[1] = LoadMDL("SH-EscalatorCol2", ModelFormat_Basic);
+	SH_EscalatorCol[1] = LoadMDL("SH-EscalatorCol2", ModelFormat_Basic);	
+	SH_HighRaftCol[0] = LoadMDL("sh-highraftA", ModelFormat_Basic);
+	SH_HighRaftCol[1] = LoadMDL("sh-highraftC", ModelFormat_Basic);
 
 
 	LoadHelicoModel();
@@ -103,12 +120,35 @@ void FreeModelsSH()
 	for (uint8_t i = 0; i < 2; i++) {
 		FreeMDL(SH_Cone[i]);
 		FreeMDL(SH_Bell[i]);
+		FreeMDL(SH_Escalator[i]);
+		FreeMDL(SH_EscalatorCol[i]);
+		FreeMDL(SH_Kanban[i]);
 	}
 
 	FreeMDL(SH_SLight);
 	FreeMDL(SH_GFF);
 	FreeMDL(SH_Ogg);
 
+	FreeMDL(SH_Bench);
+	FreeMDL(SH_Plant1);
+	FreeMDL(SH_Plant2);
+	FreeMDL(SH_Lmpa);
+
+	return;
+}
+
+void __cdecl GenericSHDisplay_RotY(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+
+
+	njSetTexture(&highwayObj_TEXLIST);
+	njPushMatrixEx();
+	njTranslateEx(&data->Position);
+	njRotateY(0, data->Rotation.y);
+
+	DrawObject((NJS_OBJECT*)obj->field_4C);
+	njPopMatrixEx();
 }
 
 void __cdecl GenericSHDisplay(ObjectMaster* obj)
@@ -210,7 +250,7 @@ void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* a1)
 
 				a3.y = (unsigned __int64)(v2->Scale.z * 65536.0 * 0.002777777777777778);
 
-				v8 = LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1), (void(__cdecl*)(ObjectMaster*))a1->field_4C, a1);
+				v8 = LoadChildObject((LoadObj)(LoadObj_UnknownB | 6 | LoadObj_UnknownA | LoadObj_Data1), (void(__cdecl*)(ObjectMaster*))a1->field_4C, a1);
 				if (v8)
 				{
 					v8->Data1.Entity->Position = a2;
@@ -249,7 +289,6 @@ void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* a1)
 		}
 	}
 }
-
 
 
 void Load_GFF(ObjectMaster* tp)
@@ -313,6 +352,46 @@ void __cdecl sub_49CE60(EntityData1* a1, EntityData2* a2)
 
 void Escalator_Display(ObjectMaster* obj) {
 
+	Angle v6; // eax
+	Angle v7; // eax
+	Angle v8; // eax
+	float a2; // [esp+0h] [ebp-10h]
+
+	EntityData1* v1 = obj->Data1.Entity;
+
+	if (!ClipObject(obj, 4161600.0))
+	{
+		if (IsPlayerInsideSphere(&v1->Position, 100))
+		{
+			(v1->Status) |= 1u;
+		}
+		else
+		{
+			(v1->Status) &= 0xFEu;
+		}
+
+		njSetTexture(&highwayObj_TEXLIST);
+		njPushMatrix(0);
+		njTranslateV(0, &v1->Position);
+		v6 = v1->Rotation.z;
+		if (v6)
+		{
+			njRotateZ(0, (unsigned __int16)v6);
+		}
+		v7 = v1->Rotation.x;
+		if (v7)
+		{
+			njRotateX(0, (unsigned __int16)v7);
+		}
+		v8 = v1->Rotation.y;
+		if (v8)
+		{
+			njRotateY(0, (unsigned __int16)v8);
+		}
+		DrawObject((NJS_OBJECT*)obj->field_4C);
+		njPopMatrix(1u);
+	}
+
 }
 
 void __cdecl OEscalator2(ObjectMaster* obj)
@@ -320,7 +399,105 @@ void __cdecl OEscalator2(ObjectMaster* obj)
 	obj->Data2.Undefined = SH_EscalatorCol[1]->getmodel();
 	obj->field_4C = SH_Escalator[1]->getmodel();
 	obj->MainSub = MainSubGlobalDynCol;
+	obj->DisplaySub = Escalator_Display;
+}
+
+void __cdecl OEscalator1(ObjectMaster* obj)
+{
+	obj->Data2.Undefined = SH_EscalatorCol[0]->getmodel();
+	obj->field_4C = SH_Escalator[0]->getmodel();
+	obj->MainSub = MainSubGlobalDynCol;
+	obj->DisplaySub = Escalator_Display;
+}
+
+void OHighRaft_Main(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+	if (!ClipSetObject(obj))
+	{
+		if (data->Action == 0) {
+
+			obj->DeleteSub = DeleteFunc_DynCol;
+			DynCol_AddFromObject(obj, SH_HighRaftCol[0]->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid);
+			data->Action = 1;
+		}
+	}
+}
+
+void __cdecl OHighRaftC(ObjectMaster* obj)
+{
+	obj->Data2.Undefined = SH_HighRaftCol[1]->getmodel();
+	obj->field_4C = SH_HighRaft[1]->getmodel();
+	obj->MainSub = MainSubGlobalDynCol;
 	obj->DisplaySub = GenericSHDisplay;
+}
+
+
+void __cdecl OHighRaftA(ObjectMaster* obj)
+{
+	obj->Data2.Undefined = SH_HighRaftCol[0]->getmodel();
+	obj->field_4C = SH_HighRaft[0]->getmodel();
+	obj->MainSub = MainSubGlobalDynCol;
+	obj->DisplaySub = GenericSHDisplay;
+}
+
+void Load_GraftC(ObjectMaster* tp)
+{
+	EntityData1* v1 = tp->Data1.Entity;
+	tp->field_4C = OHighRaftC;
+	tp->MainSub = SH_GlobalMainWithCalcRot;
+	tp->DeleteSub = j_DeleteChildObjects;
+}
+
+
+void Load_GraftA(ObjectMaster* tp)
+{
+	EntityData1* v1 = tp->Data1.Entity;
+	tp->field_4C = OHighRaftA;
+	tp->MainSub = SH_GlobalMainWithCalcRot;
+	tp->DeleteSub = j_DeleteChildObjects;
+}
+
+
+void OSiba02(ObjectMaster* obj) {
+
+	InitCollision(obj, &Siba02col, 1, 4u);
+	obj->field_4C = SH_Siba[1]->getmodel();
+	obj->MainSub = MainSubGlobalCol;
+	obj->DisplaySub = GenericSHDisplay;
+	return;
+}
+
+
+void OSiba01(ObjectMaster* obj) {
+
+	InitCollision(obj, &Siba01col, 1, 4u);
+	obj->Data1.Entity->Collision->Range = 29.0;
+	obj->field_4C = SH_Siba[0]->getmodel();
+	obj->MainSub = MainSubGlobalCol;
+	obj->DisplaySub = GenericSHDisplay;
+	return;
+}
+
+
+void OKanbanb(ObjectMaster* obj) {
+
+	InitCollision(obj, &KanbanaCol, 1, 4u);
+	obj->Data1.Entity->Collision->Range = 10.0;
+	obj->field_4C = SH_Kanban[1]->getmodel();
+	obj->MainSub = MainSubGlobalCol;
+	obj->DisplaySub = GenericSHDisplay_RotY;
+	return;
+}
+
+void OKanbana(ObjectMaster* obj) {
+
+	InitCollision(obj, &KanbanaCol, 1, 4u);
+	obj->Data1.Entity->Collision->Range = 10.0;
+	obj->field_4C = SH_Kanban[0]->getmodel();
+	obj->MainSub = MainSubGlobalCol;
+	obj->DisplaySub = GenericSHDisplay_RotY;
+	return;
 }
 
 void LoadBench(ObjectMaster* obj) {
@@ -372,8 +549,8 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)6, 3, 1, 1000000, OCrane },
 	{ (LoadObj)LoadObj_Data1, 3, 1, 1000000, OGlass}, /* "O GLASS " */
 	{ (LoadObj)LoadObj_Data1, 3, 1, 2250000, OGlass2}, /* "O GLASS " */
-	{ (LoadObj)6 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E40, "HIGH RAFT A" } /* "HIGH RAFT A" */,
-	{ (LoadObj)6 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E60, "HIGH RAFT C" } /* "HIGH RAFT C" */,
+	{ (LoadObj)6, 3, 0, 0, OHighRaftA }/* "HIGH RAFT A" */,
+	{ (LoadObj)6, 3, 0, 0, OHighRaftC }/* "HIGH RAFT C" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x61A330, "O TANKA" } /* "O TANKA" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x619960, "O SIGNB" } /* "O SIGNB" */,
 	{ (LoadObj)6, 3, 1, 1000000, LoadTurnAsi } /* "O TurnAsi" */,
@@ -401,20 +578,20 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },// 3, 1, 160000, 0, (ObjectFuncPtr)0x617440, "O POSTER1" } /* "O POSTER1" */,
 	{ (LoadObj)2 },// 3, 1, 160000, 0, (ObjectFuncPtr)0x617460, "O POSTER2" } /* "O POSTER2" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6173D0, "O SIGN1" } /* "O SIGN1" */,
-	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x617290, "O KANBANA" } /* "O KANBANA" */,
-	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x617330, "O KANBANB" } /* "O KANBANB" */,
+	{ (LoadObj)2, 3, 0, 0, OKanbana } /* "O KANBANA" */,
+	{ (LoadObj)2, 3, 0, 0, OKanbanb } /* "O KANBANB" */,
 	{ (LoadObj)2 },// 3, 1, 40000, 0, (ObjectFuncPtr)0x617160, "O BAKETU" } /* "O BAKETU" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x616C90, "O HYDBASS" } /* "O HYDBASS" */,
 	{ (LoadObj)6 },// 3, 0, 0, 0, (ObjectFuncPtr)0x615810, "O GREEN" } /* "O GREEN" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x615830, "O GREENA" } /* "O GREENA" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x615880, "O GREENB" } /* "O GREENB" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6158D0, "O GREEND" } /* "O GREEND" */,
-	{ (LoadObj)2, 3, 0, 0, nullptr, },// 3, 0, 0, 0, (ObjectFuncPtr)0x6163D0, "O LAMP" } /* "O LAMP" */,
+	{ (LoadObj)2, 3, 0, 0, SHLAMP, },// 3, 0, 0, 0, (ObjectFuncPtr)0x6163D0, "O LAMP" } /* "O LAMP" */,
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x616770, "O CLIGHT" } /* "O CLIGHT" */,
 	{ (LoadObj)2, 3, 0, 0, SHLAMP01, } /* "O LAMP01" */,
 	{ (LoadObj)2, 3, 0, 0, SHLAMP02, },
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x616210, "O PinPin" } /* "O PinPin" */,
-	{ (LoadObj)6 },// 3, 1, 4000000, 0, (ObjectFuncPtr)0x616150, "O Escalator1" } /* "O Escalator1" */,
+	{ (LoadObj)6, 3, 1, 4000000, OEscalator1, } /* "O Escalator1" */,
 	{ (LoadObj)6, 3, 1, 4000000, OEscalator2,} /* "O Escalator2" */,
 	{ (LoadObj)2 },//3, 1, 4000000, 0, (ObjectFuncPtr)0x615EB0, "O Antena" } /* "O Antena" */,
 	{ (LoadObj)3, 0, 0, 0, OCone1, }, /* "O Cone1" */
@@ -422,8 +599,8 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615990, "O Curb" } /* "O Curb" */,
 	{ (LoadObj)2, 3, 0, 0, nullptr } /* "O Fence02" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615920, "O GREENE" } /* "O GREENE" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615780, "O SIBA01" } /* "O SIBA01" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x6157D0, "O SIBA02" } /* "O SIBA02" */,
+	{ (LoadObj)2, 3, 0, 0, OSiba01, } /* "O SIBA01" */,
+	{ (LoadObj)2, 3, 0, 0, OSiba02, },
 	{ (LoadObj)6 },// 3, 1, 250000, 0, (ObjectFuncPtr)0x615740, "O Tokei" } /* "O Tokei" */,
 	{ (LoadObj)2, 3, 0, 0, LoadLmpa, } /* "O Lmpa" */,
 	{ (LoadObj)2, 3, 0, 0, LoadOGG,  } /* "O GG" */,
@@ -435,7 +612,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 3, 1, 1000000, OHwBell, }, /* "O HW BELL" */
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614ED0, "O HELIP L" } /* "O HELIP L" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E80, "O TUNAGI" } /* "O TUNAGI" */,
-	{ (LoadObj)2 },//3, 1, 2250000, 0, (ObjectFuncPtr)0x614D80, "O RING2" } /* "O RING2" */,
+	{ LoadObj_Data1, 3, 1, 2250000, RingMain },
 	{ LoadObj_Data1, 2, 4, 0, Beetle_Attack },
 	{ LoadObj_Data1, 2, 4, 0, Beetle_Stationary },
 	{ LoadObj_Data1, 2, 4, 0, Beetle_Electric },
@@ -454,8 +631,8 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 3, 0, 0, Load_OGFence02, },//3, 0, 0, 0, (ObjectFuncPtr)0x614B60, "O GFENCE02" } /* "O GFENCE02" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B90, "O GPINPIN" } /* "O GPINPIN" */,
 	{ (LoadObj)2, 3, 0, 0, Load_GFF, } /* "O GFF" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614BF0, "O GRAFTA" } /* "O GRAFTA" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614C20, "O GRAFTC" } /* "O GRAFTC" */,
+	{ (LoadObj)2, 3, 0, 0, Load_GraftA } /* "O GRAFTA" */,
+	{ (LoadObj)2, 3, 0, 0, Load_GraftC } /* "O GRAFTA" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614C50, "O GGRENA" } /* "O GGRENA" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614C80, "O GGRENB" } /* "O GGRENB" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614CB0, "O GGREND" } /* "O GGREND" */,

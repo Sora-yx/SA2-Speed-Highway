@@ -2,10 +2,24 @@
 #include "objects.h"
 #include "sh-lamp.h"
 
-ModelInfo* SH_Lamp[2];
+ModelInfo* SH_Lamp[3];
 
 
 static CollisionData Col_Lamp01 = { 0, CollisionShape_Cyl1, 0x77, 0, 0, {0.0, 22.0, 0.0}, 3.0, 22.0, 0.0, 0.0, 0, 0, 0 };
+
+void __cdecl Lamp_DisplayLight2(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* object = (NJS_OBJECT*)obj->field_4C;
+
+	njSetTexture(&highwayObj_TEXLIST);
+	njPushMatrixEx();
+	njTranslateEx(&data->Position);
+	njRotateZXY(&data->Rotation);
+	DrawObject(object);
+	njPopMatrixEx();
+}
+
 
 void __cdecl Lamp_DisplayLight(ObjectMaster* obj)
 {
@@ -44,6 +58,17 @@ void  __cdecl Lamp_Main(ObjectMaster* obj)
 	}
 }
 
+
+void  __cdecl SHLAMP(ObjectMaster* obj)
+{
+	obj->MainSub = Lamp_Main;
+	obj->DisplaySub = Lamp_DisplayLight2;
+	obj->field_4C = SH_Lamp[2]->getmodel();
+	obj->Data1.Entity->Status |= 0x8000u;
+
+	InitCollision(obj, &Col_Lamp01, 1, 4u);
+}
+
 void  __cdecl SHLAMP01(ObjectMaster* obj)
 {
 	obj->MainSub = Lamp_Main;
@@ -69,4 +94,5 @@ void  __cdecl SHLAMP02(ObjectMaster* obj)
 void LoadLampModel() {
 	SH_Lamp[0] = LoadMDL("SH-Lamp01", ModelFormat_Chunk);
 	SH_Lamp[1] = LoadMDL("SH-Lamp02", ModelFormat_Chunk);
+	SH_Lamp[2] = LoadMDL("SH-Lamp00", ModelFormat_Chunk);
 }
