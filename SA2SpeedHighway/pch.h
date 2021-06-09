@@ -13,5 +13,6 @@
 #include "sa2-utils.h"
 #include "ninja-utils.h"
 #include "obj-common.h"
+#include "level.h"
 
 #endif

@@ -93,6 +93,9 @@
     <ClInclude Include="SH-Fountain.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="startpos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -163,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="sh-fountain.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="StartPosition.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

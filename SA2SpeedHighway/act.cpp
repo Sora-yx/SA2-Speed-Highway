@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "act.h"
 
+
+int CurrentAct = 0;
+
 void CheckAndSetControl(ObjectMaster* obj) {
 
 	EntityData1* v1 = obj->Data1.Entity;

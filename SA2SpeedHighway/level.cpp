@@ -3,6 +3,8 @@
 #include "act.h"
 #include "objects.h"
 
+int CurrentSADXLevel = 0;
+
 static LandTableInfo* Act1LandInfo = nullptr;
 static LandTableInfo* Act2LandInfo = nullptr;
 static LandTableInfo* Act3LandInfo = nullptr;
@@ -124,13 +126,11 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
 
-
-
 	switch (data->Action)
 	{
 	case 0:
 		PerfectRings_StartCount = 0;
-		LoadSHAct(2);
+		LoadSHAct(CurrentAct);
 		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
 		obj->DisplaySub = SpeedHighway_Display;
 		data->Action = 1;
@@ -173,20 +173,20 @@ void LoadSHAct(int act)
 		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway0-set-s.bin", "SET0048_2P_U.bin");
 		LoadLevelMusic((char*)"highway1.adx");
 		LoadStagePaths(PathList_SpeedHighway0);
-		MovePlayersToStartPos(-673.0f, -10.0f, 5.0f);
 		break;
 	case 1:
 		LoadLandManager_(Act2LandInfo->getlandtable());
 		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway1-set-s.bin", "SET0048_2P_U.bin");
-		MovePlayersToStartPos(-50.0f, 42.0f, 0.0f);
 		break;
 	case 2:
 		LoadLandManager_(Act3LandInfo->getlandtable());
 		LoadLevelLayout(&SpeedHighwayObjListH, "speed-highway2-set-s.bin", "SET0048_2P_U.bin");
 		LoadLevelMusic((char*)"highway3.adx");
-		MovePlayersToStartPos(72.0f, 26.0f, 192.0f);
 		break;
 	}
+
+	SetLevelPosAndRot();
+	return;
 }
 
 static void __cdecl SpeedHighway_Free()
@@ -244,6 +244,7 @@ static void __cdecl SpeedHighway_Init()
 		CurrentAct = 0;
 	}
 
+	CurrentSADXLevel = LevelIDs_SpeedHighway;
 	LoadGreenForestCharAnims(); //used for helico grab animation
 	LoadSH_DeathZonesModel();
 	LoadModelBG_SH();

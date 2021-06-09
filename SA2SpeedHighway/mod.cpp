@@ -4,13 +4,12 @@
 
 HelperFunctions HelperFunctionsGlobal;
 
-int CurrentAct;
 
 static void FixCam()
 {
 	if (isSADXLevel())
 	{
-		if (CurrentLevel == LevelIDs_RadicalHighway && CurrentAct == 1)
+		if (CurrentSADXLevel == LevelIDs_SpeedHighway && CurrentAct == 1)
 			return;
 
 		if (MainCharObj2[0] && !MainCharObj2[1]) {
@@ -45,6 +44,10 @@ extern "C"
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
+
+		if (MainCharObj2[0] && !MainCharObj2[1]) {
+			MainCharObj1[0]->Rotation = MainCharObj1[0]->Rotation;
+		}
 
 		if (GameState != GameStates_Ingame)
 			return;

@@ -455,7 +455,10 @@ void __cdecl StartPosManager(ObjectMaster* obj)
 		}
 		else
 		{
-			player->Position = data->Position;
+			if (++data->field_6 == 10) {
+				player->Position = data->Position;
+				player->Rotation = data->Rotation;
+			}
 		}
 	}
 	else
@@ -464,7 +467,8 @@ void __cdecl StartPosManager(ObjectMaster* obj)
 	}
 }
 
-void MovePlayersToStartPos(float x, float y, float z)
+
+void MovePlayersToStartPos(NJS_VECTOR Pos, int yrot)
 {
 	for (int i = 0; i < MAXPLAYERS; ++i)
 	{
@@ -472,10 +476,15 @@ void MovePlayersToStartPos(float x, float y, float z)
 		{
 			EntityData1* data = LoadObject(1, "PLAYERTP", StartPosManager, LoadObj_Data1)->Data1.Entity;
 			data->Index = i;
-			data->Position = { x, y, z };
+			data->Position = Pos;
+			data->Rotation.y = yrot;
+			return;
 		}
 	}
+
+	return;
 }
+
 
 void DynCol_AddFromObject(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECTOR* position, Angle rotY, int flags)
 {

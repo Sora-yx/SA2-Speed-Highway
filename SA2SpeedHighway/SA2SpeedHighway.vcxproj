@@ -176,6 +176,7 @@
     <ClInclude Include="sh-lamp.h" />
     <ClInclude Include="sh-light.h" />
     <ClInclude Include="Sonic.h" />
+    <ClInclude Include="startpos.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +207,7 @@
     <ClCompile Include="sh-light.cpp" />
     <ClCompile Include="sh-turnasi.cpp" />
     <ClCompile Include="Sonic.cpp" />
+    <ClCompile Include="StartPosition.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
