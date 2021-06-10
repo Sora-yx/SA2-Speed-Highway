@@ -57,6 +57,8 @@ CollisionData KanbanaCol = { 0, (CollisionShapes)0x0, 0x77, 0, 0, {0.0, -5.0, 0.
 CollisionData Siba01col = { 0, (CollisionShapes)3, 0x77, 0, 0, {0}, 20.0, 2.0, 20.0, 0.0, 0, 0, 0 };
 CollisionData Siba02col = { 0, (CollisionShapes)0, 1, 0x77, 0, 0, {0}, 40.0, 2.0, 0.0, 0.0, 0, 0, 0 };
 
+CollisionData SHPlantCol = { 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, 8.0, 0.0}, 1.0, 8.0, 0.0, 0.0, 0, 0, 0 };
+
 void LoadModelsSH()
 {
 	LoadTextureList("OBJ_HIGHWAY", &highwayObj_TEXLIST);
@@ -98,7 +100,7 @@ void LoadModelsSH()
 	SH_OOStp4SCol = LoadMDL("SH-OOstp4SCol", ModelFormat_Basic);
 	SH_OOStp4TCol = LoadMDL("SH-OOstpTCol", ModelFormat_Basic);
 	SH_EscalatorCol[0] = LoadMDL("SH-EscalatorCol1", ModelFormat_Basic);
-	SH_EscalatorCol[1] = LoadMDL("SH-EscalatorCol2", ModelFormat_Basic);	
+	SH_EscalatorCol[1] = LoadMDL("SH-EscalatorCol2", ModelFormat_Basic);
 	SH_HighRaftCol[0] = LoadMDL("sh-highraftA", ModelFormat_Basic);
 	SH_HighRaftCol[1] = LoadMDL("sh-highraftC", ModelFormat_Basic);
 
@@ -519,6 +521,25 @@ void LoadLmpa(ObjectMaster* obj) {
 	return;
 }
 
+void OStPlant02(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (data->Action == 0) {
+		obj->field_4C = SH_Plant2->getmodel();
+		obj->DisplaySub = GenericSHDisplay_RotY;
+		data->Action = 1;
+	}
+}
+
+void OStPlant01(ObjectMaster* obj) {
+	InitCollision(obj, &SHPlantCol, 1, 4u);
+	obj->Data1.Entity->Collision->Range = 32.0;
+	obj->field_4C = SH_Plant1->getmodel();
+	obj->MainSub = MainSubGlobalCol;
+	obj->DisplaySub = GenericSHDisplay_RotY;
+}
+
 
 static ObjectListEntry SpeedHighwayObjList[] = {
 	{ LoadObj_Data1, 2, 0x10, 0.0, RingMain },
@@ -606,8 +627,8 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 3, 0, 0, LoadLmpa, } /* "O Lmpa" */,
 	{ (LoadObj)2, 3, 0, 0, LoadOGG,  } /* "O GG" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615450, "O FF" } /* "O FF" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x6153C0, "O StPlant01" } /* "O StPlant01" */,
-	{ (LoadObj)2 },//5, 0, 0, 0, (ObjectFuncPtr)0x615310, "O StPlant02" } /* "O StPlant02" */,
+	{ (LoadObj)2, 3, 0, 0, OStPlant01, } /* "O StPlant01" */,
+	{ (LoadObj)2, 5, 0, 0, OStPlant02, } /* "O StPlant01" */,
 	{ (LoadObj)2, 3, 1, 1000000, OHelia} /* "O HeliA" */,
 	{ (LoadObj)2, 3, 1, 1000000, OHelib} /* "O HeliA" */,
 	{ (LoadObj)2, 3, 1, 1000000, OHwBell, }, /* "O HW BELL" */

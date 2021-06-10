@@ -313,6 +313,7 @@ static void FixLand(LandTable* land)
 		col->field_14 = 0;
 		col->Chunks = 0;
 
+
 		if (col->Flags == 0x2)
 		{
 			col->Flags = 0x40000002;
@@ -320,6 +321,10 @@ static void FixLand(LandTable* land)
 		else if (col->Flags & SurfaceFlag_Visible)
 		{
 			col->Flags = SurfaceFlag_Visible;
+		}
+		else if (col->Flags & SurfaceFlag_Water)
+		{
+			col->Flags = SurfaceFlag_Water;
 		}
 		else
 		{
@@ -455,10 +460,8 @@ void __cdecl StartPosManager(ObjectMaster* obj)
 		}
 		else
 		{
-			if (++data->field_6 == 10) {
-				player->Position = data->Position;
-				player->Rotation = data->Rotation;
-			}
+			player->Position = data->Position;
+			player->Rotation = data->Rotation;
 		}
 	}
 	else
@@ -535,6 +538,7 @@ void __cdecl MainSubGlobalCol(ObjectMaster* obj)
 		v1->Status &= 0xFFC7u;
 	}
 }
+
 
 void __cdecl DeleteObjAndResetSet(ObjectMaster* a1)
 {

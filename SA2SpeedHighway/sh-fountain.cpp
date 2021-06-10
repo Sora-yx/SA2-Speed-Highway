@@ -216,9 +216,7 @@ void Fountain_Display(ObjectMaster* obj) {
 	float XScalea; // [esp+1Ch] [ebp+4h]
 	EntityData1* data = obj->Data1.Entity;
 
-
 	njSetTexture(&FtnTexlist);
-
 
 	njPushMatrix(0);
 	sy = 1.0 / data->Scale.y;
@@ -338,54 +336,57 @@ void __cdecl DisplFtnChild2(ObjectMaster* a2)
 	njPopMatrix(1u);
 }
 
+void Ftn_ApplyRotScale(EntityData1* data, double scaleY, Angle rotY, bool isPositive) {
+
+	rotY = data->Rotation.y;
+
+	if (isPositive)
+		data->Scale.y = scaleY + 0.0020000001;
+	else
+		data->Scale.y = scaleY - 0.0020000001;
+
+	data->Rotation.y = rotY += 32;
+	Ftn_ExpandAndConstrict(data);
+}
+
 void __cdecl FountainChild2(ObjectMaster* a1)
 {
 	EntityData1* data; // esi
-	double scaleY; // st7
-	Angle rotY; // eax
-	char v4; // cl
+	double scaleY = 0.0; // st7
+	Angle rotY = 0; // eax
 
 	data = a1->Data1.Entity;
-	if (data->Action)
-	{
-		if (data->Action != 1)
-		{
-			if (data->Action != 2)
-			{
-				Fountain_Delete(a1);
-				return;
-			}
-			if (data->Scale.y <= 0.64999998)
-			{
-				data->Action = 1;
-				Ftn_ExpandAndConstrict(data);
-				return;
-			}
-			scaleY = data->Scale.y - 0.0020000001;
-			goto LABEL_8;
-		}
-		if (data->Scale.y < 0.85000002)
-		{
-			scaleY = data->Scale.y + 0.0020000001;
-		LABEL_8:
-			rotY = data->Rotation.y;
-			data->Scale.y = scaleY;
-			data->Rotation.y = rotY + 32;
-			Ftn_ExpandAndConstrict(data);
-			return;
-		}
-		data->Action = 2;
-		Ftn_ExpandAndConstrict(data);
-	}
-	else
-	{
+
+	switch (data->Action) {
+
+	case 0:
 		a1->field_4C = SH_Fountain[1]->getmodel();
-		a1->DisplaySub = DisplFtnChild2;
-		v4 = data->Status;
+		a1->DisplaySub = DisplFtnChild2;;
 		data->Scale.z = 1.0;
 		data->Scale.x = 1.0;
 		data->Scale.y = 0.75;
-		data->Action = v4;
+		data->Action = 1;
+		break;
+	case 1:
+		if (data->Scale.y < 0.85000002)
+		{
+			Ftn_ApplyRotScale(data, scaleY, rotY, true);
+			return;
+		}
+
+		data->Action = 2;
+		break;
+	case 2:
+		if (data->Scale.y > 0.64999998)
+		{
+			Ftn_ApplyRotScale(data, scaleY, rotY, false);
+			return;
+		}
+		data->Action = 1;
+		break;
+	default:
+		Fountain_Delete(a1);
+		return;
 	}
 }
 
@@ -412,6 +413,9 @@ void FountainChild(ObjectMaster* obj) {
 		data->Scale.y = 1.0;
 		data->Scale.x = 1.0;
 		data->Action = 1;
+	}
+	else if (data->Action == 1) {
+		Ftn_ExpandAndConstrict(data);
 	}
 }
 

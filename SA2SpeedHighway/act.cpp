@@ -84,11 +84,12 @@ void SetSonicRunningOnBulding(ObjectMaster* a1)
 			}
 			break;
 		case 3:
-			if (player->Position.y <= -18000)
+			if (player->Position.y <= -18000.0)
 			{
 				if (player->Action > 60)
 					player->Action = 10;
 
+				EnemyBounceThing(0, 1.4, -2.0, MainCharData2[i]->Velocity.z);
 				data->Action = 4;
 			}
 			break;

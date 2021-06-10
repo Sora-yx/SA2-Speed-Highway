@@ -13,7 +13,12 @@ uint32_t charaFlag = CharacterFlags_Sonic | CharacterFlags_Shadow | CharacterFla
 
 void CheckAndKillPlayer(ObjectMaster* obj) {
 
+
 	EntityData1* data = obj->Data1.Entity;
+
+	if (data->Action == 50)
+		return;
+
 	switch (CurrentLevel) {
 	case LevelIDs_RadicalHighway:
 
@@ -21,14 +26,14 @@ void CheckAndKillPlayer(ObjectMaster* obj) {
 			if (MainCharObj1[0]->Position.y < -3176)
 			{
 				KillPlayerFall(0);
-				data->Action = 2;
+				data->Action = 50;
 			}
 		}
 		else if (CurrentAct == 2) {
 			if (MainCharObj1[0]->Position.y < -100)
 			{
 				KillPlayerFall(0);
-				data->Action = 2;
+				data->Action = 50;
 			}
 		}
 		break;

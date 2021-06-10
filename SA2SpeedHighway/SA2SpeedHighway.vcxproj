@@ -187,6 +187,7 @@
     <ClCompile Include="ninja-utils.cpp" />
     <ClCompile Include="PhysicsFunction.cpp" />
     <ClCompile Include="sh-bell.cpp" />
+    <ClCompile Include="sh-car.cpp" />
     <ClCompile Include="sh-cone.cpp" />
     <ClCompile Include="sh-fountain.cpp" />
     <ClCompile Include="sh-glass.cpp" />
