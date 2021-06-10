@@ -5,7 +5,7 @@ static ModelInfo* SH_Fountain[3];
 extern NJS_TEXLIST highwayObj2_TEXLIST;
 CollisionData ftnCol = { 0, (CollisionShapes)0, 0x77, 0, 0, {0.0, 30.0, 0.0}, 5.0, 0.0, 0.0, 0.0, 0, 0, 0 };
 
-static NJS_TEXNAME FountainTexName[] = {
+/*static NJS_TEXNAME FountainTexName[] = {
 	{ (char*)"fountain01", 0, 0 },
 	{ (char*)"fountain02", 0, 0 },
 	{ (char*)"fountain03", 0, 0 },
@@ -13,7 +13,22 @@ static NJS_TEXNAME FountainTexName[] = {
 };
 
 
-static NJS_TEXLIST FtnTexlist = { arrayptrandlength(FountainTexName, Uint32) };
+static NJS_TEXLIST FtnTexlist = { arrayptrandlength(FountainTexName, Uint32) };*/
+
+
+//They actually made 4 texlist with one tex lol.
+static NJS_TEXNAME ftntexid0 = { (char*)"fountain01", 0, 0 };
+static NJS_TEXNAME ftntexid1 = { (char*)"fountain02", 0, 0 };
+static NJS_TEXNAME ftntexid2 = { (char*)"fountain03", 0, 0 };
+static NJS_TEXNAME ftntexid3 = { (char*)"fountain04", 0, 0 };
+
+static NJS_TEXLIST ftnTexList[4] = {
+	&ftntexid0, 0,
+	&ftntexid1, 0,
+	&ftntexid2, 0,
+	&ftntexid3, 0,
+};
+
 
 void Ftn_ExpandAndConstrict(EntityData1* a1)
 {
@@ -216,7 +231,7 @@ void Fountain_Display(ObjectMaster* obj) {
 	float XScalea; // [esp+1Ch] [ebp+4h]
 	EntityData1* data = obj->Data1.Entity;
 
-	njSetTexture(&FtnTexlist);
+	njSetTexture(&ftnTexList[data->Index]);
 
 	njPushMatrix(0);
 	sy = 1.0 / data->Scale.y;
@@ -256,7 +271,7 @@ void Fountain_Main(ObjectMaster* obj) {
 	double posZ2; // st6
 	double posX; // st7
 	double posZ; // st6
-	char index; // al
+	char index = 0; // al
 	float result2; // [esp+0h] [ebp-1Ch]
 	float resultPos; // [esp+0h] [ebp-1Ch]
 	float posY2; // [esp+14h] [ebp-8h]
@@ -306,9 +321,11 @@ void Fountain_Main(ObjectMaster* obj) {
 		break;
 	}
 
+	if (TimeTotal % 4 == 0) { //4 frames by second
+		index = data->Index + 1; //Index is used to change texlist so the fountain can be animated.
+		data->Index = index;
+	}
 
-	index = data->Index + 1;
-	data->Index = index;
 	if ((unsigned __int8)index > 3u)
 	{
 		data->Index = 0;
@@ -322,9 +339,10 @@ void __cdecl DisplFtnChild2(ObjectMaster* a2)
 	float scale; // [esp+0h] [ebp-Ch]
 
 	data = a2->Data1.Entity;
+	unsigned int index = a2->Parent->Data1.Entity->Index;
 
 	//njSetTexture((NJS_TEXLIST*)(8 * (unsigned __int8)a2->Parent->Data1.Entity->Index + 40579296));
-	njSetTexture(&FtnTexlist);
+	njSetTexture(&ftnTexList[index]);
 	njPushMatrix(0);
 	njTranslateV(0, &data->Position);
 	rotY = data->Rotation.y;
@@ -393,8 +411,9 @@ void __cdecl FountainChild2(ObjectMaster* a1)
 void __cdecl FountainChild_Display(ObjectMaster* a2)
 {
 	EntityData1* data = a2->Data1.Entity;
+	unsigned int index = a2->Parent->Data1.Entity->Index;
 	//njSetTexture((NJS_TEXLIST*)(8 * (unsigned __int8)a2->Parent->Data1.Entity->Index + 40579296));
-	njSetTexture(&FtnTexlist);
+	njSetTexture(&ftnTexList[index]);
 	njPushMatrix(0);
 	njTranslateV(0, &data->Position);
 	njScaleV_(&data->Scale);
@@ -456,10 +475,15 @@ void LoadFountainModel() {
 		SH_Fountain[i] = LoadMDL(str.c_str(), ModelFormat_Chunk);
 	}
 
-	FtnTexlist.textures[0] = highwayObj2_TEXLIST.textures[25];
+	ftnTexList[0].textures[0] = highwayObj2_TEXLIST.textures[25];
+	ftnTexList[1].textures[0] = highwayObj2_TEXLIST.textures[26];
+	ftnTexList[2].textures[0] = highwayObj2_TEXLIST.textures[27];
+	ftnTexList[3].textures[0] = highwayObj2_TEXLIST.textures[28];
+
+	/*FtnTexlist.textures[0] = highwayObj2_TEXLIST.textures[25];
 	FtnTexlist.textures[1] = highwayObj2_TEXLIST.textures[26];
 	FtnTexlist.textures[2] = highwayObj2_TEXLIST.textures[27];
-	FtnTexlist.textures[3] = highwayObj2_TEXLIST.textures[28];
+	FtnTexlist.textures[3] = highwayObj2_TEXLIST.textures[28];*/
 
 	return;
 }
