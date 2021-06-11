@@ -45,9 +45,6 @@ extern "C"
 
 	__declspec(dllexport) void __cdecl OnFrame() {
 
-		if (MainCharObj2[0] && !MainCharObj2[1]) {
-			MainCharObj1[0]->Rotation = MainCharObj1[0]->Rotation;
-		}
 
 		if (GameState != GameStates_Ingame)
 			return;

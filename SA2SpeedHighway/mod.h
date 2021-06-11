@@ -15,3 +15,9 @@ struct RotInfo
 	int info02;
 	int info03;
 };
+
+struct FloatInfo
+{
+	float info01;
+	float info03;
+};
