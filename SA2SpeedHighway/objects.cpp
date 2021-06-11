@@ -34,8 +34,6 @@ static ModelInfo* SH_Siba[2];
 static ModelInfo* SH_HighRaft[2];
 static ModelInfo* SH_HighRaftCol[2];
 
-
-
 CollisionData Col_Fence = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.25, 0.0}, 13.0, 4.25, 2.75, 0.0, 0, 0, 0 };
 CollisionData col_Fence02 = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.5, 0.0}, 10.0, 4.5, 1.0, 0.0, 0, 0, 0 };
 
@@ -136,6 +134,8 @@ void FreeModelsSH()
 	FreeMDL(SH_Plant1);
 	FreeMDL(SH_Plant2);
 	FreeMDL(SH_Lmpa);
+
+	FreeModel_TurnAsi();
 
 	return;
 }
