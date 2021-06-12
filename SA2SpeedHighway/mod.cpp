@@ -49,7 +49,7 @@ extern "C"
 		if (GameState != GameStates_Ingame)
 			return;
 
-		if (Controllers[0].press & Buttons_Y) {
+		if (Controllers[0].press & Buttons_Y && CurrentLevel == LevelIDs_RadicalHighway) {
 			//MainCharObj1[0]->Position = { 3630.514893, -1326, 1424.386963 };
 			//MainCharObj1[0]->Position = { 5512.210938, -1778, 1215 };
 			MainCharObj1[0]->Position = { 4095.762207, -1500, 4599.47998 };

@@ -158,11 +158,10 @@ void __cdecl GenericSHDisplay(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
 
-
 	njSetTexture(&highwayObj_TEXLIST);
 	njPushMatrixEx();
 	njTranslateEx(&data->Position);
-	njRotateZYX(data->Rotation.x, data->Rotation.y, 0, data->Rotation.z);
+	njRotateZXY(&data->Rotation);
 
 	DrawObject((NJS_OBJECT*)obj->field_4C);
 	njPopMatrixEx();
