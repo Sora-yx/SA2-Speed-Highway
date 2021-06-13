@@ -663,3 +663,12 @@ int __cdecl DoRotationStuff(unsigned __int8 a1, int a2, int a3, int a4)
 	v5->Rotation.z = a4;
 	return result;
 }
+
+void ResetMaterialColorOffset()
+{
+	GlobalMatColorR = 0.0f;
+	GlobalMatColorG = 0.0f;
+	GlobalMatColorB = 0.0f;
+	GlobalMatColorA = 0.0f;
+	return;
+}

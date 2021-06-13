@@ -50,7 +50,7 @@ void CalcShit(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3)
 }
 
 
-bool isPlayerOnPlatform(ObjectMaster* a1)
+bool SHCage_isPlayerOnPlatform(ObjectMaster* a1)
 {
 	EntityData1* v3; // r30
 	bool result = false; // r3
@@ -77,237 +77,296 @@ bool isPlayerOnPlatform(ObjectMaster* a1)
 	return false;
 }
 
-void __cdecl sub_442120(float a1, float a2, float a3, float a4)
+struct PL_LANDPOSI
 {
-	int v4; // edi
-	EntityData1* v5; // ecx
-	CharObj2Base* v6; // esi
-	double v7; // st7
-	double v8; // st6
-	double v9; // st5
-	double v10; // st7
-	int v11; // eax
-	float v12; // [esp+0h] [ebp-4h]
+	float x;
+	float y;
+	float z;
+	float r;
+	float d;
+	float h;
+	int angy_dif;
+	int angy_aim;
+};
 
-	v4 = 0;
-	while (1)
+#pragma pack(push, 8)
+struct CharObj2Base_
+{
+	char PlayerNum;
+	char CharID;
+	char Costume;
+	char CharID2;
+	char ActionWindowItems[8];
+	char ActionWindowItemCount;
+	char field_D[3];
+	__int16 Powerups;
+	int field_12;
+	__int16 UnderwaterTime;
+	__int16 IdleTime;
+	BYTE gap1A[10];
+	int Upgrades;
+	float field_28;
+	char field_2C[28];
+	float MechHP;
+	NJS_POINT3 eff;
+	NJS_POINT3 acc;
+	NJS_VECTOR Speed;
+	NJS_POINT3 WallNormal;
+	NJS_POINT3 FloorNormal;
+	SurfaceFlags CurrentSurfaceFlags;
+	SurfaceFlags PreviousSurfaceFlags;
+	void* field_90;
+	ObjectMaster* HeldObject;
+	BYTE gap98[4];
+	ObjectMaster* HoldTarget;
+	ObjectMaster* field_A0;
+	int field_A4;
+	PL_LANDPOSI* island;
+	NJS_MOTION** Animation;
+	PhysicsData PhysData;
+	int field_144[12];
+	CharAnimInfo AnimInfo;
+	float idk;
+	float idk2;
+	int CollisionFlags;
+	float idk4;
+	float DistanceMin;
+	float DistanceMax;
+	float idk7;
+};
+#pragma pack(pop)
+
+
+
+void __cdecl SHDispCage(ObjectMaster* a1)
+{
+	EntityData1* v1; // esi
+	Angle v2; // eax
+
+	v1 = a1->Data1.Entity;
+	njControl3D_Backup();
+	SetMaterialColor(1, 1, 1, 1);
+	njPushMatrix(0);
+	njTranslateV(0, &v1->Position);
+	v2 = v1->Rotation.y;
+	if (v2)
 	{
-		v5 = MainCharObj1[v4];
-		if (v5)
-		{
-			if (v5->Position.y >= (double)a2)
-			{
-				v6 = MainCharObj2[v4];
-				v7 = a1 - v5->Position.x;
-				v8 = a2 - v5->Position.y;
-				v9 = a3 - v5->Position.z;
-				v12 = v7 * v7 + v8 * v8 + v9 * v9;
-				v10 = sqrt(v12) - a4;
-				if (v10 <= 120.0 && (v6->field_12) < 15)
-				{
-					break;
-				}
-			}
-		}
-		if (++v4 >= 2)
-		{
-			return;
-		}
+		njRotateY(0, (unsigned __int16)v2);
 	}
-
-	v11 = 32 * (v6->field_12);
-	/**(float*)((char*)v6->SurfaceInfo. array_15x32 + v11) = a1;
-	*(float*)((char*)v6->array_15x32 + v11 + 4) = a2;
-	*(float*)((char*)v6->array_15x32 + v11 + 8) = a3;
-	*(float*)((char*)v6->array_15x32 + v11 + 12) = a4;
-	*(float*)((char*)v6->array_15x32 + v11 + 16) = v10;*/
-	++(v6->field_12);
+	njSetTexture(&highwayObj_TEXLIST);
+	njTranslate(0, 0.0, 0.0, -30.0);
+	//sub_4083F0((NJS_ACTION*)v1->timer, v1->Scale.x, 0, 1.0);
+	DrawObject((NJS_OBJECT*)a1->field_4C);
+	njPopMatrix(1u);
+	ResetMaterialColorOffset();
+	njControl3D_Restore();
 }
 
-void __cdecl DispSHCage(ObjectMaster* obj)
-{
-	EntityData1* data = obj->Data1.Entity;
+void SH_MoveCage(float x, float y, float z, EntityData1* data) {
+	x = (float)njSin(data->Rotation.y) * (float)1.225;
 
-	njPushMatrixEx();
-	njSetTexture(&highwayObj_TEXLIST);
-	njTranslateEx(&data->Position);
-	njRotateY(CURRENT_MATRIX, data->Rotation.y);
-	njTranslate(0, 0.0, 0.0, -30.0f);
-	DrawObject(SH_Cage->getmodel());
-	njPopMatrixEx();
+	z = (float)njCos(data->Rotation.y) * (float)1.225;
+
+	data->Position.x = data->Position.x + x;
+	data->Position.y = data->Position.y + y;
+	data->Position.z = data->Position.z + z;
 }
 
 void __cdecl SHExecCage(ObjectMaster* obj)
 {
-	EntityData1* data = obj->Data1.Entity; // ebp
-	ObjUnknownA* v3; // ebx
-	NJS_OBJECT* v4; // eax
+	EntityData1* data; // ebp
+	ObjUnknownA* saveObjPos;
 	int* v5; // edx
 	double v6; // st7
 	double v7; // st7
 	__int16 v8; // ax
 	double v9; // st7
-	float v10; // edx
-	float v11; // ecx
-	int* v12; // ecx
-	double v13; // st7
-	EntityData1* parent; // [esp+14h] [ebp+4h]
-	float a2a; // [esp+14h] [ebp+4h]
+	float getposX; // edx
+	float getposY; // ecx
+	NJS_ACTION* alertCageAnim; // ecx
+	double animCurFrame; // st7
+	EntityData1* parentData; // [esp+14h] [ebp+4h]
+	float getposZ; // [esp+14h] [ebp+4h]
 
-	v3 = obj->UnknownA_ptr;
-	parent = obj->Parent->Data1.Entity;
+	data = obj->Data1.Entity;
+	saveObjPos = obj->UnknownA_ptr;
+	parentData = obj->Parent->Data1.Entity;
 	switch (data->Action)
 	{
 	case 0:
+	{
+		data->Rotation.z = 0;
+		data->Rotation.x = 0;
 		data->Action = 1;
-		data->Index = 0;
-		//sub_61B130((int)data);
 
-		obj->DeleteSub = DeleteFunc_DynCol;
-		obj->DisplaySub = DispSHCage;
+		//data->timer = (int*)&cageAlertAnim;
 		obj->field_4C = SH_Cage->getmodel();
+		data->Index = 0;
+		// SwitchSignal(data);
+		obj->DeleteSub = DeleteFunc_DynCol;
+		obj->DisplaySub = SHDispCage;
 
-		DynCol_AddFromObject(obj, SH_CageCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid | SurfaceFlag_Dynamic);
-
+		DynCol_AddFromObject(obj, SH_CageCol->getmodel(), &data->Position, data->Rotation.y, 0x68000001);
+		saveObjPos->field_24 = 0.0; //X
+		saveObjPos->field_28 = 0.0; //Y
+		saveObjPos->field_2C = 0.0; //Z
+	}
 		break;
 	case 1:
 		CheckCraneColli(data);
-		if (isPlayerOnPlatform(obj))
+
+		if (SHCage_isPlayerOnPlatform(obj))
 		{
 			data->Action = 2;
 			data->Index = 1;
-			//sub_61B130((int)data);
+			//SwitchSignal(data);
 		}
 		break;
 	case 2:
+	{
 		CheckCraneColli(data);
-		if (data->Position.y - parent->Position.y > 100.0f)
+		float result = data->Position.y - parentData->Position.y;
+		if (result > 100.0)
 		{
 			data->Action = 3;
 			data->Index = 0;
-			v3->field_10 = 0;
-			v3->field_14 = 0.0;
-			v3->field_18 = 0;
-			//sub_61B130((int)data);
-			//DoSoundQueueThing(103);
-			//PlaySound(104, 0, 0, 0);
+			saveObjPos->field_24 = 0.0;
+			saveObjPos->field_28 = 0.0;
+			saveObjPos->field_2C = 0.0;
 		}
 
-		v6 = njSin(data->Rotation.y);
-		v3->field_14 = 0.25;
-		*(float*)&v3->field_10 = v6 * 1.225;
-		v7 = njCos(data->Rotation.y) * 1.225;
-		*(float*)&v3->field_18 = v7;
-		data->Position.x = data->Position.x + *(float*)&v3->field_10;
-		v10 = data->Position.x;
-		data->Position.y = v3->field_14 + data->Position.y;
-		v11 = data->Position.y;
-		a2a = data->Position.z + *(float*)&v3->field_18;
-		data->Position.z = a2a;
-		//QueueSound_XYZ(103, data, 1, 0, 2, v10, v11, a2a);
+		SH_MoveCage(saveObjPos->field_24, 0.25f, saveObjPos->field_2C, data);
+
+		/*getposY = data->Position.y;
+		getposX = (float)(data->Position.x + saveObjPos->x);*/
+	
+		//getposZ = data->Position.z;
+
+	}
+	break;
 	case 3:
 		CheckCraneColli(data);
-		if (isPlayerOnPlatform(obj))
+
+		if (SHCage_isPlayerOnPlatform(obj))
 		{
 			v8 = data->field_6;
 			data->field_6 = v8 + 1;
-			if ((unsigned __int16)v8 > 0x78u)
+			if ((unsigned __int16)v8 > 120u)
 			{
 				data->Action = 4;
 				data->Index = 1;
 				data->field_6 = 0;
+				//SwitchSignal(data);
 			}
 		}
 		break;
 	case 4:
 		CheckCraneColli(data);
-		if (data->Position.y - parent->Position.y > 0.0f)
+		
+		if (data->Position.y - parentData->Position.y > 0.0)
 		{
-			v9 = njSin(data->Rotation.y);
-			v3->field_14 = -0.25;
-			*(float*)&v3->field_10 = -(v9 * 1.225);
-			v7 = -(njCos(data->Rotation.y) * 1.225);
-			*(float*)&v3->field_18 = v7;
-			data->Position.x = data->Position.x + *(float*)&v3->field_10;
-			v10 = data->Position.x;
-			data->Position.y = v3->field_14 + data->Position.y;
-			v11 = data->Position.y;
-			a2a = data->Position.z + *(float*)&v3->field_18;
-			data->Position.z = a2a;
-			//QueueSound_XYZ(103, data, 1, 0, 2, v10, v11, a2a);
+			SH_MoveCage(saveObjPos->field_24, -0.25f, saveObjPos->field_2C, data);
+			//QueueSound_XYZ(103, data, 1, 0, 2, getposX, getposY, getposZ);
 		}
 		else
 		{
 			data->Action = 5;
+
 			data->Index = 0;
-			v3->field_10 = 0;
-			v3->field_14 = 0.0;
-			v3->field_18 = 0;
-			//sub_61B130((int)data);
+			saveObjPos->field_24 = 0.0;
+			saveObjPos->field_28 = 0.0;
+			saveObjPos->field_2C = 0.0;
+			//SwitchSignal(data);
 			//DoSoundQueueThing(103);
 			//PlaySound(104, 0, 0, 0);
 		}
 		break;
 	case 5:
 		CheckCraneColli(data);
-		if (isPlayerOnPlatform(obj))
+
+		if (SHCage_isPlayerOnPlatform(obj))
 		{
 			data->Action = 1;
-			//data->InvulnerableTime = 0;
+			data->field_6 = 0;
 		}
 		break;
-	}
+	default:
 
-	//v12 = data->timer;
-	/*v13 = data->Scale.x + 0.2;
-	data->Scale.x = v13;
-	if (v13 >= (double)*(unsigned int*)(v12[1] + 4))
+		break;
+	}
+	/*alertCageAnim = (NJS_ACTION*)data->timer;
+	animCurFrame = data->Scale.x + 0.2;
+	data->Scale.x = animCurFrame;
+	if (animCurFrame >= (double)alertCageAnim->motion->nbFrame)
 	{
 		data->Scale.x = 0.0;
 	}*/
-
-	memcpy(&v3->field_1C, v3, 0x1Cu);
-	sub_442120(data->Position.x, data->Position.y, data->Position.z, 15.0f);
 }
 
-
-
-void __cdecl OCrane_Display(ObjectMaster* obj)
+void __cdecl dispSHCrane(ObjectMaster* obj)
 {
-	EntityData1* data = obj->Data1.Entity;
-	NJS_OBJECT* object = (NJS_OBJECT*)obj->field_4C;
+	EntityData1* data; // esi
+	Angle rotY; // eax
+
+	data = obj->Data1.Entity;
 
 	njSetTexture(&highwayObj_TEXLIST);
-	njPushMatrixEx();
-	njTranslateEx(&data->Position);
-	njRotateY(0, data->Rotation.y);
-	DrawChunkModel(object->chunkmodel);
-	njPopMatrixEx();
-}
-
-void __cdecl OCrane_Main(ObjectMaster* obj)
-{
-	if (!ClipSetObject(obj))
+	njPushMatrix(0);
+	njTranslateV(0, &data->Position);
+	rotY = data->Rotation.y;
+	if (rotY)
 	{
-		EntityData1* data = obj->Data1.Entity;
-
-		if (!ClipSetObject(obj))
-		{
-			CheckCraneColli(data);
-		}
+		njRotateY(0, (unsigned __int16)rotY);
 	}
+	DrawObject((NJS_OBJECT*)obj->field_4C);
+	njPopMatrix(1u);
+
 }
 
 void __cdecl OCrane(ObjectMaster* obj)
 {
-	EntityData1* data = obj->Data1.Entity;
+	EntityData1* data; // esi
+	Angle v2; // eax
+	int* getCraneObj; // ecx
+	int getCraneObj2; // edx
+	ObjectMaster* childObj; // eax
+	EntityData1* childData; // eax
 
-	obj->MainSub = OCrane_Main;
-	obj->DeleteSub = DeleteFunc_DynCol;
-	obj->DisplaySub = OCrane_Display;
-	obj->field_4C = SH_Rail->getmodel();
+	data = obj->Data1.Entity;
+	if (!ClipObject(obj, 1020100.0))
+	{
 
-	DynCol_AddFromObject(obj, SH_RailCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid);
+		if (data->Action)
+		{
+			if (data->Action == 1)
+			{
+				CheckCraneColli(data);
 
-	LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1), SHExecCage, obj);
+			}
+			else
+			{
+				DeleteFunc_DynCol(obj);
+			}
+		}
+		else
+		{
+			obj->Data2.Undefined = SH_RailCol->getmodel();
+			obj->field_4C = SH_Rail->getmodel();
+			obj->DeleteSub = DeleteFunc_DynCol;
+			obj->DisplaySub = dispSHCrane;
+			data->Rotation.z = 0;
+			data->Rotation.x = 0;
+
+			DynCol_AddFromObject(obj, SH_RailCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid);
+
+			childObj = LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1), SHExecCage, obj);
+			if (childObj)
+			{
+				childData = childObj->Data1.Entity;
+				childData->Rotation.z = 0;
+				childData->Rotation.x = 0;
+			}
+			data->Action = 1;
+		}
+	}
 }

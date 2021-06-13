@@ -186,7 +186,7 @@ void Fount_CalcPushUP(ObjectMaster* a1)
 	a2.y = 6.0;
 	a2.z = -6.0;
 
-	result = &a1->Data2.Entity->Velocity; //get rotation stored in the object for propeller
+	result = &a1->Data2.Entity->Velocity; //save speed/pos stored in data2.
 
 	if (v1->Scale.x != 0.0 || v1->Scale.y != 0.0 || v1->Scale.z != 0.0)
 	{

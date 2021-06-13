@@ -173,5 +173,8 @@
     <ClCompile Include="sh-car.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="sh-ev.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

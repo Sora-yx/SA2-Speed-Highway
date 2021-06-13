@@ -14,3 +14,5 @@ void Load_Helico(ObjectMaster* a1);
 void __cdecl OHelia(ObjectMaster* obj);
 void __cdecl OHelib(ObjectMaster* obj);
 void FreeModel_TurnAsi();
+
+void __cdecl GenericSHDisplay_RotY(ObjectMaster* obj);

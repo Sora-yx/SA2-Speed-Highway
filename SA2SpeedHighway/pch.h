@@ -14,5 +14,6 @@
 #include "ninja-utils.h"
 #include "obj-common.h"
 #include "level.h"
+#include "objects.h"
 
 #endif

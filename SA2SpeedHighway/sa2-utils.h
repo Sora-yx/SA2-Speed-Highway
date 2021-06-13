@@ -163,3 +163,9 @@ struct CL_ObjInfo
 
 DataPointer(CL_ObjInfo*, NJS_OBJ_LIST_PTR_PREV, 0x1A5A400);
 void PhysicsAndAnimCheck(CharObj2Base* a1, EntityData1* a2);
+FunctionPointer(void, SetMaterialColor, (float Alpha, float R, float G, float B), 0x44B2E0);
+DataPointer(float, GlobalMatColorR, 0x25EFFD4);
+DataPointer(float, GlobalMatColorG, 0x25EFFD8);
+DataPointer(float, GlobalMatColorB, 0x25EFFDC);
+DataPointer(float, GlobalMatColorA, 0x25EFFD0);
+void ResetMaterialColorOffset();

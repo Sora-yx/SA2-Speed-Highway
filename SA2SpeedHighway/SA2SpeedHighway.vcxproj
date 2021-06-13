@@ -189,6 +189,7 @@
     <ClCompile Include="sh-bell.cpp" />
     <ClCompile Include="sh-car.cpp" />
     <ClCompile Include="sh-cone.cpp" />
+    <ClCompile Include="sh-ev.cpp" />
     <ClCompile Include="sh-fountain.cpp" />
     <ClCompile Include="sh-glass.cpp" />
     <ClCompile Include="mod.cpp" />
