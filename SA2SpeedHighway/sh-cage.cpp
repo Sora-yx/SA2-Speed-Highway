@@ -162,12 +162,41 @@ void __cdecl SHDispCage(ObjectMaster* a1)
 	njControl3D_Restore();
 }
 
-void SH_MoveCage(float x, float y, float z, ObjectMaster* obj) {
+void Cage_UpdatePlayerPos(ObjectMaster* obj, float x, float y, float z) {
+	if (SHCage_isPlayerOnPlatform(obj))
+	{
+		MainCharObj1[0]->Position.x += x;
+		MainCharObj1[0]->Position.y += y;
+		MainCharObj1[0]->Position.z += z;
+	}
+}
+void SH_DescendCage(float x, float y, float z, ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* dyncol = (NJS_OBJECT*)obj->EntityData2;
+
+	float rotY = njSin(data->Rotation.y);
+
+	x = -(float)((float)rotY * (float)1.225);
+	float rotY2 = njCos(data->Rotation.y);
+
+	z = -(float)((float)rotY2 * (float)1.225);
+
+	data->Position.x += x;
+	data->Position.y += y;
+	data->Position.z += z;
+
+	// Update dyncol position
+	*(NJS_VECTOR*)dyncol->pos = data->Position;
+	Cage_UpdatePlayerPos(obj, x, y, z);
+}
+
+void SH_AscendCage(float x, float y, float z, ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* dyncol = (NJS_OBJECT*)obj->EntityData2;
 
 	x = njSin(data->Rotation.y) * 1.225f;
 	z = njCos(data->Rotation.y) * 1.225f;
+
 
 	data->Position.x += x;
 	data->Position.y += y;
@@ -177,12 +206,7 @@ void SH_MoveCage(float x, float y, float z, ObjectMaster* obj) {
 	*(NJS_VECTOR*)dyncol->pos = data->Position;
 
 	// Move player
-	if (SHCage_isPlayerOnPlatform(obj))
-	{
-		MainCharObj1[0]->Position.x += x;
-		MainCharObj1[0]->Position.y += y;
-		MainCharObj1[0]->Position.z += z;
-	}
+	Cage_UpdatePlayerPos(obj, x, y, z);
 }
 
 void __cdecl SHExecCage(ObjectMaster* obj)
@@ -224,7 +248,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 		saveObjPos->field_28 = 0.0; //Y
 		saveObjPos->field_2C = 0.0; //Z
 	}
-		break;
+	break;
 	case 1:
 		CheckCraneColli(data);
 
@@ -248,11 +272,11 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 			saveObjPos->field_2C = 0.0;
 		}
 
-		SH_MoveCage(saveObjPos->field_24, 0.25f, saveObjPos->field_2C, obj);
+		SH_AscendCage(saveObjPos->field_24, 0.25f, saveObjPos->field_2C, obj);
 
 		/*getposY = data->Position.y;
 		getposX = (float)(data->Position.x + saveObjPos->x);*/
-	
+
 		//getposZ = data->Position.z;
 
 	}
@@ -274,11 +298,12 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 		}
 		break;
 	case 4:
+	{
 		CheckCraneColli(data);
-		
-		if (data->Position.y - parentData->Position.y > 0.0)
+		float result2 = data->Position.y  - parentData->Position.y;
+		if (result2 > 0.0)
 		{
-			SH_MoveCage(saveObjPos->field_24, -0.25f, saveObjPos->field_2C, obj);
+			SH_DescendCage(saveObjPos->field_24, -0.25f, saveObjPos->field_2C, obj);
 			//QueueSound_XYZ(103, data, 1, 0, 2, getposX, getposY, getposZ);
 		}
 		else
@@ -293,6 +318,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 			//DoSoundQueueThing(103);
 			//PlaySound(104, 0, 0, 0);
 		}
+	}
 		break;
 	case 5:
 		CheckCraneColli(data);
