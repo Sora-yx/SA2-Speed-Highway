@@ -162,14 +162,27 @@ void __cdecl SHDispCage(ObjectMaster* a1)
 	njControl3D_Restore();
 }
 
-void SH_MoveCage(float x, float y, float z, EntityData1* data) {
-	x = (float)njSin(data->Rotation.y) * (float)1.225;
+void SH_MoveCage(float x, float y, float z, ObjectMaster* obj) {
+	EntityData1* data = obj->Data1.Entity;
+	NJS_OBJECT* dyncol = (NJS_OBJECT*)obj->EntityData2;
 
-	z = (float)njCos(data->Rotation.y) * (float)1.225;
+	x = njSin(data->Rotation.y) * 1.225f;
+	z = njCos(data->Rotation.y) * 1.225f;
 
-	data->Position.x = data->Position.x + x;
-	data->Position.y = data->Position.y + y;
-	data->Position.z = data->Position.z + z;
+	data->Position.x += x;
+	data->Position.y += y;
+	data->Position.z += z;
+
+	// Update dyncol position
+	*(NJS_VECTOR*)dyncol->pos = data->Position;
+
+	// Move player
+	if (SHCage_isPlayerOnPlatform(obj))
+	{
+		MainCharObj1[0]->Position.x += x;
+		MainCharObj1[0]->Position.y += y;
+		MainCharObj1[0]->Position.z += z;
+	}
 }
 
 void __cdecl SHExecCage(ObjectMaster* obj)
@@ -235,7 +248,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 			saveObjPos->field_2C = 0.0;
 		}
 
-		SH_MoveCage(saveObjPos->field_24, 0.25f, saveObjPos->field_2C, data);
+		SH_MoveCage(saveObjPos->field_24, 0.25f, saveObjPos->field_2C, obj);
 
 		/*getposY = data->Position.y;
 		getposX = (float)(data->Position.x + saveObjPos->x);*/
@@ -265,7 +278,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 		
 		if (data->Position.y - parentData->Position.y > 0.0)
 		{
-			SH_MoveCage(saveObjPos->field_24, -0.25f, saveObjPos->field_2C, data);
+			SH_MoveCage(saveObjPos->field_24, -0.25f, saveObjPos->field_2C, obj);
 			//QueueSound_XYZ(103, data, 1, 0, 2, getposX, getposY, getposZ);
 		}
 		else
