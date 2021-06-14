@@ -37,19 +37,6 @@ void CheckCraneColli(EntityData1* data) {
 	}
 }
 
-void CalcShit(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3)
-{
-	Float v3; // [esp+0h] [ebp-8h]
-	Float v4; // [esp+4h] [ebp-4h]
-
-	v3 = a3[4] * a1->x + a3[5] * a1->y + a3[6] * a1->z;
-	v4 = a3[8] * a1->x + a3[9] * a1->y + a3[10] * a1->z;
-	a2->x = a3[1] * a1->y + *a3 * a1->x + a3[2] * a1->z;
-	a2->y = v3;
-	a2->z = v4;
-}
-
-
 bool SHCage_isPlayerOnPlatform(ObjectMaster* a1)
 {
 	EntityData1* v3; // r30
@@ -76,67 +63,6 @@ bool SHCage_isPlayerOnPlatform(ObjectMaster* a1)
 
 	return false;
 }
-
-struct PL_LANDPOSI
-{
-	float x;
-	float y;
-	float z;
-	float r;
-	float d;
-	float h;
-	int angy_dif;
-	int angy_aim;
-};
-
-#pragma pack(push, 8)
-struct CharObj2Base_
-{
-	char PlayerNum;
-	char CharID;
-	char Costume;
-	char CharID2;
-	char ActionWindowItems[8];
-	char ActionWindowItemCount;
-	char field_D[3];
-	__int16 Powerups;
-	int field_12;
-	__int16 UnderwaterTime;
-	__int16 IdleTime;
-	BYTE gap1A[10];
-	int Upgrades;
-	float field_28;
-	char field_2C[28];
-	float MechHP;
-	NJS_POINT3 eff;
-	NJS_POINT3 acc;
-	NJS_VECTOR Speed;
-	NJS_POINT3 WallNormal;
-	NJS_POINT3 FloorNormal;
-	SurfaceFlags CurrentSurfaceFlags;
-	SurfaceFlags PreviousSurfaceFlags;
-	void* field_90;
-	ObjectMaster* HeldObject;
-	BYTE gap98[4];
-	ObjectMaster* HoldTarget;
-	ObjectMaster* field_A0;
-	int field_A4;
-	PL_LANDPOSI* island;
-	NJS_MOTION** Animation;
-	PhysicsData PhysData;
-	int field_144[12];
-	CharAnimInfo AnimInfo;
-	float idk;
-	float idk2;
-	int CollisionFlags;
-	float idk4;
-	float DistanceMin;
-	float DistanceMax;
-	float idk7;
-};
-#pragma pack(pop)
-
-
 
 void __cdecl SHDispCage(ObjectMaster* a1)
 {
@@ -170,6 +96,7 @@ void Cage_UpdatePlayerPos(ObjectMaster* obj, float x, float y, float z) {
 		MainCharObj1[0]->Position.z += z;
 	}
 }
+
 void SH_DescendCage(float x, float y, float z, ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 	NJS_OBJECT* dyncol = (NJS_OBJECT*)obj->EntityData2;
@@ -228,6 +155,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 	data = obj->Data1.Entity;
 	saveObjPos = obj->UnknownA_ptr;
 	parentData = obj->Parent->Data1.Entity;
+
 	switch (data->Action)
 	{
 	case 0:

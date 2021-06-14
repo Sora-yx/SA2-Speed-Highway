@@ -7,7 +7,6 @@ void SH_GenericNeonDisplay(ObjectMaster* a2)
 {
 	EntityData1* data; // esi
 	__int16 timer; // cx
-	NJS_MODEL_SADX* v4; // eax
 	bool v5; // cc
 	int v6; // ecx
 	Angle v7; // eax
