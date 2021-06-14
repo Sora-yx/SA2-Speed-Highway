@@ -389,14 +389,14 @@ void __cdecl OCrane(ObjectMaster* obj)
 		}
 		else
 		{
-
 			obj->field_4C = SH_Rail->getmodel();
 			obj->DeleteSub = DeleteFunc_DynCol;
 			obj->DisplaySub = dispSHCrane;
 			data->Rotation.z = 0;
 			data->Rotation.x = 0;
 
-			DynCol_AddFromObjectWPosAdjust(obj, SH_RailCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid, 6);
+			NJS_OBJECT* dyncol = DynCol_AddFromObject(obj, SH_RailCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid);
+			dyncol->pos[1] -= 6.0f;
 
 			childObj = LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1), SHExecCage, obj);
 			if (childObj)
