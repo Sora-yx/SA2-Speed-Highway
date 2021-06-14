@@ -104,6 +104,7 @@ void LoadModelsSH()
 
 	LoadFountainModel();
 	LoadHelicoModel();
+	LoadModel_Oev();
 }
 
 void FreeModelsSH()
@@ -565,7 +566,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)(LoadObj_Data1) },// 2, DistObj_UseDist, 640000.0, (ObjectFuncPtr)WALL },
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x7A9140, "O KN HINT" } /* "O KN HINT" */,
 	{ (LoadObj)(LoadObj_Data1), 2, 0, 0, (ObjectFuncPtr)LongSpring_Main },
-	{ (LoadObj)6 }, //3, 1, 1000000, 0, (ObjectFuncPtr)0x61C740, "O EV   " } /* "O EV   " */,
+	{ (LoadObj)6, 3, 1, 1000000, OEv },
 	{ (LoadObj)10, 3, 1, 1000000, LoadFountain,} /* "O FOUNT" */,
 	{ (LoadObj)6, 3, 1, 1000000, OCrane },
 	{ (LoadObj)LoadObj_Data1, 3, 1, 1000000, OGlass}, /* "O GLASS " */

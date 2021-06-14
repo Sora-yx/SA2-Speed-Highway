@@ -84,7 +84,7 @@ void SetSonicRunningOnBulding(ObjectMaster* a1)
 			}
 			break;
 		case 3:
-			if (player->Position.y <= -18000.0)
+			if (player->Position.y <= -18300.0)
 			{
 				if (player->Action > 60)
 					player->Action = 10;

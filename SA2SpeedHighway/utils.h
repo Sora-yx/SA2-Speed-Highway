@@ -32,3 +32,4 @@ void DoNextAction_r(int playerNum, char action, int unknown);
 int __cdecl DoRotationStuff(unsigned __int8 a1, int a2, int a3, int a4);
 float __cdecl VectorMaxAbs(NJS_VECTOR* y);
 void __cdecl StartPosManager(ObjectMaster* obj);;
+ObjectMaster* __cdecl DoObjectThing(ObjectThing* things, ObjectMaster* parent);

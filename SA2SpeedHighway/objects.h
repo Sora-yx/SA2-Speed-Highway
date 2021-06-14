@@ -16,3 +16,6 @@ void __cdecl OHelib(ObjectMaster* obj);
 void FreeModel_TurnAsi();
 
 void __cdecl GenericSHDisplay_RotY(ObjectMaster* obj);
+void LoadModel_Oev();
+void __cdecl OEv(ObjectMaster* obj);
+void __cdecl SH_EVChild(ObjectMaster* a2);
