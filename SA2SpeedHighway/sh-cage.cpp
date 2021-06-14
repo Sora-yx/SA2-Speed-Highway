@@ -389,14 +389,14 @@ void __cdecl OCrane(ObjectMaster* obj)
 		}
 		else
 		{
-			obj->Data2.Undefined = SH_RailCol->getmodel();
+
 			obj->field_4C = SH_Rail->getmodel();
 			obj->DeleteSub = DeleteFunc_DynCol;
 			obj->DisplaySub = dispSHCrane;
 			data->Rotation.z = 0;
 			data->Rotation.x = 0;
 
-			DynCol_AddFromObject(obj, SH_RailCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid);
+			DynCol_AddFromObjectWPosAdjust(obj, SH_RailCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid, 6);
 
 			childObj = LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1), SHExecCage, obj);
 			if (childObj)
@@ -405,6 +405,7 @@ void __cdecl OCrane(ObjectMaster* obj)
 				childData->Rotation.z = 0;
 				childData->Rotation.x = 0;
 			}
+
 			data->Action = 1;
 		}
 	}

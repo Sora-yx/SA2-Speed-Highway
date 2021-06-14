@@ -488,6 +488,25 @@ void MovePlayersToStartPos(NJS_VECTOR Pos, int yrot)
 	return;
 }
 
+void DynCol_AddFromObjectWPosAdjust(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECTOR* position, Angle rotY, int flags, int posAdjust)
+{
+	NJS_OBJECT* dynobj = GetFreeDyncolObjectEntry();
+
+	if (dynobj)
+	{
+		memcpy(dynobj, object, sizeof(NJS_OBJECT));
+
+		dynobj->evalflags &= 0xFFFFFFFC;
+
+		dynobj->ang[1] = rotY;
+		dynobj->pos[0] = position->x;
+		dynobj->pos[1] = position->y - posAdjust;
+		dynobj->pos[2] = position->z;
+
+		DynCol_Add((SurfaceFlags)flags, obj, dynobj);
+		obj->EntityData2 = (UnknownData2*)dynobj;
+	}
+}
 
 void DynCol_AddFromObject(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECTOR* position, Angle rotY, int flags)
 {
