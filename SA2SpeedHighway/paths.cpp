@@ -770,6 +770,7 @@ LoopPoint PathList_SpeedHighway0_8_Entries[] = {
 
 LoopHead PathList_SpeedHighway0_8 = { 0, LengthOfArray<int16_t>(PathList_SpeedHighway0_8_Entries), 3712.277f, PathList_SpeedHighway0_8_Entries, LoopPath };
 
+//car stuff
 LoopPoint PathList_SpeedHighway2_0_Entries[] = {
 	{ 0, 0, 3.5392f, { -47.1733f, 0, -1405 } },
 	{ 0, 0, 512.5605f, { -50.7125f, 0, -1405 } },
@@ -791,7 +792,7 @@ LoopPoint PathList_SpeedHighway2_0_Entries[] = {
 	{ 0, 0, 0, { 222.1001f, 0, -945.0002f } }
 };
 
-LoopHead PathList_SpeedHighway2_0 = { 0, LengthOfArray<int16_t>(PathList_SpeedHighway2_0_Entries), 4141.684f, PathList_SpeedHighway2_0_Entries, (ObjectFuncPtr)0 };
+LoopHead PathList_SpeedHighway2_0 = { 0, LengthOfArray<int16_t>(PathList_SpeedHighway2_0_Entries), 4141.684f, PathList_SpeedHighway2_0_Entries, Load_SH_Car };
 
 LoopPoint PathList_SpeedHighway2_1_Entries[] = {
 	{ 0, 0, 20.32926f, { -579.473f, -2, -1317.138f } },
@@ -996,7 +997,7 @@ LoopPoint PathList_SpeedHighway2_1_Entries[] = {
 	{ 0, 0, 20.27341f, { -599.674f, -2, -1318.85f } }
 };
 
-LoopHead PathList_SpeedHighway2_1 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway2_1_Entries), 8112.726f, PathList_SpeedHighway2_1_Entries, nullptr };
+LoopHead PathList_SpeedHighway2_1 = { 1, LengthOfArray<int16_t>(PathList_SpeedHighway2_1_Entries), 8112.726f, PathList_SpeedHighway2_1_Entries, Load_SH_Car };
 
 LoopHead* PathList_SpeedHighway0[] = {
 
@@ -1009,9 +1010,10 @@ LoopHead* PathList_SpeedHighway0[] = {
 	&PathList_SpeedHighway0_5,
 	/*&PathList_SpeedHighway0_6,
 	&PathList_SpeedHighway0_7,
-	//&PathList_SpeedHighway0_8,
-	//&PathList_SpeedHighway2_0,
-	//&PathList_SpeedHighway2_1,*/
+	//&PathList_SpeedHighway0_8,*/
+	//car
+	&PathList_SpeedHighway2_0,
+	&PathList_SpeedHighway2_1,
 
 	nullptr
 };

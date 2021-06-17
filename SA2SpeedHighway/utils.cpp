@@ -665,3 +665,8 @@ void ResetMaterialColorOffset()
 	GlobalMatColorA = 0.0f;
 	return;
 }
+
+ObjectMaster* __cdecl GetCharacterObject(unsigned __int8 character)
+{
+	return MainCharacter[character];
+}

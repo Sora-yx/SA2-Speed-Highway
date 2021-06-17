@@ -96,6 +96,9 @@
     <ClInclude Include="startpos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SH-Car.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -177,6 +180,21 @@
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="sh-neon.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="sh-Escalator.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="sh-arcade.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="sh-poster.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SH-Tokei.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SH-Green.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>

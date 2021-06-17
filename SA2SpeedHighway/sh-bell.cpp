@@ -107,3 +107,8 @@ void __cdecl OHwBell(ObjectMaster* obj)
 	obj->DisplaySub = SH_DisplayBell;
 	obj->DeleteSub = j_DeleteChildObjects;
 }
+
+void LoadBellModels() {
+	SH_Bell[0] = LoadMDL("SH-Bell0", ModelFormat_Chunk);
+	SH_Bell[1] = LoadMDL("SH-Bell1", ModelFormat_Chunk);
+}

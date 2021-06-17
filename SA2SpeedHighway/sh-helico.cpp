@@ -552,7 +552,7 @@ void Init_Helico(ObjectMaster* a1) {
 }
 
 void Load_Helico(ObjectMaster* a1) {
-	LoadObject((LoadObj)3, "Init_Helico", Init_Helico, LoadObj_Data1);
+	LoadObject(3, "Init_Helico", Init_Helico, LoadObj_Data1);
 	a1->MainSub = DeleteObject_;
 }
 

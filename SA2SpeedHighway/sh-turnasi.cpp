@@ -78,7 +78,7 @@ void TurnasiT_CalcPos(EntityData1* data, ObjectMaster* parent)
 			}
 		}
 
-		if (parent_data->Scale.z = 20.0f)
+		if (parent_data->Scale.z == 20.0f)
 		{
 			if (data->Scale.z != 10.0f && data->Collision->Flag & 1)
 			{

@@ -121,3 +121,8 @@ void __cdecl OCone1(ObjectMaster* obj)
 	obj->MainSub = (ObjectFuncPtr)Cone_Main;
 	obj->DisplaySub = (ObjectFuncPtr)Cone_Display;
 }
+
+void LoadConeModels() {
+	SH_Cone[0] = LoadMDL("cone_cone1", ModelFormat_Chunk);
+	SH_Cone[1] = LoadMDL("cone_cone2", ModelFormat_Chunk);
+}

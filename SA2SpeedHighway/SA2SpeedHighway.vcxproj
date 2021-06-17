@@ -169,6 +169,7 @@
     <ClInclude Include="sa2-utils.h" />
     <ClInclude Include="sh-bell.h" />
     <ClInclude Include="sh-cage.h" />
+    <ClInclude Include="SH-Car.h" />
     <ClInclude Include="sh-cone.h" />
     <ClInclude Include="SH-Fountain.h" />
     <ClInclude Include="sh-glass.h" />
@@ -186,9 +187,11 @@
     <ClCompile Include="level.cpp" />
     <ClCompile Include="ninja-utils.cpp" />
     <ClCompile Include="PhysicsFunction.cpp" />
+    <ClCompile Include="sh-arcade.cpp" />
     <ClCompile Include="sh-bell.cpp" />
     <ClCompile Include="sh-car.cpp" />
     <ClCompile Include="sh-cone.cpp" />
+    <ClCompile Include="sh-Escalator.cpp" />
     <ClCompile Include="sh-ev.cpp" />
     <ClCompile Include="sh-fountain.cpp" />
     <ClCompile Include="sh-glass.cpp" />
@@ -203,11 +206,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="sh-cage.cpp" />
+    <ClCompile Include="SH-Green.cpp" />
     <ClCompile Include="sh-helico.cpp" />
     <ClCompile Include="sh-jammer.cpp" />
     <ClCompile Include="sh-lamp.cpp" />
     <ClCompile Include="sh-light.cpp" />
     <ClCompile Include="sh-neon.cpp" />
+    <ClCompile Include="sh-poster.cpp" />
+    <ClCompile Include="SH-Tokei.cpp" />
     <ClCompile Include="sh-turnasi.cpp" />
     <ClCompile Include="Sonic.cpp" />
     <ClCompile Include="StartPosition.cpp" />
