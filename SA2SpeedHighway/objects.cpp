@@ -199,42 +199,50 @@ void __cdecl OFence(ObjectMaster* obj)
 	obj->DisplaySub_Delayed1 = GenericSHDisplayZXY;
 }
 
-void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* a1)
+void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* obj)
 {
-	EntityData1* data = a1->Data1.Entity;
+	EntityData1* data = obj->Data1.Entity;
 
-	for (int i = 0; i < static_cast<int>(data->Scale.x) + 1; i++)
+	if (ClipSetObject(obj))
 	{
-		njPushUnitMatrix();
-		njTranslateEx(&data->Position);
-		njRotateZXY(&data->Rotation);
-
-		if (i % 2)
-		{
-			njTranslate(CURRENT_MATRIX, 0.0f, 0.0f, ceil(static_cast<float>(i) * 0.5f) * data->Scale.y);
-		}
-		else
-		{
-			njTranslate(CURRENT_MATRIX, 0.0f, 0.0f, static_cast<float>(i) * data->Scale.y * -0.5f);
-		}
-
-		NJS_VECTOR pos;
-
-		njGetTranslation(CURRENT_MATRIX, &pos);
-		njPopMatrixEx();
-
-		ObjectMaster* child = LoadChildObject((LoadObj)(LoadObj_UnknownB | 6 | LoadObj_UnknownA | LoadObj_Data1), (void(__cdecl*)(ObjectMaster*))a1->field_4C, a1);
-
-		if (child)
-		{
-			child->Data1.Entity->Position = pos;
-			child->Data1.Entity->Rotation.x = 0;
-			child->Data1.Entity->Rotation.y = (data->Scale.z * 65536.0 * 0.002777777777777778);
-			child->Data1.Entity->Rotation.z = 0;
-		}
+		return;
 	}
 
-	a1->MainSub = nullptr;
+	if (data->Action == 0)
+	{
+		for (int i = 0; i < static_cast<int>(data->Scale.x) + 1; i++)
+		{
+			njPushUnitMatrix();
+			njTranslateEx(&data->Position);
+			njRotateZXY(&data->Rotation);
+
+			if (i % 2)
+			{
+				njTranslate(CURRENT_MATRIX, 0.0f, 0.0f, ceil(static_cast<float>(i) * 0.5f) * data->Scale.y);
+			}
+			else
+			{
+				njTranslate(CURRENT_MATRIX, 0.0f, 0.0f, static_cast<float>(i) * data->Scale.y * -0.5f);
+			}
+
+			NJS_VECTOR pos;
+
+			njGetTranslation(CURRENT_MATRIX, &pos);
+			njPopMatrixEx();
+
+			ObjectMaster* child = LoadChildObject((LoadObj)(LoadObj_UnknownB | 6 | LoadObj_UnknownA | LoadObj_Data1), (void(__cdecl*)(ObjectMaster*))obj->field_4C, obj);
+
+			if (child)
+			{
+				child->Data1.Entity->Position = pos;
+				child->Data1.Entity->Rotation.x = 0;
+				child->Data1.Entity->Rotation.y = (data->Scale.z * 65536.0 * 0.002777777777777778);
+				child->Data1.Entity->Rotation.z = 0;
+			}
+		}
+
+		data->Action == 1;
+	}
 }
 
 void Load_GFF(ObjectMaster* tp)
