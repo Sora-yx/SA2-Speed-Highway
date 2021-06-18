@@ -2,9 +2,7 @@
 
 static ModelInfo* SH_Green[5];
 
-CollisionData GreenACol = { 0, CollisionShape_Sphere, 0x77, 0, 0, {0.0, 4.0, 0.0} , 4.0, 0.0, 0.0, 0.0, 0, 0, 0 };
-CollisionData GreenBCol = { 0, CollisionShape_Sphere, 0x77, 0, 0, {0.0, 4.0, 0.0}, 4.0, 0.0, 0.0, 0.0, 0, 0, 0 };
-CollisionData GreenDCol = { 0, CollisionShape_Sphere, 0x77, 0, 0, {0.0, 4.0, 0.0}, 4.0, 0.0, 0.0, 0.0, 0, 0, 0 };
+CollisionData GreenCol = { 0, CollisionShape_Sphere, 0x77, 0, 0, {0.0, 4.0, 0.0}, 4.0, 0.0, 0.0, 0.0, 0, 0, 0 };
 
 void __cdecl OGreene(ObjectMaster* obj)
 {
@@ -22,7 +20,7 @@ void __cdecl OGreend(ObjectMaster* obj)
 	if (data->Action == 0) {
 		obj->field_4C = SH_Green[3]->getmodel();
 		obj->DisplaySub = GenericSHDisplayZXY;
-		InitCollision(obj, &GreenDCol, 1, 4u);
+		InitCollision(obj, &GreenCol, 1, 4u);
 		data->Collision->Range = 8.0f;
 		data->Action = 1;
 		obj->MainSub = MainSubGlobalCol;
@@ -35,7 +33,7 @@ void __cdecl OGreenb(ObjectMaster* obj)
 	if (data->Action == 0) {
 		obj->field_4C = SH_Green[2]->getmodel();
 		obj->DisplaySub = GenericSHDisplayZXY;
-		InitCollision(obj, &GreenBCol, 1, 4u);
+		InitCollision(obj, &GreenCol, 1, 4u);
 		data->Collision->Range = 8.0f;
 		data->Action = 1;
 		obj->MainSub = MainSubGlobalCol;
@@ -48,7 +46,7 @@ void __cdecl OGreena(ObjectMaster* obj)
 	if (data->Action == 0) {
 		obj->field_4C = SH_Green[1]->getmodel();
 		obj->DisplaySub = GenericSHDisplayZXY;
-		InitCollision(obj, &GreenACol, 1, 4u);
+		InitCollision(obj, &GreenCol, 1, 4u);
 		data->Collision->Range = 8.0f;
 		data->Action = 1;
 		obj->MainSub = MainSubGlobalCol;

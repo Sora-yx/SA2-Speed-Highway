@@ -160,6 +160,59 @@ struct CL_ObjInfo
 };
 
 
+struct particle_info
+{
+	float scl;
+	float sclspd;
+	float animspd;
+	float friction;
+	float yacc;
+	NJS_POINT3 pos;
+	NJS_POINT3 velo;
+	NJS_ARGB argb;
+};
+
+struct sp_info
+{
+	NJS_TEXLIST* texlist;
+	NJS_TEXANIM* texanim;
+	int animnum;
+	int srcblend;
+	int dstblend;
+};
+
+
+struct sp_link
+{
+	sp_link* next;
+	sp_task* head;
+	void(__cdecl* exec)(sp_link*);
+	unsigned int numtask;
+	sp_info* info;
+	unsigned int sysflag;
+	void* work;
+};
+
+
+struct __declspec(align(4)) sp_task
+{
+	sp_task* next;
+	void(__cdecl* exec)(sp_task*, sp_link*);
+	unsigned __int8 mode;
+	unsigned __int8 flag;
+	__int16 no;
+	int ang;
+	float frame;
+	float scl;
+	NJS_POINT3 pos;
+	NJS_POINT3 spd;
+	NJS_ARGB argb;
+	float offset;
+	sp_task* work[2];
+	unsigned __int8 wrtZflg;
+};
+
+
 
 DataPointer(CL_ObjInfo*, NJS_OBJ_LIST_PTR_PREV, 0x1A5A400);
 void PhysicsAndAnimCheck(CharObj2Base* a1, EntityData1* a2);

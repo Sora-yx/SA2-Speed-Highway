@@ -208,6 +208,7 @@
     <ClCompile Include="sh-cage.cpp" />
     <ClCompile Include="SH-Green.cpp" />
     <ClCompile Include="sh-helico.cpp" />
+    <ClCompile Include="sh-hyd.cpp" />
     <ClCompile Include="sh-jammer.cpp" />
     <ClCompile Include="sh-lamp.cpp" />
     <ClCompile Include="sh-light.cpp" />

@@ -34,6 +34,7 @@ static ModelInfo* SH_HighRaft[2];
 static ModelInfo* SH_HighRaftCol[2];
 
 
+
 CollisionData Col_Fence = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.25, 0.0}, 13.0, 4.25, 2.75, 0.0, 0, 0, 0 };
 CollisionData col_Fence02 = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.5, 0.0}, 10.0, 4.5, 1.0, 0.0, 0, 0, 0 };
 
@@ -56,8 +57,6 @@ CollisionData Siba01col = { 0, (CollisionShapes)3, 0x77, 0, 0, {0}, 20.0, 2.0, 2
 CollisionData Siba02col = { 0, (CollisionShapes)0, 1, 0x77, 0, 0, {0}, 40.0, 2.0, 0.0, 0.0, 0, 0, 0 };
 
 CollisionData SHPlantCol = { 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, 8.0, 0.0}, 1.0, 8.0, 0.0, 0.0, 0, 0, 0 };
-
-
 
 void LoadModelsSH()
 {
@@ -90,6 +89,7 @@ void LoadModelsSH()
 	SH_HighRaft[0] = LoadMDL("sh-highraftA", ModelFormat_Chunk);
 	SH_HighRaft[1] = LoadMDL("sh-highraftC", ModelFormat_Chunk);
 
+	LoadHydModel();
 	LoadBellModels();
 	LoadConeModels();
 	LoadFountainModel();
@@ -149,6 +149,7 @@ void FreeModelsSH()
 
 	FreeTokeiModels();
 	FreeGreenModels();
+	FreeHydModel();
 	return;
 }
 
@@ -256,9 +257,23 @@ void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* a1)
 				v6 = v2->Rotation.x;
 				v7 = v2->Rotation.y;
 
-				njRotateZXY(&v2->Rotation);
+				if (v5)
+				{
+					njRotateZ(0, (unsigned __int16)v5);
+				}
+				v6 = v2->Rotation.x;
+				if (v6)
+				{
+					njRotateX(0, (unsigned __int16)v6);
+				}
+				v7 = v2->Rotation.y;
+				if (v7)
+				{
+					njRotateY(0, (unsigned __int16)v7);
+				}
 
 				njCalcPoint(&vs, &a2, CURRENT_MATRIX); //in reality this is NJCalcVector 
+
 				njAddVector(&a2, &v2->Position);
 				njPopMatrix(1u);
 
@@ -555,7 +570,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 3, 0, 0, OKanbana } /* "O KANBANA" */,
 	{ (LoadObj)2, 3, 0, 0, OKanbanb } /* "O KANBANB" */,
 	{ (LoadObj)2 },// 3, 1, 40000, 0, (ObjectFuncPtr)0x617160, "O BAKETU" } /* "O BAKETU" */,
-	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x616C90, "O HYDBASS" } /* "O HYDBASS" */,
+	{ (LoadObj)2, 3, 0, 0, OHydbass} /* "O HYDBASS" */,
 	{ (LoadObj)6, 3, 0, 0, OGreen} /* "O GREEN" */,
 	{ (LoadObj)2, 3, 0, 0, OGreena} /* "O GREENA" */,
 	{ (LoadObj)2, 3, 0, 0, OGreenb}, /* "O GREENB" */
@@ -572,7 +587,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)3, 0, 0, 0, OCone2, }, /* "O Cone1" */
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615990, "O Curb" } /* "O Curb" */,
 	{ (LoadObj)2, 3, 0, 0, nullptr } /* "O Fence02" */,
-	{ (LoadObj)2, 3, 0, 0, OGreene}, /* "O GREENE" */  
+	{ (LoadObj)2, 3, 0, 0, OGreene}, /* "O GREENE" */
 	{ (LoadObj)2, 3, 0, 0, OSiba01, } /* "O SIBA01" */,
 	{ (LoadObj)2, 3, 0, 0, OSiba02, },
 	{ (LoadObj)6, 3, 1, 250000, OTokei } /* "O Tokei" */,
