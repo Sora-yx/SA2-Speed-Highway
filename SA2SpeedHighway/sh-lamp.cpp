@@ -5,7 +5,7 @@
 ModelInfo* SH_Lamp[3];
 
 
-static CollisionData Col_Lamp01 = { 0, CollisionShape_Cyl1, 0x77, 0, 0, {0.0, 22.0, 0.0}, 3.0, 22.0, 0.0, 0.0, 0, 0, 0 };
+static CollisionData Col_Lamp01 = { 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, 22.0, 0.0}, 3.0, 22.0, 0.0, 0.0, 0, 0, 0 };
 
 void __cdecl Lamp_DisplayLight2(ObjectMaster* obj)
 {

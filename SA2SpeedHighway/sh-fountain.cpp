@@ -182,7 +182,7 @@ void Fount_CalcPushUP(ObjectMaster* a1)
 
 	if (data->Scale.x != 0.0 || data->Scale.y != 0.0 || data->Scale.z != 0.0)
 	{
-		njTranslateEx(&data->Position);
+		njTranslateEx(&data->Scale);
 	}
 	else
 	{
