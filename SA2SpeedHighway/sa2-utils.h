@@ -2,19 +2,6 @@
 
 // Stuff from the game's code, missing from the Mod Loader includes
 
-static const void* const DSPSetPlayerSpeedPtr = (void*)0x46C340;
-static inline void DSPSetPlayerSpeed(int playerID, NJS_VECTOR* speed, Rotation* angle, __int16 disableTime)
-{
-	__asm
-	{
-		push[disableTime]
-		mov ecx, [playerID]
-		mov edx, [angle]
-		mov eax, [speed]
-		call DSPSetPlayerSpeedPtr
-		add esp, 4
-	}
-}
 
 static const void* const DrawChunkModelPtr = (void*)0x42E6C0;
 static inline void DrawChunkModel(NJS_CNK_MODEL* a1)
@@ -205,6 +192,60 @@ struct CL_ObjInfo
 	float dummy;
 };
 
+
+struct particle_info
+{
+	float scl;
+	float sclspd;
+	float animspd;
+	float friction;
+	float yacc;
+	NJS_POINT3 pos;
+	NJS_POINT3 velo;
+	NJS_ARGB argb;
+};
+
+struct sp_link;
+
+struct sp_info
+{
+	NJS_TEXLIST* texlist;
+	NJS_TEXANIM* texanim;
+	int animnum;
+	int srcblend;
+	int dstblend;
+};
+
+
+struct __declspec(align(4)) sp_task
+{
+	sp_task* next;
+	void(__cdecl* exec)(sp_task*, sp_link*);
+	unsigned __int8 mode;
+	unsigned __int8 flag;
+	__int16 no;
+	int ang;
+	float frame;
+	float scl;
+	NJS_POINT3 pos;
+	NJS_POINT3 spd;
+	NJS_ARGB argb;
+	float offset;
+	sp_task* work[2];
+	unsigned __int8 wrtZflg;
+};
+
+
+struct sp_link
+{
+	sp_link* next;
+	sp_task* head;
+	void(__cdecl* exec)(sp_link*);
+	unsigned int numtask;
+	sp_info* info;
+	unsigned int sysflag;
+	void* work;
+};
 
 
 DataPointer(CL_ObjInfo*, NJS_OBJ_LIST_PTR_PREV, 0x1A5A400);

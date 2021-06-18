@@ -66,5 +66,10 @@ void LoadSH_EscalatorsModels();
 void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* a1);
 void __cdecl OGgrend(ObjectMaster* obj);
 void __cdecl OGgrenb(ObjectMaster* obj);
-
 void __cdecl OGgrena(ObjectMaster* obj);
+
+void __cdecl OHydbass(ObjectMaster* obj);
+
+void FreeHydModel();
+
+void LoadHydModel();

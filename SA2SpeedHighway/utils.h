@@ -32,3 +32,4 @@ int __cdecl DoRotationStuff(unsigned __int8 a1, int a2, int a3, int a4);
 void __cdecl StartPosManager(ObjectMaster* obj);;
 ObjectMaster* __cdecl DoObjectThing(ObjectThing* things, ObjectMaster* parent);
 ObjectMaster* __cdecl GetCharacterObject(unsigned __int8 character);
+void __cdecl dothedash(unsigned __int8 playerID, NJS_VECTOR* _speed, Rotation* angle, __int16 disableTime);

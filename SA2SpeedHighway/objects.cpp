@@ -34,6 +34,7 @@ static ModelInfo* SH_HighRaft[2];
 static ModelInfo* SH_HighRaftCol[2];
 
 
+
 CollisionData Col_Fence = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.25, 0.0}, 13.0, 4.25, 2.75, 0.0, 0, 0, 0 };
 CollisionData col_Fence02 = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.5, 0.0}, 10.0, 4.5, 1.0, 0.0, 0, 0, 0 };
 
@@ -56,8 +57,6 @@ CollisionData Siba01col = { 0, (CollisionShapes)3, 0x77, 0, 0, {0}, 20.0, 2.0, 2
 CollisionData Siba02col = { 0, (CollisionShapes)0, 1, 0x77, 0, 0, {0}, 40.0, 2.0, 0.0, 0.0, 0, 0, 0 };
 
 CollisionData SHPlantCol = { 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, 8.0, 0.0}, 1.0, 8.0, 0.0, 0.0, 0, 0, 0 };
-
-
 
 void LoadModelsSH()
 {
@@ -90,6 +89,7 @@ void LoadModelsSH()
 	SH_HighRaft[0] = LoadMDL("sh-highraftA", ModelFormat_Chunk);
 	SH_HighRaft[1] = LoadMDL("sh-highraftC", ModelFormat_Chunk);
 
+	LoadHydModel();
 	LoadBellModels();
 	LoadConeModels();
 	LoadFountainModel();
@@ -149,6 +149,7 @@ void FreeModelsSH()
 
 	FreeTokeiModels();
 	FreeGreenModels();
+	FreeHydModel();
 	return;
 }
 
@@ -198,43 +199,127 @@ void __cdecl OFence(ObjectMaster* obj)
 	obj->DisplaySub_Delayed1 = GenericSHDisplayZXY;
 }
 
+
 void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* a1)
 {
-	EntityData1* data = a1->Data1.Entity;
+	ObjectMaster* v1; // edi
+	EntityData1* v2; // ebx
+	double v3; // st7
+	double v4; // st7
+	Angle v5; // eax
+	Angle v6; // eax
+	Angle v7; // eax
+	ObjectMaster* v8; // eax
+	Angle v9; // esi
+	ObjectMaster* v10; // eax
+	double v11; // st7
+	double v12; // st7
+	Angle v13; // eax
+	Angle v14; // eax
+	Angle v15; // eax
+	int i; // [esp+18h] [ebp-40h]
+	int j; // [esp+18h] [ebp-40h]
+	Vector3 vs; // [esp+1Ch] [ebp-3Ch] BYREF
+	Vector3 a2; // [esp+28h] [ebp-30h] BYREF
+	Rotation a3; // [esp+34h] [ebp-24h] BYREF
+	Rotation v21; // [esp+40h] [ebp-18h] BYREF
+	Vector3 a; // [esp+4Ch] [ebp-Ch] BYREF
 
-	for (int i = 0; i < static_cast<int>(data->Scale.x) + 1; i++)
+	v1 = a1;
+	v2 = a1->Data1.Entity;
+	a3.x = 0;
+	a3.y = 0;
+	a3.z = 0;
+	vs.x = 0.0;
+	vs.y = 0.0;
+	vs.z = 0.0;
+
+	if (!ClipObject(a1, 2890000.0))
 	{
-		njPushUnitMatrix();
-		njTranslateEx(&data->Position);
-		njRotateZXY(&data->Rotation);
-
-		if (i % 2)
+		switch ((char)v2->Action)
 		{
-			njTranslate(CURRENT_MATRIX, 0.0f, 0.0f, ceil(static_cast<float>(i) * 0.5f) * data->Scale.y);
-		}
-		else
-		{
-			njTranslate(CURRENT_MATRIX, 0.0f, 0.0f, static_cast<float>(i) * data->Scale.y * -0.5f);
-		}
+		case 0:
+			for (i = 0; i < (unsigned __int64)v2->Scale.x + 1; i++)
+			{
+				v3 = (double)i;
+				if (i % 2)
+				{
+					v4 = ceil(v3 * 0.5) * v2->Scale.y;
+				}
+				else
+				{
+					v4 = v3 * v2->Scale.y * -0.5;
+				}
+				vs.z = v4;
+				njPushMatrix(_nj_unit_matrix_);
+				njTranslateV(0, &v2->Position);
+				v5 = v2->Rotation.z;
+				v6 = v2->Rotation.x;
+				v7 = v2->Rotation.y;
 
-		NJS_VECTOR pos;
+				if (v5)
+				{
+					njRotateZ(0, (unsigned __int16)v5);
+				}
+				v6 = v2->Rotation.x;
+				if (v6)
+				{
+					njRotateX(0, (unsigned __int16)v6);
+				}
+				v7 = v2->Rotation.y;
+				if (v7)
+				{
+					njRotateY(0, (unsigned __int16)v7);
+				}
 
-		njGetTranslation(CURRENT_MATRIX, &pos);
-		njPopMatrixEx();
+				njCalcVector(CURRENT_MATRIX, &vs, &a2, false);
+				//njCalcPoint(&vs, &a2, CURRENT_MATRIX); //in reality this is NJCalcVector 
+				//njGetTranslation(CURRENT_MATRIX, &v2->Position);
+				//njAddVector(&a2, &v2->Position);
+				njPopMatrix(1u);
 
-		ObjectMaster* child = LoadChildObject((LoadObj)(LoadObj_UnknownB | 6 | LoadObj_UnknownA | LoadObj_Data1), (void(__cdecl*)(ObjectMaster*))a1->field_4C, a1);
+				a3.y = (unsigned __int64)(v2->Scale.z * 65536.0 * 0.002777777777777778);
 
-		if (child)
-		{
-			child->Data1.Entity->Position = pos;
-			child->Data1.Entity->Rotation.x = 0;
-			child->Data1.Entity->Rotation.y = (data->Scale.z * 65536.0 * 0.002777777777777778);
-			child->Data1.Entity->Rotation.z = 0;
+				v8 = LoadChildObject((LoadObj)(LoadObj_UnknownB | 6 | LoadObj_UnknownA | LoadObj_Data1), (void(__cdecl*)(ObjectMaster*))a1->field_4C, a1);
+				if (v8)
+				{
+					v8->Data1.Entity->Position = a2;
+					v9 = a3.y;
+					v8->Data1.Entity->Rotation.x = 0;
+					v8->Data1.Entity->Rotation.y = v9;
+					v8->Data1.Entity->Rotation.z = 0;
+				}
+
+			}
+
+			v2->Action = 1;
+			break;
+		case 1:
+
+			v10 = (ObjectMaster*)a1->field_4C;;
+
+			if (v10)
+			{
+				if (v10->MainSub != DeleteObject_) {
+
+					return;
+				}
+				else {
+					break;
+				}
+			}
+
+			v2->Action = 3;
+			break;
+		case 3:
+			a1->MainSub = DeleteObject_;
+			break;
+		default:
+			return;
 		}
 	}
-
-	a1->MainSub = nullptr;
 }
+
 
 void Load_GFF(ObjectMaster* tp)
 {
@@ -486,7 +571,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 3, 0, 0, OKanbana } /* "O KANBANA" */,
 	{ (LoadObj)2, 3, 0, 0, OKanbanb } /* "O KANBANB" */,
 	{ (LoadObj)2 },// 3, 1, 40000, 0, (ObjectFuncPtr)0x617160, "O BAKETU" } /* "O BAKETU" */,
-	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x616C90, "O HYDBASS" } /* "O HYDBASS" */,
+	{ (LoadObj)2, 3, 0, 0, nullptr} /* "O HYDBASS" */,
 	{ (LoadObj)6, 3, 0, 0, OGreen} /* "O GREEN" */,
 	{ (LoadObj)2, 3, 0, 0, OGreena} /* "O GREENA" */,
 	{ (LoadObj)2, 3, 0, 0, OGreenb}, /* "O GREENB" */
@@ -503,7 +588,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)3, 0, 0, 0, OCone2, }, /* "O Cone1" */
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615990, "O Curb" } /* "O Curb" */,
 	{ (LoadObj)2, 3, 0, 0, nullptr } /* "O Fence02" */,
-	{ (LoadObj)2, 3, 0, 0, OGreene}, /* "O GREENE" */  
+	{ (LoadObj)2, 3, 0, 0, OGreene}, /* "O GREENE" */
 	{ (LoadObj)2, 3, 0, 0, OSiba01, } /* "O SIBA01" */,
 	{ (LoadObj)2, 3, 0, 0, OSiba02, },
 	{ (LoadObj)6, 3, 1, 250000, OTokei } /* "O Tokei" */,
