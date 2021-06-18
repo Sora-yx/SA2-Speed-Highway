@@ -272,9 +272,10 @@ void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* a1)
 					njRotateY(0, (unsigned __int16)v7);
 				}
 
-				njCalcPoint(&vs, &a2, CURRENT_MATRIX); //in reality this is NJCalcVector 
-
-				njAddVector(&a2, &v2->Position);
+				njCalcVector(CURRENT_MATRIX, &vs, &a2, false);
+				//njCalcPoint(&vs, &a2, CURRENT_MATRIX); //in reality this is NJCalcVector 
+				//njGetTranslation(CURRENT_MATRIX, &v2->Position);
+				//njAddVector(&a2, &v2->Position);
 				njPopMatrix(1u);
 
 				a3.y = (unsigned __int64)(v2->Scale.z * 65536.0 * 0.002777777777777778);
@@ -570,7 +571,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 3, 0, 0, OKanbana } /* "O KANBANA" */,
 	{ (LoadObj)2, 3, 0, 0, OKanbanb } /* "O KANBANB" */,
 	{ (LoadObj)2 },// 3, 1, 40000, 0, (ObjectFuncPtr)0x617160, "O BAKETU" } /* "O BAKETU" */,
-	{ (LoadObj)2, 3, 0, 0, OHydbass} /* "O HYDBASS" */,
+	{ (LoadObj)2, 3, 0, 0, nullptr} /* "O HYDBASS" */,
 	{ (LoadObj)6, 3, 0, 0, OGreen} /* "O GREEN" */,
 	{ (LoadObj)2, 3, 0, 0, OGreena} /* "O GREENA" */,
 	{ (LoadObj)2, 3, 0, 0, OGreenb}, /* "O GREENB" */

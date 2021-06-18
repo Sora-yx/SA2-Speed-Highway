@@ -2,6 +2,8 @@
 
 // Stuff from the game's code, missing from the Mod Loader includes
 
+struct sp_link;
+
 static const void* const DSPSetPlayerSpeedPtr = (void*)0x46C340;
 static inline void DSPSetPlayerSpeed(int playerID, NJS_VECTOR* speed, Rotation* angle, __int16 disableTime)
 {
@@ -228,18 +230,6 @@ struct sp_info
 };
 
 
-struct sp_link
-{
-	sp_link* next;
-	sp_task* head;
-	void(__cdecl* exec)(sp_link*);
-	unsigned int numtask;
-	sp_info* info;
-	unsigned int sysflag;
-	void* work;
-};
-
-
 struct __declspec(align(4)) sp_task
 {
 	sp_task* next;
@@ -258,6 +248,17 @@ struct __declspec(align(4)) sp_task
 	unsigned __int8 wrtZflg;
 };
 
+
+struct sp_link
+{
+	sp_link* next;
+	sp_task* head;
+	void(__cdecl* exec)(sp_link*);
+	unsigned int numtask;
+	sp_info* info;
+	unsigned int sysflag;
+	void* work;
+};
 
 
 DataPointer(CL_ObjInfo*, NJS_OBJ_LIST_PTR_PREV, 0x1A5A400);

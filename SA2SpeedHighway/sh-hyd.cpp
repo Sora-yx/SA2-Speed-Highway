@@ -9,7 +9,7 @@ CollisionData HydCol = { 0, CollisionShape_Cyl1, 0x20, 0xE0, 0, {0}, 2.5, 10.0, 
 particle_info ParticleSprite = { 1.0, 0.037999999, 0.19, 0.115, 0.025, {0}, {0}, { 1.0, 1.0, 1.0, 1.0} };
 
 
-void __cdecl HydChild(ObjectMaster* a1)
+/*void __cdecl HydChild(ObjectMaster* a1)
 {
 	EntityData1* data; // esi
 
@@ -20,7 +20,7 @@ void __cdecl HydChild(ObjectMaster* a1)
 		{
 			if (data->Action == 1)
 			{
-				ByeByeHyd(data);
+				//ByeByeHyd(data);
 			}
 			else
 			{
@@ -37,7 +37,7 @@ void __cdecl HydChild(ObjectMaster* a1)
 		else
 		{
 			data->Action = 1;
-			ByeByeHyd(data);
+			//ByeByeHyd(data);
 			data->field_6 = 0;
 		}
 	}
@@ -49,8 +49,8 @@ void __cdecl CreateWater(NJS_VECTOR* position, NJS_VECTOR* scale_v, float scale)
 	sp_task* spriteWaterCopy; // esi
 	float v5; // eax
 
-	spriteWater = AllocateParticle(stru_97E26C.data, EffectWater);
-	spriteWaterCopy = spriteWater;
+	//spriteWater = AllocateParticle(stru_97E26C.data, EffectWater);
+//	spriteWaterCopy = spriteWater;
 	if (spriteWater)
 	{
 		spriteWater->pos = *position;
@@ -79,11 +79,11 @@ void __cdecl Hyd_HitMain(ObjectMaster* a1)
 	a2.y = 1.0;
 	a2.z = 0.0;
 	CreateWater(&data->Position, &a2, 0.2);
-	Hyd_Display(a1);
+	//Hyd_Display(a1);
 	//QueueSound_XYZ(121, v1, 1, 0, 2, v1->Position.x, v1->Position.y, v1->Position.z);
 }
 
-void __fastcall HydBass_Main(ObjectMaster* obj)
+/*void __fastcall HydBass_Main(ObjectMaster* obj)
 {
 	EntityData1* data; // r31
 	EntityData1* P1; // r29
@@ -137,7 +137,7 @@ void __fastcall HydBass_Main(ObjectMaster* obj)
 				childData->Position.x = data->Position.x;
 				childData->Position.y = data->Position.y;
 				childData->Position.z = data->Position.z;
-				obj->MainSub = (void(__cdecl*)(task*))Hit;
+				//obj->MainSub = (void(__cdecl*)(task*))Hit;
 				data->Action = 2;
 				//dsPlay_oneshot(120, 0, 0, 0);
 			}
@@ -188,7 +188,7 @@ void __cdecl OHydbass(ObjectMaster* obj)
 		obj->DisplaySub = Hyd_Display;
 		obj->MainSub = (ObjectFuncPtr)HydBass_Main;
 	}
-}
+}*/
 
 
 void FreeHydModel() {
