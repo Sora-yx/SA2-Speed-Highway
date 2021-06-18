@@ -208,7 +208,7 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 			Rotation rot = { 0, data->Rotation.y, 0 };
 			
 			DoNextAction_r(data->field_2, 10, 0);
-			DSPSetPlayerSpeed(0, &speed, &rot, 10);
+			SetPlayerSpeedIGuess(&speed, &rot, data->field_2, 10);
 		}
 		else
 		{
@@ -216,7 +216,7 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 			Rotation rot = { 0, data->Rotation.y, 0 };
 
 			DoNextAction_r(data->field_2, 9, 0);
-			DSPSetPlayerSpeed(data->field_2, &speed, &rot, 20);
+			SetPlayerSpeedIGuess(&speed, &rot, data->field_2, 20);
 		}
 
 		// PlaySound(101, 0, 0, 0);
@@ -256,7 +256,8 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 			Rotation rot = { 0, data->Rotation.y, 0 };
 
 			DoNextAction_r(data->field_2, 9, 0);
-			DSPSetPlayerSpeed(data->field_2, &speed, &rot, 10);
+			
+			SetPlayerSpeedIGuess(&speed, &rot, data->field_2,  10);
 
 			data->Action = Turnasi_Reset;
 			

@@ -2,21 +2,6 @@
 
 // Stuff from the game's code, missing from the Mod Loader includes
 
-struct sp_link;
-
-static const void* const DSPSetPlayerSpeedPtr = (void*)0x46C340;
-static inline void DSPSetPlayerSpeed(int playerID, NJS_VECTOR* speed, Rotation* angle, __int16 disableTime)
-{
-	__asm
-	{
-		push[disableTime]
-		mov ecx, [playerID]
-		mov edx, [angle]
-		mov eax, [speed]
-		call DSPSetPlayerSpeedPtr
-		add esp, 4
-	}
-}
 
 static const void* const DrawChunkModelPtr = (void*)0x42E6C0;
 static inline void DrawChunkModel(NJS_CNK_MODEL* a1)
@@ -219,6 +204,8 @@ struct particle_info
 	NJS_POINT3 velo;
 	NJS_ARGB argb;
 };
+
+struct sp_link;
 
 struct sp_info
 {
