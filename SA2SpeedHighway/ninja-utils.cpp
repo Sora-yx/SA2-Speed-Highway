@@ -99,7 +99,7 @@ int BAMS_SubWrap(__int16 bams_a, unsigned __int16 bams_b, int limit)
 	return result;
 }
 
-int __cdecl BAMS_Subtract(int a1, int a2)
+int BAMS_Subtract(int a1, int a2)
 {
 	int result; // eax
 
@@ -111,133 +111,19 @@ int __cdecl BAMS_Subtract(int a1, int a2)
 	return (unsigned __int16)result;
 }
 
-
-static const void* const PConvertVP2GPtr = (void*)0x468E70;
-static inline void PConvertVector_P2GASM(EntityData1* a1, NJS_VECTOR* a2)
-{
-	__asm
-	{
-		mov esi, [a2]
-		mov edi, [a1] // a1
-		call PConvertVP2GPtr
-	}
-}
-
-void PConvertVector_P2G(EntityData1* a1, NJS_VECTOR* a2) {
-	return PConvertVector_P2GASM(a1, a2);
-}
-
-static const void* const PConvertVPtr = (void*)0x468DF0;
-static inline void PConvertVector_G2PASM(EntityData1* a1, NJS_VECTOR* a2)
-{
-	__asm
-	{
-		mov esi, [a2]
-		mov edi, [a1]
-		call PConvertVPtr
-	}
-}
-
-void PConvertVector_G2P(EntityData1* a1, NJS_VECTOR* a2) {
-	return PConvertVector_G2PASM(a1, a2);
-}
-
-void __fastcall njCalcPointSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* vs, NJS_VECTOR* vd)
-{
-	const float* _m; // eax
-	double z; // st5
-	double y; // st6
-	double x; // st7
-
-	x = vs->x;
-	_m = m;
-	y = vs->y;
-	z = vs->z;
-	if (!m)
-	{
-		_m = _nj_current_matrix_ptr_;
-	}
-	vd->x = z * _m[M20] + y * _m[M10] + x * *_m + _m[M30];
-	vd->y = z * _m[M21] + y * _m[M11] + x * _m[M01] + _m[M31];
-	vd->z = z * _m[M22] + y * _m[M12] + x * _m[M02] + _m[M32];
-}
-
-void njTranslateSADX(NJS_MATRIX_PTR m, Float x, Float y, Float z)
-{
-	NJS_MATRIX_PTR v4; // eax
-
-	v4 = m;
-	if (!m)
-	{
-		v4 = _nj_current_matrix_ptr_;
-	}
-	v4[12] = y * v4[4] + z * v4[8] + x * *v4 + v4[12];
-	v4[13] = x * v4[1] + y * v4[5] + z * v4[9] + v4[13];
-	v4[14] = x * v4[2] + y * v4[6] + z * v4[10] + v4[14];
-	v4[15] = x * v4[3] + y * v4[7] + z * v4[11] + v4[15];
-}
-
-void __fastcall njTranslateVSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* v)
-{
-	double x; // st7
-	NJS_MATRIX_PTR _m; // eax
-	double y; // st6
-	double z; // st5
-
-	x = v->x;
-	_m = m;
-	y = v->y;
-	z = v->z;
-	if (!m)
-	{
-		_m = _nj_current_matrix_ptr_;
-	}
-	_m[M30] = z * _m[M20] + y * _m[M10] + x * *_m + _m[M30];
-	_m[M31] = z * _m[M21] + y * _m[M11] + x * _m[M01] + _m[M31];
-	_m[M32] = z * _m[M22] + y * _m[M12] + x * _m[M02] + _m[M32];
-	_m[M33] = z * _m[M23] + y * _m[M13] + x * _m[M03] + _m[M33];
-}
-
-void __fastcall njCalcVectorSADX(NJS_MATRIX_PTR m, const NJS_VECTOR* vs, NJS_VECTOR* vd)
-{
-	double vsx; // st7
-	NJS_MATRIX_PTR _m; // eax
-	double vsy; // st6
-	double vsz; // st5
-	double length; // st7
-	float magnitude; // [esp+0h] [ebp-10h]
-	float vdy; // [esp+8h] [ebp-8h]
-	float vdz; // [esp+Ch] [ebp-4h]
-	float vdx; // [esp+14h] [ebp+4h]
-
-	vsx = vs->x;
-	_m = m;
-	vsy = vs->y;
-	vsz = vs->z;
-	if (!m)
-	{
-		_m = _nj_current_matrix_ptr_;
-	}
-	vd->x = vsz * _m[M20] + vsy * _m[M10] + vsx * *_m;
-	vd->y = vsz * _m[M21] + vsy * _m[M11] + vsx * _m[M01];
-	vd->z = vsz * _m[M22] + vsy * _m[M12] + vsx * _m[M02];
-
-}
-
-
-void __fastcall njAddVectorSADX(NJS_VECTOR* vd, const NJS_VECTOR* vs)
+void njAddVectorSADX(NJS_VECTOR* vd, const NJS_VECTOR* vs)
 {
 	vd->x = vd->x + vs->x;
 	vd->y = vs->y + vd->y;
 	vd->z = vs->z + vd->z;
 }
 
-float __fastcall njInnerProduct(const NJS_VECTOR* v1, const NJS_VECTOR* v2)
+float njInnerProduct(const NJS_VECTOR* v1, const NJS_VECTOR* v2)
 {
 	return v1->z * v2->z + v1->y * v2->y + v1->x * v2->x;
 }
 
-float __cdecl VectorMaxAbs(NJS_VECTOR* y)
+float VectorMaxAbs(NJS_VECTOR* y)
 {
 	double result; // st7
 	float x; // [esp+0h] [ebp-4h]
@@ -258,4 +144,16 @@ float __cdecl VectorMaxAbs(NJS_VECTOR* y)
 		result = x;
 	}
 	return result;
+}
+
+void njGetTranslation(NJS_MATRIX_PTR matrix, NJS_VECTOR* out)
+{
+	if (!matrix)
+	{
+		matrix = CURRENT_MATRIX;
+	}
+
+	out->x = matrix[3];
+	out->y = matrix[7];
+	out->z = matrix[11];
 }

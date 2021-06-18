@@ -81,36 +81,6 @@ void __cdecl EnemyBounceThing_Wrapper(unsigned __int8 playerID, float a2, float 
 	EnemyBounceThing(playerID, a2, a3, a4);
 }
 
-void __cdecl dothedash(unsigned __int8 playerID, NJS_VECTOR* _speed, Rotation* angle, __int16 disableTime)
-{
-	int index; // eax
-	EntityData1* data1; // ecx
-	EntityData2_R* data2; // esi
-	CharObj2Base* co2; // eax
-	Angle wtf_y; // ebx
-	float wtf_z; // edx
-	NJS_VECTOR result; // [esp+Ch] [ebp-Ch] BYREF
-
-	index = playerID;
-	data1 = MainCharObj1[index];
-	data2 = (EntityData2_R*)MainCharData2[index];
-	co2 = MainCharObj2[index];
-	co2->field_12 = disableTime;
-	co2->Speed = *_speed;
-	data1->Rotation.x = angle->x;
-	wtf_y = angle->y;
-	data1->Rotation.y = 0x4000 - wtf_y;
-	data2->ang_aim.y = 0x4000 - wtf_y;
-	data1->Rotation.z = angle->z;
-	result.x = _speed->x;
-	wtf_z = _speed->z;
-	result.y = _speed->y;
-	result.z = wtf_z;
-	PConvertVector_P2G(data1, &result);
-	data2->spd = result;
-}
-
-
 signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2)
 {
 	EntityData1* v2; // ecx

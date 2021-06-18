@@ -4,15 +4,15 @@ static ModelInfo* TurnAsi;
 
 static CollisionData TurnAsiCol[] = {
 	{ 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, 15.0, 0.0}, 7.0, 7.0, 0.0, 0.0, 0, 0, 0 },
-	{ 0, (CollisionShapes)0x3, 0x77, 0xE0, 0x2000, {0.0, -61.0, 0.0}, 34.5, 2.5, 17.0, 0.0, 0, 0, 0},
-	{ 0, (CollisionShapes)0x3, 0x77, 0xE0, 0x2000, {0.0, -53.0, 0.0}, 34.5, 4.0, 4.0, 0.0, 0, 0, 0},
-	{ 0, (CollisionShapes)0x3, 0x77, 0xE0, 0x2000, {33.0, -74.0, 0.0}, 2.5, 14.0, 14.0, 0.0, 0, 0, 0 },
-	{ 0, (CollisionShapes)0x3, 0x77, 0xE0, 0x2000, {-33.0, -74.0, 0.0}, 2.5, 14.0, 14.0, 0.0, 0, 0, 0 },
-	{ 0, (CollisionShapes)0x3, 0x77, 0xE0, 0x2000, {0.0, -93.0, 0.0}, 34.5, 6.0, 14.0, 0.0, 0, 0, 0},
-	{ 0, (CollisionShapes)0x3, 0x77, 0xE0, 0x2000, {0.0, -74.0, -15.0}, 34.5, 18.0, 6.0, 0.0, 0, 0, 0},
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0x2000, {0.0, -61.0, 0.0}, 34.5, 2.5, 17.0, 0.0, 0, 0, 0},
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0x2000, {0.0, -53.0, 0.0}, 34.5, 4.0, 4.0, 0.0, 0, 0, 0},
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0x2000, {33.0, -74.0, 0.0}, 2.5, 14.0, 14.0, 0.0, 0, 0, 0 },
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0x2000, {-33.0, -74.0, 0.0}, 2.5, 14.0, 14.0, 0.0, 0, 0, 0 },
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0x2000, {0.0, -93.0, 0.0}, 34.5, 6.0, 14.0, 0.0, 0, 0, 0},
+	{ 0, CollisionShape_Cube1, 0x77, 0xE0, 0x2000, {0.0, -74.0, -15.0}, 34.5, 18.0, 6.0, 0.0, 0, 0, 0},
 };
 
-static CollisionData TurnAsiTriggerCol = { 0, (CollisionShapes)0x3, 0, 0xE0, 0, {0.0, 0.0, 5.0}, 40.5, 14.0, 5.0, 0.0, 0, 0, 0 };
+static CollisionData TurnAsiTriggerCol = { 0, CollisionShape_Cube1, 0, 0xE0, 0, {0.0f, 0.0f, 5.0f}, 40.5f, 14.0f, 5.0f, 0.0f, 0, 0, 0 };
 
 struct turnasiwk
 {
@@ -50,8 +50,6 @@ void TurnasiT_CalcPos(EntityData1* data, ObjectMaster* parent)
 	}
 	else
 	{
-		NJS_VECTOR vs{};
-		NJS_VECTOR vd;
 		NJS_OBJECT* child = TurnAsi->getmodel()->child;
 		NJS_OBJECT* childChild = TurnAsi->getmodel()->child->child;
 
@@ -61,10 +59,9 @@ void TurnasiT_CalcPos(EntityData1* data, ObjectMaster* parent)
 		njRotateX(CURRENT_MATRIX, parent_data->Rotation.x + data->Rotation.x);
 		njTranslateEx((NJS_VECTOR*)&child->pos);
 		njTranslateEx((NJS_VECTOR*)&childChild->pos);
-		njCalcVector(CURRENT_MATRIX, &vd, &vs, false);
+		njGetTranslation(CURRENT_MATRIX, &data->Position);
 		njPopMatrixEx();
 
-		data->Position = vd;
 		data->Rotation.y = parent_data->Rotation.y;
 
 		int player = 0;
@@ -78,7 +75,7 @@ void TurnasiT_CalcPos(EntityData1* data, ObjectMaster* parent)
 			}
 		}
 
-		if (parent_data->Scale.z == 20.0f)
+		if (parent_data->Scale.z != 20.0f)
 		{
 			if (data->Scale.z != 10.0f && data->Collision->Flag & 1)
 			{
@@ -210,16 +207,16 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 			NJS_VECTOR speed = { info->Speed + 3.0f, 0, 0 };
 			Rotation rot = { 0, data->Rotation.y, 0 };
 			
-			DoNextAction(data->field_2, 10, 0);
-			dothedash(0, &speed, &rot, 10);
+			DoNextAction_r(data->field_2, 10, 0);
+			DSPSetPlayerSpeed(0, &speed, &rot, 10);
 		}
 		else
 		{
 			NJS_VECTOR speed = { info->Speed + 1.0f, 0, 0 };
 			Rotation rot = { 0, data->Rotation.y, 0 };
 
-			DoNextAction(data->field_2, 9, 0);
-			dothedash(0, &speed, &rot, 20);
+			DoNextAction_r(data->field_2, 9, 0);
+			DSPSetPlayerSpeed(data->field_2, &speed, &rot, 20);
 		}
 
 		// PlaySound(101, 0, 0, 0);
@@ -258,8 +255,8 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 			NJS_VECTOR speed = { info->Speed + 1.0f, 0, 0 };
 			Rotation rot = { 0, data->Rotation.y, 0 };
 
-			DoNextAction(data->field_2, 9, 0);
-			dothedash(0, &speed, &rot, 10);
+			DoNextAction_r(data->field_2, 9, 0);
+			DSPSetPlayerSpeed(data->field_2, &speed, &rot, 10);
 
 			data->Action = Turnasi_Reset;
 			
@@ -279,7 +276,7 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 			njCalcPoint(&offset, &output, CURRENT_MATRIX);
 			njPopMatrixEx();
 
-			EnemyBounceThing(0, output.x, output.y, output.z);
+			EnemyBounceThing(data->field_2, output.x, output.y, output.z);
 			
 			data->Scale.y = 5.0f;
 		}
@@ -303,11 +300,11 @@ void Turnasi_CheckSub(EntityData1* data, turnasiwk* info)
 
 			if (info->Speed >= 4.0f)
 			{
-				DoNextAction_r(0, 10, 0); //object control with speed
+				DoNextAction_r(data->field_2, 10, 0); //object control with speed
 			}
 			else
 			{
-				DoNextAction_r(0, 9, 0); //object control without speed
+				DoNextAction_r(data->field_2, 9, 0); //object control without speed
 			}
 		}
 		else
