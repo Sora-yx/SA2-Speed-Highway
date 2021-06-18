@@ -175,40 +175,21 @@ void PushPlayer(ObjectMaster* a1)
 
 void Fount_CalcPushUP(ObjectMaster* a1)
 {
-	EntityData1* v1; // esi
-	NJS_POINT3* result;
-	Angle v3; // eax
-	Angle v4; // eax
-	Angle v5; // eax
-	NJS_POINT3 a2; // [esp+8h] [ebp-Ch] BYREF
-	v1 = a1->Data1.Entity;
-	a2.x = 0.0;
-	a2.y = 6.0;
-	a2.z = -6.0;
+	EntityData1* data = a1->Data1.Entity;
 
-	result = &a1->Data2.Entity->Velocity; //save speed/pos stored in data2.
+	njPushUnitMatrix();
+	njRotateZXY(&data->Rotation);
 
-	if (v1->Scale.x != 0.0 || v1->Scale.y != 0.0 || v1->Scale.z != 0.0)
+	if (data->Scale.x != 0.0 || data->Scale.y != 0.0 || data->Scale.z != 0.0)
 	{
-		a2 = v1->Scale;
+		njTranslateEx(&data->Position);
 	}
-	njPushMatrix(_nj_unit_matrix_);
-	v3 = v1->Rotation.z;
-	if (v3)
+	else
 	{
-		njRotateZ(0, (unsigned __int16)v3);
+		njTranslate(CURRENT_MATRIX, 0.0f, 6.0f, -6.0f);
 	}
-	v4 = v1->Rotation.x;
-	if (v4)
-	{
-		njRotateX(0, (unsigned __int16)v4);
-	}
-	v5 = v1->Rotation.y;
-	if (v5)
-	{
-		njRotateY(0, (unsigned __int16)v5);
-	}
-	njCalcPointSADX(CURRENT_MATRIX, &a2, result);
+	
+	njGetTranslation(CURRENT_MATRIX, &a1->Data2.Entity->Velocity);
 	njPopMatrix(1u);
 }
 

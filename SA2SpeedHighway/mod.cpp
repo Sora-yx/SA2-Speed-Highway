@@ -53,6 +53,7 @@ extern "C"
 			//MainCharObj1[0]->Position = { 3630.514893, -1326, 1424.386963 };
 			//MainCharObj1[0]->Position = { 5512.210938, -1778, 1215 };
 			//MainCharObj1[0]->Position = { 4095.762207, -1500, 4599.47998 };
+			MainCharObj1[0]->Position = { 3846, -1486, 1318 };
 		}
 
 		FixCam();

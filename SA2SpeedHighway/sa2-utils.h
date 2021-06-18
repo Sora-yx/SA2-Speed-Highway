@@ -2,6 +2,52 @@
 
 // Stuff from the game's code, missing from the Mod Loader includes
 
+static const void* const DSPSetPlayerSpeedPtr = (void*)0x46C340;
+static inline void DSPSetPlayerSpeed(int playerID, NJS_VECTOR* speed, Rotation* angle, __int16 disableTime)
+{
+	__asm
+	{
+		push[disableTime]
+		mov ecx, [playerID]
+		mov edx, [angle]
+		mov eax, [speed]
+		call DSPSetPlayerSpeedPtr
+		add esp, 4
+	}
+}
+
+static const void* const DrawChunkModelPtr = (void*)0x42E6C0;
+static inline void DrawChunkModel(NJS_CNK_MODEL* a1)
+{
+	__asm
+	{
+		mov eax, [a1]
+		call DrawChunkModelPtr
+	}
+}
+
+static const void* const PConvertVP2GPtr = (void*)0x468E70;
+static inline void PConvertVector_P2G(EntityData1* a1, NJS_VECTOR* a2)
+{
+	__asm
+	{
+		mov esi, [a2]
+		mov edi, [a1] // a1
+		call PConvertVP2GPtr
+	}
+}
+
+static const void* const PConvertVPtr = (void*)0x468DF0;
+static inline void PConvertVector_G2P(EntityData1* a1, NJS_VECTOR* a2)
+{
+	__asm
+	{
+		mov esi, [a2]
+		mov edi, [a1]
+		call PConvertVPtr
+	}
+}
+
 #pragma pack(push, 1)
 struct EntityData2_R
 {

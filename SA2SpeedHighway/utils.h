@@ -25,12 +25,10 @@ NJS_OBJECT* DynCol_AddFromObject(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECT
 void __cdecl MainSubGlobalCol(ObjectMaster* obj);
 void __cdecl MainSubGlobalDynCol(ObjectMaster* obj);
 void KillPlayerFall(int a1);
-void __cdecl dothedash(unsigned __int8 playerID, NJS_VECTOR* _speed, Rotation* angle, __int16 disableTime);
 void __cdecl EnemyBounceThing(unsigned __int8 playerID, float speedX, float speedY, float speedZ);
 void __cdecl EnemyBounceThing_Wrapper(unsigned __int8 playerID, float a2, float a3, float a4);
 void DoNextAction_r(int playerNum, char action, int unknown);
 int __cdecl DoRotationStuff(unsigned __int8 a1, int a2, int a3, int a4);
-float __cdecl VectorMaxAbs(NJS_VECTOR* y);
 void __cdecl StartPosManager(ObjectMaster* obj);;
 ObjectMaster* __cdecl DoObjectThing(ObjectThing* things, ObjectMaster* parent);
 ObjectMaster* __cdecl GetCharacterObject(unsigned __int8 character);
