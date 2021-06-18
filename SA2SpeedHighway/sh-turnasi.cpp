@@ -34,7 +34,6 @@ enum TurnasiTActions
 	TurnasiT_Reset
 };
 
-//broken
 void TurnasiT_CalcPos(EntityData1* data, ObjectMaster* parent)
 {
 	EntityData1* parent_data = parent->Data1.Entity;
@@ -133,14 +132,24 @@ void __cdecl TurnAsi_Trigger(ObjectMaster* obj)
 
 void Turnasi_ResetSub(EntityData1* data)
 {
-	data->Rotation.x -= 182;
+	int v4 = data->Rotation.x - 182;
+	data->Rotation.x = v4;
 
-	if (data->Rotation.x <= 0)
+	if (v4 <= 0)
 	{
+		data->Status |= 0x100;
 		data->Action = Turnasi_Check;
 		data->Rotation.x = 0;
-		data->Status |= 0x100;
+
 	}
+}
+
+void Asi_ApplyScaleStuff(EntityData1* dataParent, turnasiwk* parRot) {
+	parRot->Speed = 0;
+	dataParent->field_6 = 0;
+	dataParent->Scale.y = 5.0;
+	dataParent->Scale.z = 0.0;
+	return;
 }
 
 void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
@@ -201,30 +210,28 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 			{
 				return;
 			}
-			
+
 			data->Action = Turnasi_Reset;
 
 			NJS_VECTOR speed = { info->Speed + 3.0f, 0, 0 };
 			Rotation rot = { 0, data->Rotation.y, 0 };
-			
-			DoNextAction_r(data->field_2, 10, 0);
-			SetPlayerSpeedIGuess(&speed, &rot, data->field_2, 10);
+
+			DoNextAction_r(data->field_2, 15, 0);
+			dothedash(data->field_2, &speed, &rot, 10);
 		}
 		else
 		{
 			NJS_VECTOR speed = { info->Speed + 1.0f, 0, 0 };
 			Rotation rot = { 0, data->Rotation.y, 0 };
 
-			DoNextAction_r(data->field_2, 9, 0);
-			SetPlayerSpeedIGuess(&speed, &rot, data->field_2, 20);
+			DoNextAction_r(data->field_2, 15, 0);
+			dothedash(data->field_2, &speed, &rot, 20);
 		}
 
 		// PlaySound(101, 0, 0, 0);
 
-		info->Speed = 0;
-		data->field_6 = 0;
-		data->Scale.y = 5.0;
-		data->Scale.z = 0.0;
+		Asi_ApplyScaleStuff(data, info);
+		return; 
 	}
 	else
 	{
@@ -255,15 +262,15 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 			NJS_VECTOR speed = { info->Speed + 1.0f, 0, 0 };
 			Rotation rot = { 0, data->Rotation.y, 0 };
 
-			DoNextAction_r(data->field_2, 9, 0);
-			
-			SetPlayerSpeedIGuess(&speed, &rot, data->field_2,  10);
+			DoNextAction_r(data->field_2, 15, 0);
+			dothedash(data->field_2, &speed, &rot, 10);
 
 			data->Action = Turnasi_Reset;
-			
+
 			//PlaySound(101, 0, 0, 0);
-			
-			data->Scale.y = 5.0f;
+
+			Asi_ApplyScaleStuff(data, info);
+			return;
 		}
 		else
 		{
@@ -278,14 +285,10 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 			njPopMatrixEx();
 
 			EnemyBounceThing(data->field_2, output.x, output.y, output.z);
-			
-			data->Scale.y = 5.0f;
 		}
 
 		data->Scale.x = 0.0f;
-		info->Speed = 0;
-		data->field_6 = 0;
-		data->Scale.z = 0.0f;
+		Asi_ApplyScaleStuff(data, info);
 	}
 }
 
@@ -349,6 +352,7 @@ void __cdecl Turnasi_Main(ObjectMaster* obj)
 	switch (data->Action)
 	{
 	case Turnasi_Check:
+		AddToCollisionList(obj);
 		Turnasi_CheckSub(data, info);
 		break;
 	case Turnasi_Send:
@@ -361,8 +365,6 @@ void __cdecl Turnasi_Main(ObjectMaster* obj)
 		UpdateSetDataAndDelete(obj);
 		return;
 	}
-
-	AddToCollisionList(obj);
 }
 
 void __cdecl LoadTurnAsi(ObjectMaster* obj)
