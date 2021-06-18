@@ -130,26 +130,25 @@ void __cdecl TurnAsi_Trigger(ObjectMaster* obj)
 	}
 }
 
-void Turnasi_ResetSub(EntityData1* data)
-{
-	int v4 = data->Rotation.x - 182;
-	data->Rotation.x = v4;
-
-	if (v4 <= 0)
-	{
-		data->Status |= 0x100;
-		data->Action = Turnasi_Check;
-		data->Rotation.x = 0;
-
-	}
-}
-
 void Asi_ApplyScaleStuff(EntityData1* dataParent, turnasiwk* parRot) {
 	parRot->Speed = 0;
 	dataParent->field_6 = 0;
 	dataParent->Scale.y = 5.0;
 	dataParent->Scale.z = 0.0;
 	return;
+}
+
+void Turnasi_ResetSub(EntityData1* data, turnasiwk* info)
+{
+	data->Rotation.x -= 182;
+
+	if (data->Rotation.x <= 0)
+	{
+		Asi_ApplyScaleStuff(data, info);
+		data->Status |= 0x100;
+		data->Action = Turnasi_Check;
+		data->Rotation.x = 0;
+	}
 }
 
 void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
@@ -292,8 +291,10 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 	}
 }
 
-void Turnasi_CheckSub(EntityData1* data, turnasiwk* info)
+void Turnasi_CheckSub(ObjectMaster* obj, EntityData1* data, turnasiwk* info)
 {
+	ObjectMaster* child;
+
 	if (data->Index == 10)
 	{
 		if (info->Speed >= 1.5f)
@@ -318,6 +319,11 @@ void Turnasi_CheckSub(EntityData1* data, turnasiwk* info)
 			data->Scale.y = 0.0;
 			data->Scale.z = 0.0;
 			data->Rotation.x = 0;
+			child = (ObjectMaster*)obj->field_4C;
+			if (child) {
+				child->Data1.Entity->Scale.z = 0.0;
+			}
+
 		}
 	}
 }
@@ -353,13 +359,13 @@ void __cdecl Turnasi_Main(ObjectMaster* obj)
 	{
 	case Turnasi_Check:
 		AddToCollisionList(obj);
-		Turnasi_CheckSub(data, info);
+		Turnasi_CheckSub(obj, data, info);
 		break;
 	case Turnasi_Send:
 		Turnasi_SendSub(data, info, obj->Child);
 		break;
 	case Turnasi_Reset:
-		Turnasi_ResetSub(data);
+		Turnasi_ResetSub(data, info);
 		break;
 	case Turnasi_Delete:
 		UpdateSetDataAndDelete(obj);
@@ -371,7 +377,7 @@ void __cdecl LoadTurnAsi(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
 
-	LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1 | LoadObj_Data2), TurnAsi_Trigger, obj);
+	obj->field_4C = LoadChildObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1 | LoadObj_Data2), TurnAsi_Trigger, obj);
 
 	InitCollision(obj, TurnAsiCol, 7, 4);
 
