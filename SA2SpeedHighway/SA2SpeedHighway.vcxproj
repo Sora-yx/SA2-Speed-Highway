@@ -213,6 +213,7 @@
     <ClCompile Include="sh-lamp.cpp" />
     <ClCompile Include="sh-light.cpp" />
     <ClCompile Include="sh-neon.cpp" />
+    <ClCompile Include="sh-gclight.cpp" />
     <ClCompile Include="sh-poster.cpp" />
     <ClCompile Include="SH-Tokei.cpp" />
     <ClCompile Include="sh-turnasi.cpp" />

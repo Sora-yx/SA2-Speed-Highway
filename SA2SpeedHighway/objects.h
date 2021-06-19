@@ -69,7 +69,10 @@ void __cdecl OGgrenb(ObjectMaster* obj);
 void __cdecl OGgrena(ObjectMaster* obj);
 
 void __cdecl OHydbass(ObjectMaster* obj);
-
 void FreeHydModel();
-
 void LoadHydModel();
+
+void __cdecl OGclight(ObjectMaster* obj);
+void LoadClightModel();
+
+void FreeClightModel();

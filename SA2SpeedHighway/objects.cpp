@@ -33,10 +33,15 @@ static ModelInfo* SH_Siba[2];
 static ModelInfo* SH_HighRaft[2];
 static ModelInfo* SH_HighRaftCol[2];
 
+static ModelInfo* SH_Gcurb;
+static ModelInfo* SH_Sign1;
 
+CollisionData OGcurbCol = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 2.5, 0.0}, 6.0, 2.5, 2.2, 0.0, 0, 0, 0 };
 
 CollisionData Col_Fence = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.25, 0.0}, 13.0, 4.25, 2.75, 0.0, 0, 0, 0 };
 CollisionData col_Fence02 = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.5, 0.0}, 10.0, 4.5, 1.0, 0.0, 0, 0, 0 };
+
+CollisionData col_Sign1 = { 0, (CollisionShapes)0x1, 0x77, 0, 0, {0.0, 11.0, 0.0}, 1.0, 10.0, 0.0, 0.0, 0, 0, 0 };
 
 CollisionData Col_Og[] = {
 	{ 0, (CollisionShapes)0x1, 0x77, 0, 0, {34.0, 25.0, 0.0}, 2.5, 27.0, 0.0, 0.0, 0, 0, 0 },
@@ -102,6 +107,10 @@ void LoadModelsSH()
 	LoadTokeiModels();
 	LoadGreenModels();
 	LoadSH_EscalatorsModels();
+	LoadClightModel();
+
+	SH_Gcurb = LoadMDL("SH-Gcurb", ModelFormat_Chunk);
+	SH_Sign1 = LoadMDL("SH-Sign1", ModelFormat_Chunk);
 
 	//Load Collisions model for DynCol
 	SH_OOStp4SCol = LoadMDL("SH-OOstp4SCol", ModelFormat_Basic);
@@ -150,6 +159,7 @@ void FreeModelsSH()
 	FreeTokeiModels();
 	FreeGreenModels();
 	FreeHydModel();
+	FreeClightModel();
 	return;
 }
 
@@ -241,7 +251,7 @@ void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* obj)
 			}
 		}
 
-		data->Action == 1;
+		data->Action = 1;
 	}
 }
 
@@ -433,6 +443,51 @@ void OStPlant01(ObjectMaster* obj) {
 }
 
 
+void __cdecl OGcurb_Main(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+	if (!ClipObject(obj, 2250000.0))
+	{
+		if (data->Action)
+		{
+			if (data->Action == 1)
+			{
+				AddToCollisionList(obj);
+			}
+		}
+		else
+		{
+			obj->field_4C = SH_Gcurb->getmodel();
+			obj->DisplaySub = GenericSHDisplayZXY;
+			InitCollision(obj, &OGcurbCol, 1, 4u);
+			data->Collision->Range = 10.0f;
+			data->Action = 1;
+		}
+	}
+}
+
+void __cdecl OGcurb(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+	obj->field_4C = OGcurb_Main;
+	obj->DeleteSub = j_DeleteChildObjects;
+	obj->MainSub = SH_GlobalMainWithCalcRot;
+}
+
+void __cdecl OSign1(ObjectMaster* obj)
+{
+	EntityData1* data; // edi
+
+	data = obj->Data1.Entity;
+	obj->field_4C = SH_Sign1->getmodel();
+
+	InitCollision(obj, &col_Sign1, 1, 4u);
+	data->Collision->Range = 21.0f;
+
+	obj->MainSub = MainSubGlobalCol;
+	obj->DisplaySub = GenericSHDisplayZXY;
+}
+
 static ObjectListEntry SpeedHighwayObjList[] = {
 	{ LoadObj_Data1, 2, 0x10, 0.0, RingMain },
 	{ LoadObj_Data1, 2, 0x20, 0.0, (ObjectFuncPtr)SpringA_Main },
@@ -442,9 +497,9 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x7A3E50, "O FeBJG" } /* "O FeBJG",
 	{ (LoadObj)2 }, //3, 0, 0, 0, (ObjectFuncPtr)0x7A30E0, "O TOGE" } /* "O TOGE" ,
-	{ (LoadObj)3 }, //3, 4, 0, 0, (ObjectFuncPtr)0x4A3420, "O EME P" } /* "O EME P" ,
+	{ (LoadObj)2, 2, 4, 0, (ObjectFuncPtr)0x6D00C0 } /* "EMERALD" */,
 	{ (LoadObj)2, 2, 1, 640000, (ObjectFuncPtr)0x6C63C0, },
-	{ (LoadObj)6 },// 3, 0, 0, 0, (ObjectFuncPtr)0x4CBA80, "O SWITCH" } /* "O SWITCH" */
+	{ (LoadObj)2, 2, 0, 0, (ObjectFuncPtr)0x6DCDC0, } /* "SWITCH   " */,
 	{ (LoadObj)10 },// 3, 0, 0, 0, (ObjectFuncPtr)0x7A2B60, "CMN KUSA" } /* "CMN KUSA" */,
 	{ (LoadObj)14 }, //3, 1, 2250000, 0, (ObjectFuncPtr)0x7A26F0, "CMN_DRING" } /* "CMN_DRING" */,
 	{ (LoadObj)2 }, //3, 0, 0, 0, (ObjectFuncPtr)0x7A21C0, "O BALOON" } /* "O BALOON" */,
@@ -491,11 +546,11 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 3, 1, 160000, OPoster0} /* "O POSTER0" */,
 	{ (LoadObj)2, 3, 1, 160000, OPoster1} /* "O POSTER1" */,
 	{ (LoadObj)2, 3, 1, 160000, OPoster2} /* "O POSTER2" */,
-	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x6173D0, "O SIGN1" } /* "O SIGN1" */,
+	{ (LoadObj)2, 3, 0, 0, OSign1,} /* "O SIGN1" */,
 	{ (LoadObj)2, 3, 0, 0, OKanbana } /* "O KANBANA" */,
 	{ (LoadObj)2, 3, 0, 0, OKanbanb } /* "O KANBANB" */,
 	{ (LoadObj)2 },// 3, 1, 40000, 0, (ObjectFuncPtr)0x617160, "O BAKETU" } /* "O BAKETU" */,
-	{ (LoadObj)2, 3, 0, 0, nullptr} /* "O HYDBASS" */,
+	{ (LoadObj)2, 3, 0, 0, OHydbass} /* "O HYDBASS" */,
 	{ (LoadObj)6, 3, 0, 0, OGreen} /* "O GREEN" */,
 	{ (LoadObj)2, 3, 0, 0, OGreena} /* "O GREENA" */,
 	{ (LoadObj)2, 3, 0, 0, OGreenb}, /* "O GREENB" */
@@ -510,7 +565,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },//3, 1, 4000000, 0, (ObjectFuncPtr)0x615EB0, "O Antena" } /* "O Antena" */,
 	{ (LoadObj)3, 0, 0, 0, OCone1, }, /* "O Cone1" */
 	{ (LoadObj)3, 0, 0, 0, OCone2, }, /* "O Cone1" */
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x615990, "O Curb" } /* "O Curb" */,
+	{ (LoadObj)2, 3, 0, 0, OGcurb,} /* "O Curb" */,
 	{ (LoadObj)2, 3, 0, 0, nullptr } /* "O Fence02" */,
 	{ (LoadObj)2, 3, 0, 0, OGreene}, /* "O GREENE" */
 	{ (LoadObj)2, 3, 0, 0, OSiba01, } /* "O SIBA01" */,
@@ -541,7 +596,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2 },//2, 0, 0, 0, (ObjectFuncPtr)0x7A9C60, "O HINT" } /* "O HINT" */,
 	{ LoadObj_Data1, 2, 0x50, 0.0, RingGroup},
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B00, "O GFENCE" } /* "O GFENCE" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B30, "O GCURB" } /* "O GCURB" */,
+	{ (LoadObj)2, 3, 0, 0, OGcurb} /* "O GCURB" */,
 	{ (LoadObj)2, 3, 0, 0, Load_OGFence02, },//3, 0, 0, 0, (ObjectFuncPtr)0x614B60, "O GFENCE02" } /* "O GFENCE02" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614B90, "O GPINPIN" } /* "O GPINPIN" */,
 	{ (LoadObj)2, 3, 0, 0, Load_GFF, } /* "O GFF" */,
@@ -550,7 +605,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 3, 0, 0, OGgrena, } /* "O GGRENA" */,
 	{ (LoadObj)2, 3, 0, 0, OGgrenb, } /* "O GGRENA" */,
 	{ (LoadObj)2, 3, 0, 0, OGgrend, } /* "O GGRENA" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614CE0, "O GCLIGHT" } /* "O GCLIGHT" */,
+	{ (LoadObj)2, 3, 0, 0, OGclight} /* "O GCLIGHT" */,
 	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), 2, 0x30, 0.0, ItemBoxAir_Main },
 	{ (LoadObj)2 }// 3, 1, 3240000, 0, (ObjectFuncPtr)0x614380, "MISSILE" } /* "MISSILE" */,
 };

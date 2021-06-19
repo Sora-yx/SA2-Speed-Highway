@@ -5,16 +5,6 @@ static ModelInfo* SH_Fountain[3];
 extern NJS_TEXLIST highwayObj2_TEXLIST;
 CollisionData ftnCol = { 0, (CollisionShapes)0, 0x77, 0, 0, {0.0, 30.0, 0.0}, 5.0, 0.0, 0.0, 0.0, 0, 0, 0 };
 
-/*static NJS_TEXNAME FountainTexName[] = {
-	{ (char*)"fountain01", 0, 0 },
-	{ (char*)"fountain02", 0, 0 },
-	{ (char*)"fountain03", 0, 0 },
-	{ (char*)"fountain04", 0, 0 },
-};
-
-
-static NJS_TEXLIST FtnTexlist = { arrayptrandlength(FountainTexName, Uint32) };*/
-
 
 //They actually made 4 texlist with one tex lol.
 static NJS_TEXNAME ftntexid0 = { (char*)"fountain01", 0, 0 };

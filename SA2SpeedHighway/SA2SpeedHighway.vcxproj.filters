@@ -200,5 +200,8 @@
     <ClCompile Include="sh-hyd.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="sh-gclight.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
