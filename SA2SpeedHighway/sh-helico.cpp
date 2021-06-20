@@ -2,7 +2,7 @@
 
 static ModelInfo* SH_Helico[3];
 
-CollisionData HeliCol = { 0, (CollisionShapes)0x1, 1, 0x2F, 400, {0.0, 20.0, 0.0}, 75.0, 1.0, 0.0, 0.0, 0, 0, 0 };
+CollisionData HeliCol = { 0, (CollisionShapes)0x1, 1, 0x2F, 0x400, {0.0, 20.0, 0.0}, 75.0, 1.0, 0.0, 0.0, 0, 0, 0 };
 CollisionData HeliGrabCol = { 0, (CollisionShapes)0x0, 0x70, 0xEC, 0, {0}, 20.0, 0.0, 0.0, 0.0, 0, 0, 0 };
 
 extern NJS_TEXLIST highwayObj_TEXLIST;

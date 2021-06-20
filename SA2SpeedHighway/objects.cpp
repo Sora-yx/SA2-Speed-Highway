@@ -108,6 +108,7 @@ void LoadModelsSH()
 	LoadGreenModels();
 	LoadSH_EscalatorsModels();
 	LoadClightModel();
+	LoadTrashModels();
 
 	SH_Gcurb = LoadMDL("SH-Gcurb", ModelFormat_Chunk);
 	SH_Sign1 = LoadMDL("SH-Sign1", ModelFormat_Chunk);
@@ -520,7 +521,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)LoadObj_Data1, 3, 1, 2250000, OGlass2}, /* "O GLASS " */
 	{ (LoadObj)6, 3, 0, 0, OHighRaftA }/* "HIGH RAFT A" */,
 	{ (LoadObj)6, 3, 0, 0, OHighRaftC }/* "HIGH RAFT C" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x61A330, "O TANKA" } /* "O TANKA" */,
+	{ (LoadObj)2, 3, 0, 0, OTanka,} /* "O TANKA" */,
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x619960, "O SIGNB" } /* "O SIGNB" */,
 	{ (LoadObj)6, 3, 1, 1000000, LoadTurnAsi } /* "O TurnAsi" */,
 	{ (LoadObj)2, 3, 1, 25000000, SHSLIGHT, }, /* "O SLIGHT" */

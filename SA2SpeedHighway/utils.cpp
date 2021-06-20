@@ -669,3 +669,26 @@ void __cdecl dothedash(unsigned __int8 playerID, NJS_VECTOR* _speed, Rotation* a
 	PConvertVector_P2G(data1, &result);
 	data2->spd = result;
 }
+
+void __cdecl DoThatThingWhereYouGetCloseAndItLightsUp(EntityData1* a1, unsigned __int16 a2)
+{
+	NJS_ARGB a1a; // [esp+0h] [ebp-10h] BYREF
+
+	if ((a2 & (unsigned __int16)(1 << GetCharacterID(0))) != 0)
+	{
+		a1a.a = 0.0;
+		if (IsPlayerInsideSphere(&a1->Position, 20.0))
+		{
+			a1a.r = 0.5;
+			a1a.g = 0.5;
+			a1a.b = 0.5;
+		}
+		else
+		{
+			a1a.r = 0.0;
+			a1a.g = 0.0;
+			a1a.b = 0.0;
+		}
+		SetMaterialColor(a1a.a, a1a.r, a1a.g, a1a.b);
+	}
+}

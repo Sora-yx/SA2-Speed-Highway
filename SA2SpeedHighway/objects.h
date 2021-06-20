@@ -76,3 +76,5 @@ void __cdecl OGclight(ObjectMaster* obj);
 void LoadClightModel();
 
 void FreeClightModel();
+void LoadTrashModels();
+void __cdecl OTanka(ObjectMaster* obj);

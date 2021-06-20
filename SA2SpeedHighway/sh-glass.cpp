@@ -5,7 +5,7 @@
 static ModelInfo* SH_Glass;
 static ModelInfo* SH_GlassBroken[13];
 
-static CollisionData Col_Glass = { 0, CollisionShape_Cube1, 77, 0xE0, 0, {0.0, -4.0, 0.0}, 20.0, 6.0, 20.0, 0.0, 0, 0, 0 };
+static CollisionData Col_Glass = { 0, CollisionShape_Cube1, 0x77, 0xE0, 0, {0.0, -4.0, 0.0}, 20.0, 6.0, 20.0, 0.0, 0, 0, 0 };
 static CollisionData Col_Glass2 = { 0, CollisionShape_Sphere, 0xF0, 0, 0, {0.0}, 80.0, 0.0, 0.0, 0.0, 0, 0, 0 };
 
 void __cdecl DrawGlass(ObjectMaster* obj)
