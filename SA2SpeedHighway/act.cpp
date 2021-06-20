@@ -3,7 +3,17 @@
 
 
 int CurrentAct = 0;
-bool isChangingAct = false;
+
+static const void* const resetCPptr = (void*)0x43E380;
+static inline void CP_ResetPosition(int a1)
+{
+	__asm
+	{
+		mov eax, [a1]
+		call resetCPptr
+	}
+}
+
 
 void CheckAndSetControl(ObjectMaster* obj) {
 
@@ -111,7 +121,7 @@ static void act3Trigger(ObjectMaster* obj)
 		{
 			if (player->Position.x >= 280.0f && player->Position.y <= -19000.0f)
 			{
-				isChangingAct = true;
+				CP_ResetPosition(i);
 				data->Action = 4;
 				LoadSHAct(2);
 			}
@@ -135,7 +145,7 @@ static void act2Trigger(ObjectMaster* obj)
 
 			if (sqrtf(v3) < 60.0f)
 			{
-				isChangingAct = true;
+				CP_ResetPosition(i);
 				data->Action = 1;
 				LoadSHAct(1);
 			}

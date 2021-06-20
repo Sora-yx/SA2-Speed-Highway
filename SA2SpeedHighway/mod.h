@@ -5,7 +5,6 @@
 extern HelperFunctions HelperFunctionsGlobal;
 
 extern int CurrentAct;
-extern bool isChangingAct;
 
 void CheckAndSetControl(ObjectMaster* obj);
 void CheckAndKillPlayer(ObjectMaster* obj);

@@ -90,7 +90,7 @@ void SetLevelPosAndRot(int playerID) {
 		}
 	}
 
-	if (!byte_1A558A0 || isChangingAct) {
+	if (!byte_1A558A0) {
 		MovePlayersToStartPos(pos, rot);
 	}
 

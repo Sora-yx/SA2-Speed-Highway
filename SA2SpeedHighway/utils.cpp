@@ -455,16 +455,6 @@ static inline void CP_SavePosition(NJS_VECTOR* pos, Rotation* rot, int pID, int 
 }
 
 
-static const void* const resetCPptr = (void*)0x43E380;
-static inline void CP_ResetPosition(int a1)
-{
-	__asm
-	{
-		mov eax, [a1]
-		call resetCPptr
-	}
-}
-
 void MovePlayersToStartPos(NJS_VECTOR Pos, int yrot)
 {
 	for (int i = 0; i < MAXPLAYERS; ++i)
@@ -475,10 +465,6 @@ void MovePlayersToStartPos(NJS_VECTOR Pos, int yrot)
 			data->Index = i;
 			data->Position = Pos;
 			data->Rotation.y = yrot;
-
-			if (isChangingAct) {
-				CP_ResetPosition(i);
-			}
 		}
 	}
 

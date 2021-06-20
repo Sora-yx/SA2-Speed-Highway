@@ -133,7 +133,6 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 		LoadSHAct(CurrentAct);
 		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
 		obj->DisplaySub = SpeedHighway_Display;
-		isChangingAct = false;
 		data->Action = 1;
 		break;
 	case 1:
@@ -192,7 +191,6 @@ void LoadSHAct(int act)
 			SetLevelPosAndRot(i);
 	}
 
-	isChangingAct = false;
 	return;
 }
 
@@ -216,7 +214,6 @@ static void __cdecl SpeedHighway_Free()
 	*(void**)0x1DE4684 = nullptr;
 	*(void**)0x1DE4688 = nullptr;
 	*(void**)0x1DE468C = nullptr;
-	isChangingAct = false;
 }
 
 static void __cdecl SpeedHighway_Init()
