@@ -440,6 +440,30 @@ void __cdecl StartPosManager(ObjectMaster* obj)
 	}
 }
 
+static const void* const SavePosptr = (void*)0x43E520;
+static inline void CP_SavePosition(NJS_VECTOR* pos, Rotation* rot, int pID, int a4)
+{
+	__asm
+	{
+		push[a4]
+		push[pID]
+		mov edi, [rot]
+		mov ebx, [pos]
+		call SavePosptr
+		add esp, 8
+	}
+}
+
+
+static const void* const resetCPptr = (void*)0x43E380;
+static inline void CP_ResetPosition(int a1)
+{
+	__asm
+	{
+		mov eax, [a1]
+		call resetCPptr
+	}
+}
 
 void MovePlayersToStartPos(NJS_VECTOR Pos, int yrot)
 {
@@ -451,7 +475,10 @@ void MovePlayersToStartPos(NJS_VECTOR Pos, int yrot)
 			data->Index = i;
 			data->Position = Pos;
 			data->Rotation.y = yrot;
-			return;
+
+			if (isChangingAct) {
+				CP_ResetPosition(i);
+			}
 		}
 	}
 

@@ -3,6 +3,7 @@
 
 
 int CurrentAct = 0;
+bool isChangingAct = false;
 
 void CheckAndSetControl(ObjectMaster* obj) {
 
@@ -110,6 +111,7 @@ static void act3Trigger(ObjectMaster* obj)
 		{
 			if (player->Position.x >= 280.0f && player->Position.y <= -19000.0f)
 			{
+				isChangingAct = true;
 				data->Action = 4;
 				LoadSHAct(2);
 			}
@@ -133,6 +135,7 @@ static void act2Trigger(ObjectMaster* obj)
 
 			if (sqrtf(v3) < 60.0f)
 			{
+				isChangingAct = true;
 				data->Action = 1;
 				LoadSHAct(1);
 			}

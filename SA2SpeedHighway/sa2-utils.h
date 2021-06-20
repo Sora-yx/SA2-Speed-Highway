@@ -256,3 +256,4 @@ DataPointer(float, GlobalMatColorG, 0x25EFFD8);
 DataPointer(float, GlobalMatColorB, 0x25EFFDC);
 DataPointer(float, GlobalMatColorA, 0x25EFFD0);
 void ResetMaterialColorOffset();
+DataArray(DWORD, wtfisthis, 0x1934B8A, 70);

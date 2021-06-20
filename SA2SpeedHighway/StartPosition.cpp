@@ -68,15 +68,14 @@ StartPositionSADX SADXStartArray[] = {
 	{ LevelIDs_Invalid }
 };
 
-DataArray(DWORD, wtfisthis, 0x1934B8A, 70);
+
+DataPointer(int, byte_1A558A0, 0x1934B90);
 
 void SetLevelPosAndRot(int playerID) {
 
 	NJS_VECTOR pos = { 0, 0, 0 };
 	int rot = 0x0;
 
-	Rotation playerRot = MainCharacter[playerID]->Data1.Entity->Rotation;
-	NJS_VECTOR playerPos = MainCharacter[playerID]->Data1.Entity->Position;
 
 	for (int i = 0; i < LengthOfArray(SADXStartArray); ++i)
 	{
@@ -91,10 +90,9 @@ void SetLevelPosAndRot(int playerID) {
 		}
 	}
 
-	if (wtfisthis[22 * playerID] == -1) {
+	if (!byte_1A558A0 || isChangingAct) {
 		MovePlayersToStartPos(pos, rot);
 	}
-
 
 	return;
 }
