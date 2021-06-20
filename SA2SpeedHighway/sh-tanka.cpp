@@ -12,7 +12,6 @@ static ModelInfo* SH_TankCBroken[4];
 
 
 CollisionData tankaCol[] = {
-
 	{0, (CollisionShapes)1, 0x77, 0xE0, 0x2400, {0.0, 8.1199999, 0.0}, 5.0, 8.1199999, 0.0, 0.0, 0, 0, 0 },
 	{0, (CollisionShapes)1, 0x77, 0xE0, 0x2400, {0.0, 9.0, 0.0}, 2.0, 9.0, 0.0, 0.0, 0, 0, 0},
 	{0, (CollisionShapes)1, 0x77, 0xEC, 0x2000, {0.0, 2.5, 0.0}, 5.0, 2.5, 0.0, 0.0, 0, 0, 0},
@@ -32,21 +31,33 @@ enum tankModel {
 	tankDuct
 };
 
+void Tank_ResetRotationAndScale(EntityData1* data) {
+	data->Scale.z = 1.0;
+	data->Scale.y = 1.0;
+	data->Scale.x = 1.0;
+	data->Rotation.z = 0;
+	data->Rotation.x = 0;
+	return;
+}
+
+void Tank_ApplyCalcPos(EntityData1* data, EntityData1* parentData) {
+	data->Position.x += parentData->Scale.x;
+	data->Position.z += parentData->Scale.z;
+	data->Position.x -= parentData->Scale.x;
+	data->Position.z -= parentData->Scale.z;
+	return;
+}
+
 void __cdecl tank_display(ObjectMaster* obj)
 {
-	EntityData1* data; // esi
-	Angle v2; // eax
-	Angle v3; // eax
-	Angle v4; // eax
-
-	data = obj->Data1.Entity;
+	EntityData1*  data = obj->Data1.Entity;
 
 	njSetTexture(&highwayObj_TEXLIST);
 	njPushMatrix(0);
 	njTranslateV(0, &data->Position);
 	njRotateZXY(&data->Rotation);
 	njScaleV_(&data->Scale);
-	DrawObject((NJS_OBJECT*)obj->field_4C); ; //weird pipe thing
+	DrawObject((NJS_OBJECT*)obj->field_4C);
 	njPopMatrix(1u);
 }
 
@@ -54,10 +65,7 @@ void Tanka_Brokenpart(ObjectMaster* obj)
 {
 	EntityData1* data; // esi
 	char nextAction; // al
-	double v3; // st7
-	Angle v4; // edx
-	int v5; // ecx
-	int v6; // ecx
+	double calcScaleY; // st7
 
 	data = obj->Data1.Entity;
 	nextAction = data->NextAction;
@@ -69,17 +77,14 @@ void Tanka_Brokenpart(ObjectMaster* obj)
 			{
 				++data->NextAction;
 			}
-			v3 = data->Scale.y - 0.059999999;
-			v4 = data->Rotation.y;
-			v5 = data->Rotation.x + 1280;
-			data->Scale.y = v3;
-			data->Rotation.x = v5;
-			v6 = data->Rotation.z + 1280;
-			data->Position.x = data->Scale.x + data->Position.x;
-			data->Rotation.y = v4 + 1280;
-			data->Rotation.z = v6;
-			data->Position.y = v3 + data->Position.y;
-			data->Position.z = data->Scale.z + data->Position.z;
+			calcScaleY = data->Scale.y - 0.059999999;
+			data->Rotation.x += 1280;
+			data->Scale.y = calcScaleY;
+			data->Rotation.z += 1280;
+			data->Position.x += data->Scale.x;
+			data->Rotation.y += 1280;
+			data->Position.y += calcScaleY;
+			data->Position.z += data->Scale.z;
 		}
 		else
 		{
@@ -97,12 +102,10 @@ void Tanka_Brokenpart(ObjectMaster* obj)
 
 void __cdecl execTankDuct(ObjectMaster* obj)
 {
-
-	EntityData1* parentData; // ebx
 	char index; // al
 
 	EntityData1* data = obj->Data1.Entity;
-	parentData = obj->Parent->Data1.Entity;
+	EntityData1* parentData = obj->Parent->Data1.Entity;
 	if (!ClipSetObject(obj))
 	{
 		if (data->Action)
@@ -116,11 +119,7 @@ void __cdecl execTankDuct(ObjectMaster* obj)
 				}
 				else if ((index & 8) != 0)
 				{
-
-					data->Position.x = data->Position.x + parentData->Scale.x;
-					data->Position.z = data->Position.z + parentData->Scale.z;
-					data->Position.x = data->Position.x - parentData->Scale.x;
-					data->Position.z = data->Position.z - parentData->Scale.z;
+					Tank_ApplyCalcPos(data, parentData);
 				}
 				else
 				{
@@ -146,32 +145,23 @@ void __cdecl execTankDuct(ObjectMaster* obj)
 
 void __cdecl execTankBody(ObjectMaster* obj)
 {
-	EntityData1* v1; // esi
-	EntityData1* v2; // edi
-	EntityData1* data; // eax
-	EntityData1* parentData; // edx
-	char index; // dl
-	char indexParent; // dl
 
-	data = obj->Data1.Entity;
-	parentData = obj->Parent->Data1.Entity;
+	EntityData1* data = obj->Data1.Entity;
+	EntityData1* parentData = obj->Parent->Data1.Entity;
+	char indexParent;
+
 	if (data->Action)
 	{
 		if (data->Action == 1)
 		{
-			index = parentData->Index;
-			if ((index & 0x10) != 0)
+			indexParent = parentData->Index;
+			if ((indexParent & 0x10) != 0)
 			{
 				DeleteObject_(obj);
 			}
-			else if ((index & 8) != 0)
+			else if ((indexParent & 8) != 0)
 			{
-				v1 = obj->Data1.Entity;
-				v2 = obj->Parent->Data1.Entity;
-				v1->Position.x = v1->Position.x + v2->Scale.x;
-				v1->Position.z = v1->Position.z + v2->Scale.z;
-				v1->Position.x = v1->Position.x - v2->Scale.x;
-				v1->Position.z = v1->Position.z - v2->Scale.z;
+				Tank_ApplyCalcPos(data, parentData);
 			}
 			else
 			{
@@ -196,11 +186,7 @@ void __cdecl execTankBody(ObjectMaster* obj)
 		{
 			obj->field_4C = SH_TankC[tankBody]->getmodel();
 		}
-		data->Scale.z = 1.0;
-		data->Scale.y = 1.0;
-		data->Scale.x = 1.0;
-		data->Rotation.z = 0;
-		data->Rotation.x = 0;
+		Tank_ResetRotationAndScale(data);
 		obj->DeleteSub = DeleteFunc_DynCol;
 		obj->DisplaySub = tank_display;
 	}
@@ -208,17 +194,11 @@ void __cdecl execTankBody(ObjectMaster* obj)
 
 void __cdecl execTankBase(ObjectMaster* obj)
 {
-	EntityData1* data1; // esi
-	EntityData1* parentData1; // edi
-	EntityData1* data; // eax
-	EntityData1* parentData; // ecx
-	char index; // cl
-	char index2; // cl
-	ObjectMaster* v7; // eax
-	EntityData1* v8; // edi
 
-	data = obj->Data1.Entity;
-	parentData = obj->Parent->Data1.Entity;
+	char index; // cl
+	EntityData1* data = obj->Data1.Entity;
+	EntityData1* parentData = obj->Parent->Data1.Entity;
+
 	switch (data->Action)
 	{
 	case 0:
@@ -236,11 +216,8 @@ void __cdecl execTankBase(ObjectMaster* obj)
 		{
 			obj->field_4C = SH_TankC[tankBase]->getmodel();
 		}
-		data->Scale.z = 1.0;
-		data->Scale.y = 1.0;
-		data->Scale.x = 1.0;
-		data->Rotation.z = 0;
-		data->Rotation.x = 0;
+
+		Tank_ResetRotationAndScale(data);
 		obj->DeleteSub = DeleteFunc_DynCol;
 		obj->DisplaySub = tank_display;
 		break;
@@ -253,30 +230,23 @@ void __cdecl execTankBase(ObjectMaster* obj)
 		ResetMaterialColorOffset();
 		break;
 	case 2:
-		index2 = parentData->Index;
-		if ((index2 & 0x40) != 0)
+		index = parentData->Index;
+		if ((index & 0x40) != 0)
 		{
 			data->Action = 4;
-			v7 = obj;
 		}
 		else
 		{
-			if ((index2 & 8) == 0)
+			if ((index & 8) == 0)
 			{
 				data->Action = 1;
 			}
-			v7 = obj;
 		}
-		data1 = v7->Data1.Entity;
-		parentData1 = v7->Parent->Data1.Entity;
-		data1->Position.x = data1->Position.x + parentData1->Scale.x;
-		data1->Position.z = data1->Position.z + parentData1->Scale.z;
-		data1->Position.x = data1->Position.x - parentData1->Scale.x;
-		data1->Position.z = data1->Position.z - parentData1->Scale.z;
+
+		Tank_ApplyCalcPos(data, parentData);
 		break;
 	default:
 		DeleteChildObjects(obj);
-		v8 = obj->Data1.Entity;
 		DeleteFunc_DynCol(obj);
 		break;
 	}
@@ -284,15 +254,10 @@ void __cdecl execTankBase(ObjectMaster* obj)
 
 void __cdecl tankladder_Main(ObjectMaster* obj)
 {
-	EntityData1* v1; // esi
-	EntityData1* v2; // edi
-	EntityData1* data; // esi
-	EntityData1* parentData; // ebx
 	int v5; // eax
-	double scaleX; // st7
 
-	data = obj->Data1.Entity;
-	parentData = obj->Parent->Data1.Entity;
+	EntityData1* data = obj->Data1.Entity;
+	EntityData1* parentData = obj->Parent->Data1.Entity;
 	if (!ClipSetObject(obj))
 	{
 		if (data->Action)
@@ -306,12 +271,7 @@ void __cdecl tankladder_Main(ObjectMaster* obj)
 				}
 				else if ((v5 & 8) != 0)
 				{
-					v1 = obj->Data1.Entity;
-					v2 = obj->Parent->Data1.Entity;
-					v1->Position.x = v1->Position.x + v2->Scale.x;
-					v1->Position.z = v1->Position.z + v2->Scale.z;
-					v1->Position.x = v1->Position.x - v2->Scale.x;
-					v1->Position.z = v1->Position.z - v2->Scale.z;
+					Tank_ApplyCalcPos(data, parentData);
 				}
 				else
 				{
@@ -322,9 +282,8 @@ void __cdecl tankladder_Main(ObjectMaster* obj)
 		}
 		else
 		{
-			scaleX = data->Scale.x;
 			data->Action = 1;
-			if (scaleX >= 10.0)
+			if (data->Scale.x >= 10.0)
 			{
 				if (data->Scale.x >= 20.0)
 				{
@@ -339,11 +298,8 @@ void __cdecl tankladder_Main(ObjectMaster* obj)
 			{
 				obj->field_4C = SH_TankA[tankLadder]->getmodel();
 			}
-			data->Scale.z = 1.0;
-			data->Scale.y = 1.0;
-			data->Scale.x = 1.0;
-			data->Rotation.z = 0;
-			data->Rotation.x = 0;
+
+			Tank_ResetRotationAndScale(data);
 			obj->DisplaySub = tank_display;
 			obj->DeleteSub = DeleteFunc_DynCol;
 		}
@@ -355,11 +311,7 @@ void setTankLadder(ObjectMaster* obj)
 	EntityData1* data; // esi
 	ObjectMaster* child; // eax
 	EntityData1* childData; // edi
-	double v5; // st7
-	Angle v6; // eax
-	Angle v7; // eax
-	Angle v8; // eax
-	double v9; // st7
+
 	Vector3 a2; // [esp+8h] [ebp-18h] BYREF
 	Vector3 a3; // [esp+14h] [ebp-Ch] BYREF
 
@@ -371,9 +323,8 @@ void setTankLadder(ObjectMaster* obj)
 		childData = child->Data1.Entity;
 		if (data->Scale.x >= 10.0)
 		{
-			v5 = data->Scale.x;
 			a2.x = 9.0;
-			if (v5 >= 20.0)
+			if (data->Scale.x >= 20.0)
 			{
 				a2.x = -7.0;
 			}
@@ -391,38 +342,95 @@ void setTankLadder(ObjectMaster* obj)
 		njPopMatrix(1u);
 		childData->Position.x = a3.x + data->Position.x;
 		childData->Position.y = a3.y + data->Position.y;
-		v9 = a3.z + data->Position.z;
+
 		childData->Rotation.z = 0;
 		childData->Rotation.x = 0;
-		childData->Position.z = v9;
+		childData->Position.z += a3.z;
 		childData->Rotation.y = data->Rotation.y;
 		childData->Scale.x = data->Scale.x;
 	}
+}
+
+void TankDoIndexCollisionStuff(char nextAction, char v9, double v11, char index, char v15, ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (nextAction == 0 || nextAction == 7)
+	{
+		v11 = 0.1f;
+	}
+	else if (nextAction == 1 || nextAction == 2 || nextAction == 5 || nextAction == 6)
+	{
+		v11 = 0.2f;
+	}
+	else if (nextAction == 3 || nextAction == 4) {
+		v11 = 0.25f;
+	}
+	else if (nextAction == 8) {
+		index = v9 & 0xF7;
+		data->Index = index;
+		if ((index & 0x20) != 0)
+		{
+			data->Index = index | 0x40;
+			data->Action = 4;
+			/*sub_4CAF80(v21, a2, v23, 1.0);
+			sub_477D90(data->Rotation.z, &data->Position);*/
+
+			if ((data->Index & 1) != 0)
+			{
+				InitCollision(obj, &tankaCol[2], 1, 4u);
+			}
+			else if ((data->Index & 2) != 0)
+			{
+				InitCollision(obj, &tankaCol[5], 1, 4u);
+			}
+			else
+			{
+				InitCollision(obj, &tankaCol[9], 1, 4u);
+			}
+		}
+		else
+		{
+			if ((index & 0x10) != 0)
+			{
+				data->Action = 1;
+				v15 = index | 0x20;
+			}
+			else
+			{
+				v15 = index | 0x10;
+				data->Action = 3;
+			}
+			data->Index = v15;
+		}
+	}
+	else {
+		v11 = 0.0f;
+	}
+
+	return;
 }
 
 void __cdecl OTanka(ObjectMaster* obj)
 {
 	EntityData1* data; // esi
 	Angle v2; // eax
-	double scaleX; // st7
-	int v4; // eax
 	CollisionInfo* v5; // eax
 	CollisionInfo* v6; // eax
 	char v7; // cl
 	float* v8; // ebp
 	char v9; // al
 	char v10; // cl
-	double v11; // st7
-	char v12; // al
+	double v11 = 0.0f; // st7
+	char v12 = 0; // al
 	double v13; // st7
 	char v14; // al
-	char v15; // al
+	char v15 = 0; // al
 	float v16; // ecx
 	float v17; // eax
 	int v18; // eax
 	int v19; // ebx
 	unsigned __int8 rotZ; // [esp-8h] [ebp-30h]
-	float v21; // [esp-4h] [ebp-2Ch]
 	float a2; // [esp+0h] [ebp-28h]
 	float v23; // [esp+4h] [ebp-24h]
 	NJS_VECTOR a1; // [esp+1Ch] [ebp-Ch] BYREF
@@ -430,14 +438,12 @@ void __cdecl OTanka(ObjectMaster* obj)
 	data = obj->Data1.Entity;
 	if (!ClipSetObject(obj))
 	{
-
 		switch (data->Action)
 		{
 		case 0:
-			scaleX = data->Scale.x;
 			data->Action = 1;
 			data->Index = 0;
-			if (scaleX >= 10.0)
+			if (data->Scale.x >= 10.0)
 			{
 				if (data->Scale.x >= 20.0)
 				{
@@ -470,9 +476,8 @@ void __cdecl OTanka(ObjectMaster* obj)
 			break;
 		case 1:
 
-			v4 = LOBYTE(data->Status);
 			data->NextAction = 0;
-			if ((v4 & 4) != 0)
+			if ((data->Status & 4) != 0)
 			{
 				v5 = data->Collision;
 				if ((v5->Flag & 1) != 0)
@@ -499,69 +504,7 @@ void __cdecl OTanka(ObjectMaster* obj)
 			{
 				v10 = data->NextAction;
 				data->NextAction = v10 + 1;
-				switch (v10)
-				{
-				case 0:
-				case 7:
-					v11 = 0.1;
-					break;
-				case 1:
-				case 2:
-				case 5:
-				case 6:
-					v11 = 0.2;
-					break;
-				case 3:
-				case 4:
-					v11 = 0.25;
-					break;
-				case 8:
-					v12 = v9 & 0xF7;
-					data->Index = v12;
-					if ((v12 & 0x20) != 0)
-					{
-						v13 = data->Position.y + 5.0;
-						v23 = data->Position.z;
-						data->Index = v12 | 0x40;
-						a2 = v13;
-						v21 = *v8;
-						data->Action = 4;
-						/*sub_4CAF80(v21, a2, v23, 1.0);
-						sub_477D90(data->Rotation.z, &data->Position);*/
-						v14 = data->Index;
-						if ((v14 & 1) != 0)
-						{
-							InitCollision(obj, &tankaCol[2], 1, 4u);
-						}
-						else if ((v14 & 2) != 0)
-						{
-							InitCollision(obj, &tankaCol[5], 1, 4u);
-						}
-						else
-						{
-							InitCollision(obj, &tankaCol[9], 1, 4u);
-						}
-					}
-					else
-					{
-						if ((v12 & 0x10) != 0)
-						{
-							data->Action = 1;
-							v15 = v12 | 0x20;
-						}
-						else
-						{
-							v15 = v12 | 0x10;
-							data->Action = 3;
-						}
-						data->Index = v15;
-					}
-					goto LABEL_43;
-				default:
-				LABEL_43:
-					v11 = 0.0;
-					break;
-				}
+				TankDoIndexCollisionStuff(v10, v9, v11, v12, v15, obj);
 				data->Scale.x = (*v8 - MainCharObj1[0]->Position.x) * v11;
 				data->Scale.z = (data->Position.z - MainCharObj1[0]->Position.z) * v11;
 			}
@@ -583,13 +526,8 @@ void __cdecl OTanka(ObjectMaster* obj)
 			break;
 		case 3:
 			data->Action = 1;
-			v18 = (unsigned __int16)(0x4000
-				- (unsigned __int64)(atan2(
-					MainCharObj1[0]->Position.z - data->Position.z,
-					MainCharObj1[0]->Position.x - data->Position.x)
-					* 65536.0
-					* 0.1591549762031479)
-				- data->Rotation.y);
+			v18 = (unsigned __int16)(0x4000 - (unsigned __int64)(atan2( MainCharObj1[0]->Position.z - data->Position.z,
+					MainCharObj1[0]->Position.x - data->Position.x) * 65536.0 * 0.1591549762031479) - data->Rotation.y);
 			if (v18 <= 60074)
 			{
 				if (v18 <= 49152)
@@ -665,4 +603,5 @@ void LoadTrashModels() {
 		SH_TankCBroken[i] = LoadMDL(str4.c_str(), ModelFormat_Chunk);
 	}
 
+	return;
 }
