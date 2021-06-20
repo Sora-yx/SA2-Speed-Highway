@@ -161,8 +161,6 @@ void PushPlayer(ObjectMaster* a1)
 	}
 }
 
-
-
 void Fount_CalcPushUP(ObjectMaster* a1)
 {
 	EntityData1* data = a1->Data1.Entity;
@@ -450,11 +448,6 @@ void LoadFountainModel() {
 	ftnTexList[1].textures[0] = highwayObj2_TEXLIST.textures[26];
 	ftnTexList[2].textures[0] = highwayObj2_TEXLIST.textures[27];
 	ftnTexList[3].textures[0] = highwayObj2_TEXLIST.textures[28];
-
-	/*FtnTexlist.textures[0] = highwayObj2_TEXLIST.textures[25];
-	FtnTexlist.textures[1] = highwayObj2_TEXLIST.textures[26];
-	FtnTexlist.textures[2] = highwayObj2_TEXLIST.textures[27];
-	FtnTexlist.textures[3] = highwayObj2_TEXLIST.textures[28];*/
 
 	return;
 }

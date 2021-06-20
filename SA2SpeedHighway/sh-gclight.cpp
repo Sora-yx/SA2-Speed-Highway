@@ -5,22 +5,14 @@ NJS_SPRITE OGclight_Sprite;
 NJS_TEXANIM OGclight_anim = { 0x20, 0x20, 0x10, 0x10, 0, 0, 0xFF, 0xFF, 0, 0 };
 CollisionData GclightCol = { 0, (CollisionShapes)6, 0x77, 0, 0, {0.0, 5.0, 0.0}, 5.0, 3.0, 0.0, 0.0, 0, 0, 0 };
 
-
 static NJS_TEXNAME gcLightTex = { (char*)"st_cornerlight", 0, 0 };
-
 static NJS_TEXLIST gcLightTexlist = { (gcLightTex, 0) };
 
 void __cdecl Draw_OClight(ObjectMaster* a1)
 {
 	EntityData1* data; // esi
 	NJS_VECTOR* pos; // edi
-	Angle v3; // eax
-	Angle v4; // eax
-	Angle v5; // eax
 	double ColorIDK; // st7
-	Angle v7; // eax
-	Angle v8; // eax
-	Angle v9; // eax
 	CameraInfo* camData; // eax
 	Angle camRotY; // ecx
 	Angle v12; // ecx
@@ -42,15 +34,11 @@ void __cdecl Draw_OClight(ObjectMaster* a1)
 	njSetTexture(&highwayObj_TEXLIST);
 	njPushMatrix(0);
 	njTranslate(0, pos->x, data->Position.y, data->Position.z);
-	v3 = data->Rotation.z;
 	njRotateZXY(&data->Rotation);
 	DrawObject(SH_Gclight->getmodel());
 	njPopMatrix(1u);
 	a1a.a = 1.0;
-	ColorIDK = njSin((unsigned __int64)((double)(unsigned __int16)data->field_6
-		* 65536.0
-		* 0.002777777777777778))
-		* 0.80000001;
+	ColorIDK = njSin((unsigned __int64)((double)(unsigned __int16)data->field_6 * 65536.0 * 0.002777777777777778)) * 0.80000001;
 	if (ColorIDK < 0.0)
 	{
 		ColorIDK = -ColorIDK;
@@ -61,7 +49,6 @@ void __cdecl Draw_OClight(ObjectMaster* a1)
 	SetMaterialColor(a1a.a, a1a.r, a1a.g, a1a.b);
 
 	njPushMatrix(_nj_unit_matrix_);
-	v7 = data->Rotation.z;
 	njRotateZXY(&data->Rotation);
 
 	njGetTranslation(CURRENT_MATRIX, &a2);
@@ -78,7 +65,6 @@ void __cdecl Draw_OClight(ObjectMaster* a1)
 	if (camRotY)
 	{
 		njRotateY(0, (unsigned __int16)camRotY);
-		camData = &CameraData;
 	}
 	v12 = camData->Rotation.x;
 	if (v12)
@@ -95,7 +81,6 @@ void __cdecl Draw_OClight(ObjectMaster* a1)
 
 	njPopMatrix(1u);
 	ResetMaterialColorOffset();
-
 }
 
 void gclight_spriteInit()
@@ -150,16 +135,13 @@ void __cdecl GClight_main(ObjectMaster* obj)
 
 void __cdecl OGclight(ObjectMaster* obj)
 {
-	EntityData1* data; // ecx
-
-	data = obj->Data1.Entity;
+	EntityData1* data = obj->Data1.Entity;
 	obj->field_4C = GClight_main;
 	obj->DeleteSub = j_DeleteChildObjects;
 	obj->MainSub = SH_GlobalMainWithCalcRot;
 }
 
 void LoadClightModel() {
-
 	SH_Gclight = LoadMDL("SH-Gclight", ModelFormat_Chunk);
 	gcLightTexlist.textures = &highwayObj2_TEXLIST.textures[24];
 	return;

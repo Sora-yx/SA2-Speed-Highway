@@ -50,4 +50,4 @@ void LoadSH_DeathZones(int act);
 
 extern int CurrentSADXLevel;
 
-void SetLevelPosAndRot();
+void SetLevelPosAndRot(int playerID);

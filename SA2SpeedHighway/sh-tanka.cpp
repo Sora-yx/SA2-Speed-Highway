@@ -313,7 +313,6 @@ void setTankLadder(ObjectMaster* obj)
 	EntityData1* childData; // edi
 
 	Vector3 a2; // [esp+8h] [ebp-18h] BYREF
-	Vector3 a3; // [esp+14h] [ebp-Ch] BYREF
 
 	data = obj->Data1.Entity;
 	child = LoadChildObject(LoadObj_Data1, tankladder_Main, obj);
@@ -338,14 +337,14 @@ void setTankLadder(ObjectMaster* obj)
 		njPushMatrix(_nj_unit_matrix_);
 		njRotateZXY(&data->Rotation),
 
-		njGetTranslation(CURRENT_MATRIX, &a3);
+		njGetTranslation(CURRENT_MATRIX, &a2);
 		njPopMatrix(1u);
-		childData->Position.x = a3.x + data->Position.x;
-		childData->Position.y = a3.y + data->Position.y;
+		childData->Position.x = a2.x + data->Position.x;
+		childData->Position.y = a2.y + data->Position.y;
 
 		childData->Rotation.z = 0;
 		childData->Rotation.x = 0;
-		childData->Position.z += a3.z;
+		childData->Position.z += a2.z;
 		childData->Rotation.y = data->Rotation.y;
 		childData->Scale.x = data->Scale.x;
 	}

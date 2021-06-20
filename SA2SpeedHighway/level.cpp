@@ -130,7 +130,7 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 	{
 	case 0:
 		PerfectRings_StartCount = 0;
-		LoadSHAct(2);
+		LoadSHAct(CurrentAct);
 		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
 		obj->DisplaySub = SpeedHighway_Display;
 		data->Action = 1;
@@ -185,7 +185,12 @@ void LoadSHAct(int act)
 		break;
 	}
 
-	SetLevelPosAndRot();
+	for (uint8_t i = 0; i < MAXPLAYERS; i++) {
+
+		if (MainCharacter[i])
+			SetLevelPosAndRot(i);
+	}
+
 	return;
 }
 
