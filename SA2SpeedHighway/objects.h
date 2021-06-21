@@ -78,3 +78,6 @@ void LoadClightModel();
 void FreeClightModel();
 void LoadTrashModels();
 void __cdecl OTanka(ObjectMaster* obj);
+
+void LoadSignBModels();
+void __cdecl OSignb(ObjectMaster* obj);

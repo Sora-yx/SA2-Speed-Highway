@@ -130,7 +130,7 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 	{
 	case 0:
 		PerfectRings_StartCount = 0;
-		LoadSHAct(CurrentAct);
+		LoadSHAct(2);
 		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
 		obj->DisplaySub = SpeedHighway_Display;
 		data->Action = 1;
@@ -210,6 +210,12 @@ static void __cdecl SpeedHighway_Free()
 	DropRingsFunc_ptr = nullptr;
 	DisplayItemBoxItemFunc_ptr = nullptr;
 
+	if (ParticleCoreTask)
+	{
+		DeleteObject_(ParticleCoreTask);
+		ParticleCoreTask = 0;
+	}
+
 	*(void**)0x1DE4680 = nullptr;
 	*(void**)0x1DE4684 = nullptr;
 	*(void**)0x1DE4688 = nullptr;
@@ -251,6 +257,10 @@ static void __cdecl SpeedHighway_Init()
 
 	CurrentSADXLevel = LevelIDs_SpeedHighway;
 	LoadGreenForestCharAnims(); //used for helico grab animation
+	if (!ParticleCoreTask)
+	{
+		ParticleCoreTask = AllocateObjectMaster(ParticleCoreTask_Load, 1, "ParticleCoreTask");
+	}
 	LoadSH_DeathZonesModel();
 	LoadModelBG_SH();
 	LoadModelsSH();

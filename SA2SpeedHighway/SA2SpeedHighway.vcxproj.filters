@@ -206,5 +206,8 @@
     <ClCompile Include="sh-tanka.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="sh-signB.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

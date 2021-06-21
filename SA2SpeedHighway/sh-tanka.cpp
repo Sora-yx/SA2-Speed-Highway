@@ -138,7 +138,7 @@ void __cdecl execTankDuct(ObjectMaster* obj)
 			data->Rotation.x = 0;
 			obj->field_4C = SH_TankC[tankDuct]->getmodel();
 			obj->DisplaySub = tank_display;
-			obj->DeleteSub = DeleteFunc_DynCol;
+			obj->DeleteSub = j_DeleteChildObjects;
 		}
 	}
 }
@@ -187,7 +187,7 @@ void __cdecl execTankBody(ObjectMaster* obj)
 			obj->field_4C = SH_TankC[tankBody]->getmodel();
 		}
 		Tank_ResetRotationAndScale(data);
-		obj->DeleteSub = DeleteFunc_DynCol;
+		obj->DeleteSub = j_DeleteChildObjects;
 		obj->DisplaySub = tank_display;
 	}
 }
@@ -218,7 +218,7 @@ void __cdecl execTankBase(ObjectMaster* obj)
 		}
 
 		Tank_ResetRotationAndScale(data);
-		obj->DeleteSub = DeleteFunc_DynCol;
+		obj->DeleteSub = j_DeleteChildObjects;
 		obj->DisplaySub = tank_display;
 		break;
 	case 1:
@@ -301,7 +301,7 @@ void __cdecl tankladder_Main(ObjectMaster* obj)
 
 			Tank_ResetRotationAndScale(data);
 			obj->DisplaySub = tank_display;
-			obj->DeleteSub = DeleteFunc_DynCol;
+			obj->DeleteSub = j_DeleteChildObjects;
 		}
 	}
 }
@@ -460,7 +460,7 @@ void __cdecl OTanka(ObjectMaster* obj)
 				data->Index = 1;
 				InitCollision(obj, tankaCol, 2, 4u);
 			}
-			obj->DeleteSub = DeleteFunc_DynCol;
+			obj->DeleteSub = j_DeleteChildObjects;
 			data->Rotation.x = 0;
 			LoadChildObject(LoadObj_Data1, execTankBase, obj);
 			setTankLadder(obj);
