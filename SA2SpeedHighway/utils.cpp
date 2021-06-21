@@ -721,7 +721,7 @@ void __cdecl Load_MultipleChildObjects(ObjectThing* things, ObjectMaster* parent
 
 	for (int i = 0; i < size; i++) {
 
-		ObjectMaster* obj = LoadChildObject((LoadObj)things[i].flags, things[i].func, parent);
+		ObjectMaster* obj = LoadObject(0, "child", things[i].func, things[i].flags);
 
 		if (obj)
 		{
@@ -730,8 +730,9 @@ void __cdecl Load_MultipleChildObjects(ObjectThing* things, ObjectMaster* parent
 			if (childData)
 			{
 				childData->Status = things[i].status;
-				njTranslateEx(&things[i].pos_probably);
-				njGetTranslation(CURRENT_MATRIX, &a3);
+				njCalcPoint(&things[i].pos_probably, &a3, CURRENT_MATRIX);
+				njAddVector(&a3, &entity->Position);
+				njAddVector(&childData->Position, &a3);
 
 				childData->Rotation.x = things[i].rotation.x + entity->Rotation.x;
 				childData->Rotation.y = things[i].rotation.y + entity->Rotation.y;
