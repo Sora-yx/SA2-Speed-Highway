@@ -36,6 +36,8 @@ static ModelInfo* SH_HighRaftCol[2];
 static ModelInfo* SH_Gcurb;
 static ModelInfo* SH_Sign1;
 
+static ModelInfo* SH_Tunagi;
+
 CollisionData OGcurbCol = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 2.5, 0.0}, 6.0, 2.5, 2.2, 0.0, 0, 0, 0 };
 
 CollisionData Col_Fence = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 4.25, 0.0}, 13.0, 4.25, 2.75, 0.0, 0, 0, 0 };
@@ -62,6 +64,7 @@ CollisionData Siba01col = { 0, (CollisionShapes)3, 0x77, 0, 0, {0}, 20.0, 2.0, 2
 CollisionData Siba02col = { 0, (CollisionShapes)0, 1, 0x77, 0, 0, {0}, 40.0, 2.0, 0.0, 0.0, 0, 0, 0 };
 
 CollisionData SHPlantCol = { 0, (CollisionShapes)0x6, 0x77, 0, 0, {0.0, 8.0, 0.0}, 1.0, 8.0, 0.0, 0.0, 0, 0, 0 };
+CollisionData TunagiCol = { 0, (CollisionShapes)0x3, 0x77, 0, 0, {0.0, 5.0, 0.0}, 5.0, 5.0, 5.0, 0.0, 0, 0, 0 };
 
 void LoadModelsSH()
 {
@@ -113,6 +116,7 @@ void LoadModelsSH()
 
 	SH_Gcurb = LoadMDL("SH-Gcurb", ModelFormat_Chunk);
 	SH_Sign1 = LoadMDL("SH-Sign1", ModelFormat_Chunk);
+	SH_Tunagi = LoadMDL("sh-tunagi", ModelFormat_Chunk);
 
 	//Load Collisions model for DynCol
 	SH_OOStp4SCol = LoadMDL("SH-OOstp4SCol", ModelFormat_Basic);
@@ -162,6 +166,8 @@ void FreeModelsSH()
 	FreeGreenModels();
 	FreeHydModel();
 	FreeClightModel();
+
+	FreeMDL(SH_Tunagi);
 	return;
 }
 
@@ -490,6 +496,20 @@ void __cdecl OSign1(ObjectMaster* obj)
 	obj->DisplaySub = GenericSHDisplayZXY;
 }
 
+void __cdecl OTunagi(ObjectMaster* obj)
+{
+	EntityData1* data; // edi
+
+	data = obj->Data1.Entity;
+	obj->field_4C = SH_Tunagi->getmodel();
+
+	InitCollision(obj, &TunagiCol, 1, 4u);
+	data->Collision->Range = 14.0f;
+
+	obj->MainSub = MainSubGlobalCol;
+	obj->DisplaySub = GenericSHDisplayZXY;
+}
+
 static ObjectListEntry SpeedHighwayObjList[] = {
 	{ LoadObj_Data1, 2, 0x10, 0.0, RingMain },
 	{ LoadObj_Data1, 2, 0x20, 0.0, (ObjectFuncPtr)SpringA_Main },
@@ -582,7 +602,7 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 3, 1, 1000000, OHelib} /* "O HeliA" */,
 	{ (LoadObj)2, 3, 1, 1000000, OHwBell, }, /* "O HW BELL" */
 	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614ED0, "O HELIP L" } /* "O HELIP L" */,
-	{ (LoadObj)2 },//3, 0, 0, 0, (ObjectFuncPtr)0x614E80, "O TUNAGI" } /* "O TUNAGI" */,
+	{ (LoadObj)2, 3, 0, 0, OTunagi} /* "O TUNAGI" */,
 	{ LoadObj_Data1, 3, 1, 2250000, RingMain },
 	{ LoadObj_Data1, 2, 4, 0, Beetle_Attack },
 	{ LoadObj_Data1, 2, 4, 0, Beetle_Stationary },

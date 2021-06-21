@@ -30,7 +30,7 @@ void __cdecl EnemyBounceThing_Wrapper(unsigned __int8 playerID, float a2, float 
 void DoNextAction_r(int playerNum, char action, int unknown);
 int __cdecl DoRotationStuff(unsigned __int8 a1, int a2, int a3, int a4);
 void __cdecl StartPosManager(ObjectMaster* obj);;
-ObjectMaster* __cdecl DoObjectThing(ObjectThing* things, ObjectMaster* parent);
 ObjectMaster* __cdecl GetCharacterObject(unsigned __int8 character);
 void __cdecl dothedash(unsigned __int8 playerID, NJS_VECTOR* _speed, Rotation* angle, __int16 disableTime);
 void __cdecl DoThatThingWhereYouGetCloseAndItLightsUp(EntityData1* a1, unsigned __int16 a2);
+void __cdecl Load_MultipleChildObjects(ObjectThing* things, ObjectMaster* parent, uint32_t size);

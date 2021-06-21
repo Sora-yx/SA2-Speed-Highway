@@ -705,3 +705,41 @@ void __cdecl DoThatThingWhereYouGetCloseAndItLightsUp(EntityData1* a1, unsigned 
 		SetMaterialColor(a1a.a, a1a.r, a1a.g, a1a.b);
 	}
 }
+
+void __cdecl Load_MultipleChildObjects(ObjectThing* things, ObjectMaster* parent, uint32_t size)
+{
+	EntityData1* entity;
+	NJS_VECTOR a3;
+	entity = parent->Data1.Entity;
+
+	njPushMatrix(_nj_unit_matrix_);
+	if (entity)
+	{
+		njTranslateV(0, &entity->Position);
+		njRotateZXY(&entity->Rotation);
+	}
+
+	for (int i = 0; i < size; i++) {
+
+		ObjectMaster* obj = LoadChildObject((LoadObj)things[i].flags, things[i].func, parent);
+
+		if (obj)
+		{
+			EntityData1* childData = obj->Data1.Entity;
+			obj->Parent = parent;
+			if (childData)
+			{
+				childData->Status = things[i].status;
+				njTranslateEx(&things[i].pos_probably);
+				njGetTranslation(CURRENT_MATRIX, &a3);
+
+				childData->Rotation.x = things[i].rotation.x + entity->Rotation.x;
+				childData->Rotation.y = things[i].rotation.y + entity->Rotation.y;
+				childData->Rotation.z = things[i].rotation.z + entity->Rotation.z;
+			}
+		}
+	}
+
+	njPopMatrix(1u);
+	return;
+}

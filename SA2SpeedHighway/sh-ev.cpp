@@ -10,7 +10,7 @@ extern NJS_TEXLIST highwayObj_TEXLIST;
 
 NJS_OBJECT* shevChild;
 
-ObjectThing stru_26B31A0[6] = {
+ObjectThing stru_EVPlatform[6] = {
 	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 3, {0}, {60.0, -110.0, 0.0}, shevChild},
 	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 0, {0}, {70.0, 0.0, 0.0}, shevChild },
 	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 1, {0}, {60.0, 110.0, 0.0}, shevChild},
@@ -18,6 +18,44 @@ ObjectThing stru_26B31A0[6] = {
 	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 2, {0}, {-70.0, 0.0, 0.0}, shevChild},
 	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 3, {0}, {-60.0, -110.0, 0.0}, shevChild},
 };
+
+bool SHEv_isPlayerOnPlatform(ObjectMaster* a1)
+{
+	EntityData1* v3; // r30
+	bool result = false; // r3
+	NJS_VECTOR v5; // [sp+50h] [-40h] BYREF
+	NJS_VECTOR v6; // [sp+60h] [-30h] BYREF
+	NJS_VECTOR a2;
+
+	v3 = a1->Data1.Entity;
+	a2.x = MainCharObj1[0]->Position.x - v3->Position.x;
+	a2.y = MainCharObj1[0]->Position.y - v3->Position.y;
+	a2.z = MainCharObj1[0]->Position.z - v3->Position.z;
+
+	if (v3->Rotation.y != 0x10000)
+		njRotateY(0, (unsigned __int16)-HIWORD(v3->Rotation.y));
+
+	if ((a2.x) >= -5.0 && (a2.x) < 13.0 && a2.y >= 0.0 && (a2.y) < 5.0) {
+
+		if ((v3->Status & 0x100u))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+void EV_UpdatePlayerPos(ObjectMaster* obj, float x, float y, float z) {
+	if (SHEv_isPlayerOnPlatform(obj))
+	{
+		MainCharObj1[0]->Position.x += x;
+		MainCharObj1[0]->Position.y += y;
+		MainCharObj1[0]->Position.z += z;
+	}
+}
+
 
 void OEv_SetFlag(ObjectMaster* obj) {
 
@@ -118,6 +156,10 @@ void __cdecl SH_EVChild(ObjectMaster* a2)
 	dataParent = a2->Parent->Data1.Entity;
 	if (data->Action)
 	{
+		NJS_OBJECT* dyncol = (NJS_OBJECT*)a2->EntityData2;
+		*(NJS_VECTOR*)dyncol->pos = data->Position;
+		EV_UpdatePlayerPos(a2, unkA->field_24, unkA->field_28, unkA->field_2C);
+
 		if (data->Action == 1)
 		{
 			switch (data->NextAction)
@@ -154,6 +196,7 @@ void __cdecl SH_EVChild(ObjectMaster* a2)
 				unkA->field_2C = 0;
 				v13 = data->Position.y - 0.69999999;
 				data->Position.y = v13;
+				//EV_UpdatePlayerPos(a2, 0, unkA->field_28, 0);
 				if (v13 - dataParent->Position.y <= -110.0)
 				{
 					data->NextAction = 3;
@@ -167,6 +210,7 @@ void __cdecl SH_EVChild(ObjectMaster* a2)
 				data->Position.x = data->Position.x + *(float*)&unkA->field_24;
 				v15 = data->Position.z + *(float*)&unkA->field_2C;
 				data->Position.z = v15;
+				//	EV_UpdatePlayerPos(a2, 0, 0, *(float*)&unkA->field_2C);
 				v28 = data->Position.x - dataParent->Position.x;
 				v24 = pow(v15 - dataParent->Position.z, 2.0) + pow(v28, 2.0);
 				if (sqrt(v24) >= 70.0)
@@ -192,6 +236,7 @@ void __cdecl SH_EVChild(ObjectMaster* a2)
 				unkA->field_2C = 0;
 				v4 = data->Position.y - 0.69999999;
 				data->Position.y = v4;
+				//EV_UpdatePlayerPos(a2, 0, unkA->field_28, 0);
 				if (v4 - dataParent->Position.y <= -110.0)
 				{
 					data->NextAction = 3;
@@ -205,6 +250,7 @@ void __cdecl SH_EVChild(ObjectMaster* a2)
 				data->Position.x = data->Position.x + *(float*)&unkA->field_24;
 				v9 = data->Position.z + *(float*)&unkA->field_2C;
 				data->Position.z = v9;
+				//EV_UpdatePlayerPos(a2, 0, 0, *(float*)&unkA->field_2C);
 				v26 = data->Position.x - dataParent->Position.x;
 				v22 = pow(v9 - dataParent->Position.z, 2.0) + pow(v26, 2.0);
 				if (sqrt(v22) >= 70.0)
@@ -218,6 +264,7 @@ void __cdecl SH_EVChild(ObjectMaster* a2)
 				unkA->field_2C = 0;
 				v7 = data->Position.y + 0.69999999;
 				data->Position.y = v7;
+				//EV_UpdatePlayerPos(a2, 0, unkA->field_28, 0);
 				if (v7 - dataParent->Position.y >= 110.0)
 				{
 					data->NextAction = 1;
@@ -231,6 +278,7 @@ void __cdecl SH_EVChild(ObjectMaster* a2)
 				data->Position.x = data->Position.x + *(float*)&unkA->field_24;
 				v6 = data->Position.z + *(float*)&unkA->field_2C;
 				data->Position.z = v6;
+				//EV_UpdatePlayerPos(a2, 0, 0, unkA->field_2C);
 				v25 = data->Position.x - dataParent->Position.x;
 				v21 = pow(v6 - dataParent->Position.z, 2.0) + pow(v25, 2.0);
 				if (sqrt(v21) >= 70.0)
@@ -307,6 +355,8 @@ void __cdecl OEv(ObjectMaster* obj)
 			DynCol_AddFromObject(obj, sh_evCol->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid | SurfaceFlag_Dynamic);
 			data->Action = 1;
 			shevChild = sh_evPlat->getmodel();
+
+			Load_MultipleChildObjects(stru_EVPlatform, obj, LengthOfArray(stru_EVPlatform));
 		}
 	}
 
