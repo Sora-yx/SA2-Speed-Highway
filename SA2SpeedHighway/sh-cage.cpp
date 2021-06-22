@@ -193,6 +193,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 		float result = data->Position.y - parentData->Position.y;
 		if (result > 100.0)
 		{
+			PlaySoundProbably(sound_SHCageEnd, 0, 0, 0);
 			data->Action = 3;
 			data->Index = 0;
 			saveObjPos->field_24 = 0.0;
@@ -244,6 +245,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 			saveObjPos->field_2C = 0.0;
 			//SwitchSignal(data);
 			//DoSoundQueueThing(103);
+			PlaySoundProbably(sound_SHCageEnd, 0, 0, 0);
 			//PlaySound(104, 0, 0, 0);
 		}
 	}

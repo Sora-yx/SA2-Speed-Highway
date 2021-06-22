@@ -15,5 +15,6 @@
 #include "obj-common.h"
 #include "level.h"
 #include "objects.h"
+#include "sound.h"
 
 #endif

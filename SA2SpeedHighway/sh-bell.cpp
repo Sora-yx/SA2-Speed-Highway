@@ -26,8 +26,7 @@ void SH_DisplayBell(ObjectMaster* obj) {
 
 	njRotateZXY(&obj->Child->Data1.Entity->Rotation);
 	DrawObject(SH_Bell[1]->getmodel());
-	njPopMatrix(1u);
-	njPopMatrix(1u);
+	njPopMatrix(2u);
 }
 
 void __cdecl Bell_Child(ObjectMaster* obj)
@@ -45,6 +44,7 @@ void __cdecl Bell_Child(ObjectMaster* obj)
 			dataChild->Rotation.z = (unsigned __int64)(njSin(1024) * dataChild->Index * 3094.0);
 			//SpawnDroppedRings(dataParent->Position.x, dataParent->Position.y - 70.0, dataParent->Position.z, 6);
 			dataParent->Action = 1;
+			Play3DSound_Pos(sound_SHBell, &dataParent->Position, 0, 0, 50);
 			//PlaySound4(93, 0, 0, 64, v4->Position.x, v4->Position.y, v4->Position.z);
 		}
 	}

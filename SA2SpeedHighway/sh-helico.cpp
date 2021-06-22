@@ -430,8 +430,10 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 	Data->Position.z = v24;
 	if (!v25)
 	{
-		//Sound Efect
-		//sub_424920(96, Data, 1, 0, 2, Data);
+		if (++Data->field_2 == 100) {
+			Play3DSound_Pos(sound_SHHelico, &Data->Position, 0, 0, 40);
+			Data->field_2 = 0;
+		}
 	}
 	return;
 }

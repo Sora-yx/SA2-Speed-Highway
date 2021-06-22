@@ -163,8 +163,8 @@ void __cdecl BreakGlass(ObjectMaster* a1, signed int timer)
 	v10 = v3->Index;
 	++v3->field_6;
 	if (v10 == 2 || (AddToCollisionList(a1), (unsigned __int16)v3->field_6 > timer))
-	{
-		PlaySoundProbably(3, 0, 0, 0);
+	{	
+		Play3DSound_Pos(sound_SHByeGlass, &v3->Position, 0, 0, 70);
 		UpdateSetDataAndDelete(a1);
 	}
 }
@@ -208,7 +208,7 @@ void __cdecl SH_GlassMain(ObjectMaster* a1)
 			v1->Index = 2;
 			soundID = 95;
 			v1->field_6 = 0;
-			PlaySoundProbably(3, 0, 0, 0);
+			Play3DSound_Pos(sound_SHGlass, &v1->Position, 0, 0, 70);
 			return;
 
 		}
@@ -224,7 +224,7 @@ void __cdecl SH_GlassMain(ObjectMaster* a1)
 				v1->Index = 1;
 				soundID = 94;
 				v1->field_6 = 0;
-				PlaySoundProbably(3, 0, 0, 0);
+				Play3DSound_Pos(sound_SHGlass, &v1->Position, 0, 0, 70);
 				return;
 			}
 		}

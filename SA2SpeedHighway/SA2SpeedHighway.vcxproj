@@ -177,6 +177,7 @@
     <ClInclude Include="sh-lamp.h" />
     <ClInclude Include="sh-light.h" />
     <ClInclude Include="Sonic.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="startpos.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

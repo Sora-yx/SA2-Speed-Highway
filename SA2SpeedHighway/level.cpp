@@ -125,9 +125,53 @@ void SpeedHighway_Display(ObjectMaster* obj)
 void __cdecl BgExec_SH(ObjectMaster* a1)
 {
 
+	EntityData1* v1; // eax
+	EntityData1* data = a1->Data1.Entity;
+	float v2; // ecx
+	Float v3; // edx
+	Float v4; // eax
+	NJS_VECTOR a2; // [esp+4h] [ebp-Ch] BYREF
 
-	//PlayAnother3DSoundMaybe(7, &a2, 0, 0, word_1A5A6C4);
+	if (!MainCharObj1[0] || !data)
+		return;
+
+	switch (CurrentAct) {
+	case 0:
+	case 1:
+	default:
+		if ((double)rand() * 0.000030517578125 < 0.05000000074505806)
+		{
+			if (MainCharObj1[1])
+			{
+				v1 = MainCharObj1[FrameCountIngame & 1];
+				v2 = v1->Position.x;
+				v3 = v1->Position.y;
+				v4 = v1->Position.z;
+			}
+			else
+			{
+				v2 = MainCharObj1[0]->Position.x;
+				v3 = MainCharObj1[0]->Position.y;
+				v4 = MainCharObj1[0]->Position.z;
+			}
+			a2.z = v4;
+			a2.y = v3;
+			a2.x = ((double)rand() * 0.000030517578125 - 0.5) * 530.0 + v2;
+			a2.y = ((double)rand() * 0.000030517578125 - 0.5) * 530.0 + a2.y;
+			a2.z = ((double)rand() * 0.000030517578125 - 0.5) * 530.0 + a2.z;
+
 	
+			Play3DSound_Pos(sound_SHWind, &a2, 0, 0, 80);
+
+		}
+		break;
+	case 2:
+		if (++data->field_6 == 360) {
+			PlaySoundProbably(sound_SHPeople, 0, 0, 80);
+			data->field_6 = 0;
+		}
+		break;
+	}
 }
 
 static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
@@ -138,9 +182,8 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 	{
 	case 0:
 		PerfectRings_StartCount = 0;
-		LoadSHAct(CurrentAct);
+		LoadSHAct(1);
 		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
-		//obj->DisplaySub = SpeedHighway_Display;
 		data->Action = 1;
 		break;
 	case 1:
@@ -240,7 +283,6 @@ static void __cdecl SpeedHighway_Init()
 	LoadLandTable("resource\\gd_pc\\speed-highway1.sa2lvl", &Act2LandInfo, &HIGHWAY02_TEXINFO);
 	LoadLandTable("resource\\gd_pc\\speed-highway2.sa2lvl", &Act3LandInfo, &HIGHWAY03_TEXINFO);
 
-	LoadMLT("se_ac_cg.mlt");
 
 	DropRingsFunc_ptr = DropRings;
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
