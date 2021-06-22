@@ -36,7 +36,7 @@ int Sonic_CheckNextActions(SonicCharObj2* a1, EntityData1* a2, EntityData2* a3, 
 
 void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, SonicCharObj2* SonicCO2) {
 
-	FunctionPointer(void, original, (EntityData1 * data1, EntityData2* data2, CharObj2Base* co2, SonicCharObj2 * SonicCO2), Sonic_runsActions_t->Target());
+	FunctionPointer(void, original, (EntityData1 * data1, EntityData2 * data2, CharObj2Base * co2, SonicCharObj2 * SonicCO2), Sonic_runsActions_t->Target());
 	original(data1, data2, co2, SonicCO2);
 
 
@@ -157,6 +157,10 @@ void Sonic_Main_r(ObjectMaster* obj)
 
 	switch ((Saction)data1->Action) {
 
+	case (Saction)Action_Pain:
+		if (CurrentSADXLevel == LevelIDs_SpeedHighway && CurrentAct == 1)
+			HurtPlayerBuilding(data1, co2);
+		break;
 	case Saction::RunBuilding:
 		PGetAccelerationForBuilding(data1, data2R, co2);
 		PlayerGetSpeed(data1, co2, data2);
@@ -169,7 +173,7 @@ void Sonic_Main_r(ObjectMaster* obj)
 			PhysicsAndAnimCheck(co2, data1);
 		}
 
-		
+
 		break;
 	case Saction::RollBuilding:
 		PGetAccelerationForBuilding(data1, data2R, co2);
@@ -182,7 +186,7 @@ void Sonic_Main_r(ObjectMaster* obj)
 		else {
 			PResetPositionForBuilding(data1, data2R, co2);
 		}
-	
+
 		break;
 	case Saction::FallBuilding:
 		PResetAngleForBuilding(data1, data2R, co2);
@@ -194,7 +198,6 @@ void Sonic_Main_r(ObjectMaster* obj)
 			PResetPositionForBuilding(data1, data2R, co2);
 		}
 		else {
-
 			HurtPlayerBuilding(data1, co2);
 			PResetPositionForBuilding(data1, data2R, co2);
 		}

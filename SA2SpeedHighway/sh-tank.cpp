@@ -313,8 +313,7 @@ void __cdecl execTankBody(ObjectMaster* obj)
 
 void __cdecl execTankBase(ObjectMaster* obj)
 {
-
-	char index; // cl
+	char index; 
 	EntityData1* data = obj->Data1.Entity;
 	EntityData1* parentData = obj->Parent->Data1.Entity;
 
