@@ -40,6 +40,7 @@ extern "C"
 		
 		SpeedHighway_Hook();
 		Init_Sonic();
+
 		CommonObjects_Init();
 	}
 

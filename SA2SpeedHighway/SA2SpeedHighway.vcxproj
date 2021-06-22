@@ -187,7 +187,7 @@
     <ClCompile Include="level.cpp" />
     <ClCompile Include="ninja-utils.cpp" />
     <ClCompile Include="sh-signB.cpp" />
-    <ClCompile Include="sh-tanka.cpp" />
+    <ClCompile Include="sh-tank.cpp" />
     <ClCompile Include="PhysicsFunction.cpp" />
     <ClCompile Include="sh-arcade.cpp" />
     <ClCompile Include="sh-bell.cpp" />

@@ -1,17 +1,17 @@
-#include "pch.h"
+﻿#include "pch.h"
 
 //ALL THIS GIANT MESS FOR A STUPID TRASH THAT YOU CAN BREAK, WTF.
 
-static ModelInfo* SH_Pipe;
-static ModelInfo* SH_TankA[3];
-static ModelInfo* SH_TankABroken[4];
-static ModelInfo* SH_TankB[3];
-static ModelInfo* SH_TankBBroken[4];
-static ModelInfo* SH_TankC[4];
-static ModelInfo* SH_TankCBroken[4];
+ModelInfo* SH_Pipe;
+ModelInfo* SH_TankA[3];
+ModelInfo* SH_TankABroken[4];
+ModelInfo* SH_TankB[3];
+ModelInfo* SH_TankBBroken[4];
+ModelInfo* SH_TankC[4];
+ModelInfo* SH_TankCBroken[4];
 
 
-CollisionData tankaCol[] = {
+CollisionData tankCol[] = {
 	{0, (CollisionShapes)1, 0x77, 0xE0, 0x2400, {0.0, 8.1199999, 0.0}, 5.0, 8.1199999, 0.0, 0.0, 0, 0, 0 },
 	{0, (CollisionShapes)1, 0x77, 0xE0, 0x2400, {0.0, 9.0, 0.0}, 2.0, 9.0, 0.0, 0.0, 0, 0, 0},
 	{0, (CollisionShapes)1, 0x77, 0xEC, 0x2000, {0.0, 2.5, 0.0}, 5.0, 2.5, 0.0, 0.0, 0, 0, 0},
@@ -52,6 +52,7 @@ void __cdecl tank_display(ObjectMaster* obj)
 {
 	EntityData1*  data = obj->Data1.Entity;
 
+
 	njSetTexture(&highwayObj_TEXLIST);
 	njPushMatrix(0);
 	njTranslateV(0, &data->Position);
@@ -61,7 +62,7 @@ void __cdecl tank_display(ObjectMaster* obj)
 	njPopMatrix(1u);
 }
 
-void Tanka_Brokenpart(ObjectMaster* obj)
+void Tank_Brokenpart(ObjectMaster* obj)
 {
 	EntityData1* data; // esi
 	char nextAction; // al
@@ -100,6 +101,124 @@ void Tanka_Brokenpart(ObjectMaster* obj)
 	}
 }
 
+
+void __cdecl tank_BrokenMain(ObjectMaster* a1)
+{
+	EntityData1* v1; // esi
+	EntityData1* v2; // edi
+	EntityData1* data; // esi
+	EntityData1* parentData; // ebx
+	char v5; // al
+
+	data = a1->Data1.Entity;
+	parentData = a1->Parent->Data1.Entity;
+	if (!ClipSetObject(a1))
+	{
+		if (data->Action)
+		{
+			if (data->Action != 1)
+			{
+				return;
+			}
+		}
+		else
+		{
+			data->Action = 1;
+			a1->field_4C = a1->field_4C;
+			a1->DeleteSub = DeleteFunc_DynCol;
+			a1->DisplaySub = tank_display;
+			data->Rotation.z = 0;
+			data->Rotation.x = 0;
+			data->Scale.z = 1.0;
+			data->Scale.y = 1.0;
+			data->Scale.x = 1.0;
+		}
+		v5 = parentData->Index;
+		if ((v5 & 0x40) != 0)
+		{
+			Tank_Brokenpart(a1);
+		}
+		else if ((v5 & 0x10) != 0)
+		{
+			if ((v5 & 8) != 0)
+			{
+				v1 = a1->Data1.Entity;
+				v2 = a1->Parent->Data1.Entity;
+				v1->Position.x = v1->Position.x + v2->Scale.x;
+				v1->Position.z = v1->Position.z + v2->Scale.z;
+				v1->Position.x = v1->Position.x - v2->Scale.x;
+				v1->Position.z = v1->Position.z - v2->Scale.z;
+			}
+			else
+			{
+				DoThatThingWhereYouGetCloseAndItLightsUp(data, 8u);
+				ResetMaterialColorOffset();
+			}
+		}
+	}
+}
+
+ObjectThing tankObjStruct1[4] = {
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {2.0, 7.0, 3.0}, 0},
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {-3.0, 12.0, 3.0}, 0 },
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {-4.0, 10.0, -2.0}, 0 },
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {4.0, 12.0, 0.0}, 0},
+};
+
+ObjectThing tankObjStruct2[4] = {
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {2.0, 11.0, 3.0},  0},
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {4.0, 16.0, 1.0},  0},
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {0.0, 11.0, -5.0}, 0 },
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {-6.0, 12.0, 0.0}, 0},
+};
+
+ObjectThing tankObjStruct3[4] = {
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {-3.0, 7.0, 3.0}, 0 },
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {2.0, 15.0, 3.0}, 0 },
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {4.0, 9.0, -2.0}, 0 },
+	{tank_BrokenMain, LoadObj_Data1, 0, {0}, {-4.0, 13.0, -2.0}, 0 },
+};
+
+void __cdecl LoadTankBrokenObjects(ObjectThing* things, ObjectMaster* parent, uint32_t size, int tankType)
+{
+	EntityData1* entity;
+	NJS_VECTOR a3;
+	entity = parent->Data1.Entity;
+
+	for (int i = 0; i < size; i++) {
+
+		ObjectMaster* obj = LoadChildObject((LoadObj)things[i].flags, things[i].func, parent);
+
+		if (obj)
+		{
+			EntityData1* childData = obj->Data1.Entity;
+
+			switch (tankType) {
+			case 0:
+			default:
+				obj->field_4C = SH_TankABroken[i]->getmodel();
+				break;
+			case 1:
+				obj->field_4C = SH_TankBBroken[i]->getmodel();
+				break;
+			case 2:
+				obj->field_4C = SH_TankCBroken[i]->getmodel();
+				break;
+			} 
+
+			if (childData)
+			{
+				childData->Status = things[i].status;
+				childData->Rotation.x = things[i].rotation.x + entity->Rotation.x;
+				childData->Rotation.y = things[i].rotation.y + entity->Rotation.y;
+				childData->Rotation.z = things[i].rotation.z + entity->Rotation.z;
+			}
+		}
+	}
+
+	return;
+}
+
 void __cdecl execTankDuct(ObjectMaster* obj)
 {
 	char index; // al
@@ -115,7 +234,7 @@ void __cdecl execTankDuct(ObjectMaster* obj)
 				index = parentData->Index;
 				if ((index & 0x40) != 0)
 				{
-					Tanka_Brokenpart(obj);
+					Tank_Brokenpart(obj);
 				}
 				else if ((index & 8) != 0)
 				{
@@ -267,7 +386,7 @@ void __cdecl tankladder_Main(ObjectMaster* obj)
 				v5 = (unsigned __int8)parentData->Index;
 				if ((v5 & 0x40) != 0)
 				{
-					Tanka_Brokenpart(obj);
+					Tank_Brokenpart(obj);
 				}
 				else if ((v5 & 8) != 0)
 				{
@@ -377,15 +496,15 @@ void TankDoIndexCollisionStuff(char nextAction, char v9, double v11, char index,
 
 			if ((data->Index & 1) != 0)
 			{
-				InitCollision(obj, &tankaCol[2], 1, 4u);
+				InitCollision(obj, &tankCol[2], 1, 4u);
 			}
 			else if ((data->Index & 2) != 0)
 			{
-				InitCollision(obj, &tankaCol[5], 1, 4u);
+				InitCollision(obj, &tankCol[5], 1, 4u);
 			}
 			else
 			{
-				InitCollision(obj, &tankaCol[9], 1, 4u);
+				InitCollision(obj, &tankCol[9], 1, 4u);
 			}
 		}
 		else
@@ -408,6 +527,25 @@ void TankDoIndexCollisionStuff(char nextAction, char v9, double v11, char index,
 	}
 
 	return;
+}
+
+void Load_Brokenmodels(ObjectMaster* a2)
+{
+	char Index; // al
+
+	Index = a2->Data1.Entity->Index;
+	if ((Index & 1) != 0)
+	{
+		LoadTankBrokenObjects(tankObjStruct1, a2, LengthOfArray(tankObjStruct1), 0);
+	}
+	else if ((Index & 2) != 0)
+	{
+		LoadTankBrokenObjects(tankObjStruct2, a2, LengthOfArray(tankObjStruct2), 1);
+	}
+	else
+	{
+		LoadTankBrokenObjects(tankObjStruct3, a2, LengthOfArray(tankObjStruct3), 2);
+	}
 }
 
 void __cdecl OTanka(ObjectMaster* obj)
@@ -447,18 +585,18 @@ void __cdecl OTanka(ObjectMaster* obj)
 				if (data->Scale.x >= 20.0)
 				{
 					data->Index = 4;
-					InitCollision(obj, &tankaCol[6], 3, 4u);
+					InitCollision(obj, &tankCol[6], 3, 4u);
 				}
 				else
 				{
 					data->Index = 2;
-					InitCollision(obj, &tankaCol[3], 2, 4u);
+					InitCollision(obj, &tankCol[3], 2, 4u);
 				}
 			}
 			else
 			{
 				data->Index = 1;
-				InitCollision(obj, tankaCol, 2, 4u);
+				InitCollision(obj, tankCol, 2, 4u);
 			}
 			obj->DeleteSub = j_DeleteChildObjects;
 			data->Rotation.x = 0;
@@ -564,7 +702,7 @@ void __cdecl OTanka(ObjectMaster* obj)
 				v19 = 0;
 			}
 			data->Rotation.y += v19;
-			///sub_61A080(obj); //missing functions which load broken trash with DoObjectThing, lol
+			Load_Brokenmodels(obj);
 			data->Rotation.y -= v19;
 			AddToCollisionList(obj);
 			//KnuxEmeraldStuff(data->Rotation.z, &data->Position);

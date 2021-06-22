@@ -307,9 +307,10 @@ void __cdecl DisplFtnChild2(ObjectMaster* a2)
 	Angle rotY; // eax
 	float scale; // [esp+0h] [ebp-Ch]
 
-	data = a2->Data1.Entity;
-	unsigned int index = a2->Parent->Data1.Entity->Index;
+	int index = a2->Parent->Data1.Entity->Index;
 
+	data = a2->Data1.Entity;
+		
 	//njSetTexture((NJS_TEXLIST*)(8 * (unsigned __int8)a2->Parent->Data1.Entity->Index + 40579296));
 	njSetTexture(&ftnTexList[index]);
 	njPushMatrix(0);
@@ -349,6 +350,7 @@ void __cdecl FountainChild2(ObjectMaster* a1)
 	case 0:
 		a1->field_4C = SH_Fountain[1]->getmodel();
 		a1->DisplaySub = DisplFtnChild2;;
+		a1->DeleteSub = j_DeleteChildObjects;
 		data->Scale.z = 1.0;
 		data->Scale.x = 1.0;
 		data->Scale.y = 0.75;
@@ -381,7 +383,7 @@ void __cdecl FountainChild_Display(ObjectMaster* a2)
 {
 	EntityData1* data = a2->Data1.Entity;
 	unsigned int index = a2->Parent->Data1.Entity->Index;
-	//njSetTexture((NJS_TEXLIST*)(8 * (unsigned __int8)a2->Parent->Data1.Entity->Index + 40579296));
+
 	njSetTexture(&ftnTexList[index]);
 	njPushMatrix(0);
 	njTranslateV(0, &data->Position);
@@ -407,6 +409,13 @@ void FountainChild(ObjectMaster* obj) {
 	}
 }
 
+
+ObjectThing ftnStruct[2] = {
+	{ FountainChild2, LoadObj_Data1, 1, {0}, {0}, nullptr },
+	{ FountainChild2, LoadObj_Data1, 2, {0, 0x8000, 0}, {0}, nullptr}
+};
+
+
 void LoadFountain(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 
@@ -422,7 +431,8 @@ void LoadFountain(ObjectMaster* obj) {
 		data->Collision->Flag |= 0x40u;
 		obj->DeleteSub = Fountain_Delete;
 		obj->DisplaySub = Fountain_Display;
-		LoadChildObject(LoadObj_Data1, (void(__cdecl*)(ObjectMaster*))FountainChild2, obj);
+		Load_MultipleChildObjects(ftnStruct, obj, LengthOfArray(ftnStruct));
+		//LoadChildObject(LoadObj_Data1, (void(__cdecl*)(ObjectMaster*))FountainChild2, obj);
 		LoadChildObject(LoadObj_Data1, (void(__cdecl*)(ObjectMaster*))FountainChild, obj);
 		data->Action = 1;
 		obj->MainSub = Fountain_Main;

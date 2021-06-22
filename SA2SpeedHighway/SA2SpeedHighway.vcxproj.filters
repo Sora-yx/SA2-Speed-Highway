@@ -203,7 +203,7 @@
     <ClCompile Include="sh-gclight.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="sh-tanka.cpp">
+    <ClCompile Include="sh-tank.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="sh-signB.cpp">

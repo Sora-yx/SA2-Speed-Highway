@@ -11,12 +11,12 @@ extern NJS_TEXLIST highwayObj_TEXLIST;
 NJS_OBJECT* shevChild;
 
 ObjectThing stru_EVPlatform[6] = {
-	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 3, {0}, {60.0, -110.0, 0.0}, shevChild},
-	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 0, {0}, {70.0, 0.0, 0.0}, shevChild },
-	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 1, {0}, {60.0, 110.0, 0.0}, shevChild},
-	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 1, {0}, {-60.0, 110.0, 0.0}, shevChild},
-	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 2, {0}, {-70.0, 0.0, 0.0}, shevChild},
-	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 3, {0}, {-60.0, -110.0, 0.0}, shevChild},
+	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 3, {0}, {60.0, -110.0, 0.0}, nullptr},
+	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 0, {0}, {70.0, 0.0, 0.0}, nullptr},
+	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 1, {0}, {60.0, 110.0, 0.0}, nullptr},
+	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 1, {0}, {-60.0, 110.0, 0.0}, nullptr},
+	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 2, {0}, {-70.0, 0.0, 0.0}, nullptr},
+	{ SH_EVChild, LoadObj_Data1 | LoadObj_UnknownA, 3, {0}, {-60.0, -110.0, 0.0}, nullptr},
 };
 
 bool SHEv_isPlayerOnPlatform(ObjectMaster* a1)
