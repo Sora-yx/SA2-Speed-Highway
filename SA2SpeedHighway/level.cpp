@@ -182,7 +182,7 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 	{
 	case 0:
 		PerfectRings_StartCount = 0;
-		LoadSHAct(1);
+		LoadSHAct(2);
 		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
 		data->Action = 1;
 		break;

@@ -230,29 +230,32 @@ void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* obj)
 	{
 		for (int i = 0; i < static_cast<int>(data->Scale.x) + 1; i++)
 		{
-			njPushUnitMatrix();
-			njTranslateEx(&data->Position);
+			njPushMatrix(_nj_unit_matrix_);
+			njTranslateV(CURRENT_MATRIX, &data->Position);
 			njRotateZXY(&data->Rotation);
+
+			NJS_VECTOR caca;  
 
 			if (i % 2)
 			{
-				njTranslate(CURRENT_MATRIX, 0.0f, 0.0f, ceil(static_cast<float>(i) * 0.5f) * data->Scale.y);
+				caca = { 0.0f, 0.0f, ceil(static_cast<float>(i) * 0.5f) * data->Scale.y };
+				njTranslateV(CURRENT_MATRIX, &caca);
 			}
 			else
 			{
-				njTranslate(CURRENT_MATRIX, 0.0f, 0.0f, static_cast<float>(i) * data->Scale.y * -0.5f);
+				caca = { 0.0f, 0.0f, static_cast<float>(i) * data->Scale.y * -0.5f };
+				njTranslateV(CURRENT_MATRIX, &caca);
 			}
 
-			NJS_VECTOR pos;
-
-			njGetTranslation(CURRENT_MATRIX, &pos);
+			//NJS_VECTOR pos;
+			njGetTranslation(CURRENT_MATRIX, &caca);
 			njPopMatrixEx();
 
 			ObjectMaster* child = LoadChildObject((LoadObj)(LoadObj_UnknownB | 6 | LoadObj_UnknownA | LoadObj_Data1), (void(__cdecl*)(ObjectMaster*))obj->field_4C, obj);
-
+		
 			if (child)
 			{
-				child->Data1.Entity->Position = pos;
+				child->Data1.Entity->Position = caca;
 				child->Data1.Entity->Rotation.x = 0;
 				child->Data1.Entity->Rotation.y = (data->Scale.z * 65536.0 * 0.002777777777777778);
 				child->Data1.Entity->Rotation.z = 0;
@@ -262,6 +265,7 @@ void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* obj)
 		data->Action = 1;
 	}
 }
+
 
 void Load_GFF(ObjectMaster* tp)
 {
@@ -345,13 +349,49 @@ void __cdecl OHighRaftC(ObjectMaster* obj)
 	obj->DisplaySub = GenericSHDisplayZXY;
 }
 
-
-void __cdecl OHighRaftA(ObjectMaster* obj)
+void __cdecl graftA_Display(ObjectMaster* a1)
 {
-	obj->Data2.Undefined = SH_HighRaftCol[0]->getmodel();
-	obj->field_4C = SH_HighRaft[0]->getmodel();
-	obj->MainSub = MainSubGlobalDynCol;
-	obj->DisplaySub = GenericSHDisplayZXY;
+	EntityData1* data; // esi
+	data = a1->Data1.Entity;
+	njSetTexture(&highwayObj_TEXLIST);
+	njPushMatrix(0);
+	njTranslateV(0, &data->Position);
+	njRotateZXY(&data->Rotation);
+	DrawObject((NJS_OBJECT*)a1->field_4C);
+	njPopMatrix(1u);
+}
+
+void __cdecl OHighRaftA(ObjectMaster* a1)
+{
+	EntityData1* data1; // esi
+	EntityData1* data; // esi
+	data = a1->Data1.Entity;
+
+	if (!ClipObject(a1, 2250000.0))
+	{
+		if (data->Action)
+		{
+			if (data->Action == 1)
+			{
+				if (IsPlayerInsideSphere(&data->Position, 20))
+				{
+					data->Status | 0x100;
+				}
+				else {
+					data->Status & 0xFEFF;
+				}
+
+			}
+		}
+		else
+		{
+			a1->field_4C = SH_HighRaft[0]->getmodel();
+			a1->DisplaySub = graftA_Display;
+			a1->DeleteSub = DeleteFunc_DynCol;
+			NJS_OBJECT* dyncol = DynCol_AddFromObject(a1, SH_HighRaftCol[0]->getmodel(), &data->Position, data->Rotation.y, SurfaceFlag_Solid);
+			data->Action = 1;
+		}
+	}
 }
 
 void Load_GraftC(ObjectMaster* tp)
