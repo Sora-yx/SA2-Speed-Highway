@@ -74,7 +74,6 @@ void LoadSH_EscalatorsModels() {
 	SH_Escalator2[0] = LoadMDL("SH-Escalator3", ModelFormat_Chunk);
 	SH_Escalator2[1] = LoadMDL("SH-Escalator4", ModelFormat_Chunk);
 
-
 	SH_EscalatorCol[0] = LoadMDL("SH-EscalatorCol1", ModelFormat_Basic);
 	SH_EscalatorCol[1] = LoadMDL("SH-EscalatorCol2", ModelFormat_Basic);
 }

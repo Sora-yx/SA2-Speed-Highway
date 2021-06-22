@@ -1,6 +1,7 @@
 #include "pch.h"
 
-CollisionData signBCol = { 0, (CollisionShapes)0x3, 0x77, 0xE0, 0x400, {0.0, 0.0, -1.5}, 25.0, 15.0, 1.5, 0.0, 0, 0, 0 };
+CollisionData signBCol = { 0, (CollisionShapes)0x3, 0x77, 0xE0, 0x400, {0.0, 15.0, -1.5}, 25.0, 15.0, 1.5, 0.0, 0, 0, 0 };
+
 static ModelInfo* SH_signB[2];
 
 static NJS_TEXNAME signBtexid0[3] = { {(char*)"post01", 0, 0}, { (char*)"ref_red", 0, 0 }, { (char*)"Tokei3", 0, 0 } };
@@ -17,6 +18,8 @@ static NJS_TEXLIST signBtexList3 = { arrayptrandlength(signBtexid3, Uint32) };
 
 static NJS_TEXNAME signBtexid4[3] = { {(char*)"poster4", 0, 0}, { (char*)"ref_red", 0, 0 }, { (char*)"Tokei3", 0, 0 } };  
 static NJS_TEXLIST signBtexList4 = { arrayptrandlength(signBtexid4, Uint32) };
+
+
 
 NJS_TEXLIST signBtexListArray[5] = {
 	signBtexList0,
@@ -59,21 +62,6 @@ void CheckSignBTexlist(ObjectMaster* a1)
 	}
 }
 
-
-void __cdecl signbChild_Display(ObjectMaster* a1)
-{
-	EntityData1* data; // esi
-	data = a1->Data1.Entity;
-	DoThatThingWhereYouGetCloseAndItLightsUp(data, 8u);
-	njSetTexture(&signBtexListArray[data->Index]);
-	njPushMatrix(0);
-	njTranslateV(0, &data->Position);
-	njRotateZXY(&data->Rotation);
-	DrawObject((NJS_OBJECT*)a1->field_4C);
-	njPopMatrix(1u);
-	ResetMaterialColorOffset();
-}
-
 void signB_ApplyPosScale(EntityData1* data, EntityData1* parentData) {
 	if ((parentData->Status & 0x100) == 0)
 	{
@@ -85,6 +73,24 @@ void signB_ApplyPosScale(EntityData1* data, EntityData1* parentData) {
 	data->Position.x -= parentData->Scale.x;
 	data->Position.z -= parentData->Scale.z;
 }
+
+
+void __cdecl signbChild_Display(ObjectMaster* a1)
+{
+	EntityData1* data; // esi
+	data = a1->Data1.Entity;
+	DoThatThingWhereYouGetCloseAndItLightsUp(data, 8u);
+
+	njSetTexture(&signBtexListArray[data->Index]);
+	njPushMatrix(0);
+	njTranslateV(0, &data->Position);
+	njRotateZXY(&data->Rotation);
+	DrawObject((NJS_OBJECT*)a1->field_4C);
+	njPopMatrix(1u);
+	ResetMaterialColorOffset();
+}
+
+
 
 void __cdecl signbChild(ObjectMaster* a1)
 {
@@ -174,7 +180,6 @@ void __cdecl OSignb(ObjectMaster* obj)
 	switch (data->Action)
 	{
 	case 0:
-		data->Action = 1;
 		data->Rotation.z = 0;
 		data->Rotation.x = 0;
 		data->Position.z -= 1.5;
@@ -182,7 +187,7 @@ void __cdecl OSignb(ObjectMaster* obj)
 		InitCollision(obj, &signBCol, 1, 4u);
 		obj->DeleteSub = j_DeleteChildObjects;
 		LoadChildObject(LoadObj_Data1, signbChild, obj);
-		// DoObjectThing(&stru_26B2BE8, obj);
+		data->Action = 1;
 		break;
 	case 1:
 		v5 = data->Status;
@@ -262,8 +267,11 @@ void __cdecl OSignb(ObjectMaster* obj)
 }
 
 void LoadSignBModels() {
-	SH_signB[0] = LoadMDL("SH-signB0", ModelFormat_Chunk);
-	SH_signB[1] = LoadMDL("SH-signB1", ModelFormat_Chunk);
+
+	for (size_t i = 0; i < LengthOfArray(SH_signB); i++) {
+		std::string str = "SH-signB" + std::to_string(i);
+		SH_signB[i] = LoadMDL(str.c_str(), ModelFormat_Chunk);
+	}
 
 
 	signBtexList0.textures[0] = highwayObj2_TEXLIST.textures[39];

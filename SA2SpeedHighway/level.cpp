@@ -122,6 +122,14 @@ void SpeedHighway_Display(ObjectMaster* obj)
 	njControl3D_Restore();
 }
 
+void __cdecl BgExec_SH(ObjectMaster* a1)
+{
+
+
+	//PlayAnother3DSoundMaybe(7, &a2, 0, 0, word_1A5A6C4);
+	
+}
+
 static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
@@ -130,9 +138,9 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 	{
 	case 0:
 		PerfectRings_StartCount = 0;
-		LoadSHAct(1);
+		LoadSHAct(CurrentAct);
 		LoadObject(0, "SHActManager", SHControlActTrigger, LoadObj_Data1);
-		obj->DisplaySub = SpeedHighway_Display;
+		//obj->DisplaySub = SpeedHighway_Display;
 		data->Action = 1;
 		break;
 	case 1:
@@ -246,15 +254,8 @@ static void __cdecl SpeedHighway_Init()
 	dword_1DE468C = (void*)0x6BC4A0;
 
 	// Get starting act
-	if (CurrentCharacter == Characters_Knuckles || CurrentCharacter == Characters_Rouge)
-	{
-		CurrentAct = 2;
-	}
-	else
-	{
-		CurrentAct = 0;
-	}
-
+	CurrentAct = 0;
+	
 	CurrentSADXLevel = LevelIDs_SpeedHighway;
 	LoadGreenForestCharAnims(); //used for helico grab animation
 	if (!ParticleCoreTask)
@@ -265,6 +266,21 @@ static void __cdecl SpeedHighway_Init()
 	LoadModelBG_SH();
 	LoadModelsSH();
 	LoadTexPacks((TexPackInfo*)0x109E810, (NJS_TEXLIST***)0x109E748);
+
+	ObjectMaster* bg = AllocateObjectMaster(BgExec_SH, 1, "BgExec");
+	if (bg)
+	{
+		EntityData1* data = AllocateEntityData1();
+		if (data)
+		{
+			bg->Data1.Entity = data;
+			bg->DisplaySub = (void(__cdecl*)(ObjectMaster*))SpeedHighway_Display;
+		}
+		else
+		{
+			DeleteObject_(bg);
+		}
+	}
 }
 
 static const LevelHeader speedHighwayModule = { "SPDHIGH", 0, SpeedHighway_Init, SpeedHighway_Free, SpeedHighway_Main };
