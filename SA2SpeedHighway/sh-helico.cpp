@@ -3,7 +3,7 @@
 static ModelInfo* SH_Helico[3];
 
 CollisionData HeliCol = { 0, (CollisionShapes)0x1, 1, 0x2F, 0x400, {0.0, 20.0, 0.0}, 75.0, 1.0, 0.0, 0.0, 0, 0, 0 };
-CollisionData HeliGrabCol = { 0, (CollisionShapes)0x0, 0x70, 0xEC, 0, {0}, 20.0, 0.0, 0.0, 0.0, 0, 0, 0 };
+CollisionData HeliGrabCol = { 0, (CollisionShapes)0x0, 0x70, 0xEC, 0, {0}, 12.0, 0.0, 0.0, 0.0, 0, 0, 0 };
 
 extern NJS_TEXLIST highwayObj_TEXLIST;
 extern LoopHead PathList_SpeedHighway0_3;
@@ -337,14 +337,6 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 				Data->Status += 256;
 			}
 
-			if (IsPlayerInsideSphere(&a1->Child->Data1.Entity->Position, 20)) {
-				DoNextAction_r(0, 9, 0);
-
-				v13 = Data->Action;
-				Data->Status &= 0xDFu;
-				Data->Action = v13 + 1;
-			}
-
 		}
 		break;
 
@@ -514,6 +506,13 @@ void __cdecl HelicoChildHelper(ObjectMaster* a1)
 	if ((v2->Status & 0x1000) != 0)
 	{
 		v1->Collision->Flag |= 0x40u;
+	}
+	if (GetCollidingPlayer(a1) && v2->Action == 1) {
+
+		DoNextAction_r(0, 9, 0);
+		v2->Status &= 0xDFu;
+		v2->Action = 2;
+		return;
 	}
 	AddToCollisionList(a1);
 	sub_49CE60(v1, 0);

@@ -234,28 +234,27 @@ void __cdecl SH_GlobalMainWithCalcRot(ObjectMaster* obj)
 			njTranslateV(CURRENT_MATRIX, &data->Position);
 			njRotateZXY(&data->Rotation);
 
-			NJS_VECTOR caca;  
+			NJS_VECTOR pos;  
 
 			if (i % 2)
 			{
-				caca = { 0.0f, 0.0f, ceil(static_cast<float>(i) * 0.5f) * data->Scale.y };
-				njTranslateV(CURRENT_MATRIX, &caca);
+				pos = { 0.0f, 0.0f, ceil(static_cast<float>(i) * 0.5f) * data->Scale.y };
+				njTranslateV(CURRENT_MATRIX, &pos);
 			}
 			else
 			{
-				caca = { 0.0f, 0.0f, static_cast<float>(i) * data->Scale.y * -0.5f };
-				njTranslateV(CURRENT_MATRIX, &caca);
+				pos = { 0.0f, 0.0f, static_cast<float>(i) * data->Scale.y * -0.5f };
+				njTranslateV(CURRENT_MATRIX, &pos);
 			}
 
-			//NJS_VECTOR pos;
-			njGetTranslation(CURRENT_MATRIX, &caca);
+			njGetTranslation(CURRENT_MATRIX, &pos);
 			njPopMatrixEx();
 
 			ObjectMaster* child = LoadChildObject((LoadObj)(LoadObj_UnknownB | 6 | LoadObj_UnknownA | LoadObj_Data1), (void(__cdecl*)(ObjectMaster*))obj->field_4C, obj);
 		
 			if (child)
 			{
-				child->Data1.Entity->Position = caca;
+				child->Data1.Entity->Position = pos;
 				child->Data1.Entity->Rotation.x = 0;
 				child->Data1.Entity->Rotation.y = (data->Scale.z * 65536.0 * 0.002777777777777778);
 				child->Data1.Entity->Rotation.z = 0;
