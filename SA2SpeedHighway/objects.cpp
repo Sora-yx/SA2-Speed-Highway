@@ -646,9 +646,9 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ LoadObj_Data1, 2, 4, 0, Beetle_Attack },
 	{ LoadObj_Data1, 2, 4, 0, Beetle_Stationary },
 	{ LoadObj_Data1, 2, 4, 0, Beetle_Electric },
-	{ LoadObj_Data1, 2, 4, 0.0, (ObjectFuncPtr)Robots },
-	{ (LoadObj)2 },//3, 5, 360000, 0, (ObjectFuncPtr)0x4AF190, "E UNI A" } /* "E UNI A" */,
-	{ (LoadObj)2 },//3, 5, 360000, 0, (ObjectFuncPtr)0x4AF500, "E UNI B" } /* "E UNI B" */,
+	{ LoadObj_Data1, 2, 4, 0, Beetle_Attack2 },
+	{ (LoadObj)2, 3, 5, 360000, (ObjectFuncPtr)0x4FDD00 } /* "E UNI A" */,
+	{ (LoadObj)2, 3, 5, 360000, (ObjectFuncPtr)0x4FDD00 },
 	{ (LoadObj)2, 2, 0, 0, (ObjectFuncPtr)SPHERE, }, /* "C SPHERE" */
 	{ (LoadObj)2, 2, 0, 0, (ObjectFuncPtr)CCYL, }, /* "C CYLINDER" */
 	{ (LoadObj)2, 2, 0, 0, (ObjectFuncPtr)CCUBE, }, /* CUBE */

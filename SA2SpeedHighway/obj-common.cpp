@@ -286,6 +286,24 @@ void __cdecl Robots(ObjectMaster* a1)
 	a1->MainSub = (ObjectFuncPtr)E_AI;
 }
 
+void __cdecl EKyoko(ObjectMaster* a1)
+{
+	EntityData1* entity = a1->Data1.Entity;
+    entity->Rotation = { 11, 0, 4 };
+	entity->Scale = { 1.5, -166, 0 };
+	a1->MainSub = (ObjectFuncPtr)0x4FC700;
+}
+
+void __cdecl Beetle_Attack2(ObjectMaster* a1)
+{
+    EntityData1* entity = a1->Data1.Entity;
+    entity->Rotation.x = 0x1;
+    entity->Rotation.z = 0x1C0;
+    entity->Scale = { 4, 1, 150 };
+    entity->Position.y += 8;
+    a1->MainSub = (ObjectFuncPtr)Beetle_Main;
+}
+
 /*void __cdecl DroppedRing_Main(ObjectMaster* a1)
 {
     float* v2; // edi

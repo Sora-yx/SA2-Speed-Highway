@@ -22,28 +22,26 @@ ObjectThing stru_EVPlatform[6] = {
 bool SHEv_isPlayerOnPlatform(ObjectMaster* a1)
 {
 	EntityData1* v3; // r30
-	bool result = false; // r3
-	NJS_VECTOR v5; // [sp+50h] [-40h] BYREF
-	NJS_VECTOR v6; // [sp+60h] [-30h] BYREF
+
 	NJS_VECTOR a2;
+	NJS_VECTOR a3; // [sp+60h] [-30h] BYREF
 
 	v3 = a1->Data1.Entity;
 	a2.x = MainCharObj1[0]->Position.x - v3->Position.x;
 	a2.y = MainCharObj1[0]->Position.y - v3->Position.y;
 	a2.z = MainCharObj1[0]->Position.z - v3->Position.z;
 
+	njPushUnitMatrix();
+
 	if (v3->Rotation.y != 0x10000)
 		njRotateY(0, (unsigned __int16)-HIWORD(v3->Rotation.y));
 
-	if ((a2.x) >= -5.0 && (a2.x) < 13.0 && a2.y >= 0.0 && (a2.y) < 5.0) {
+	njTranslate(CURRENT_MATRIX, a2.x, a2.y, a2.z);
+	njGetTranslation(CURRENT_MATRIX, &a2);
+	//njCalcPoint(&a2, &a3, CURRENT_MATRIX);
+	njPopMatrix(1u);
 
-		if ((v3->Status & 0x100u))
-		{
-			return true;
-		}
-	}
-
-	return false;
+	return (MainCharObj1[0]->Status & 1) != 0 && fabs(a2.x) < 43.0 && fabs(a2.y) < 10.0 && fabs(a2.z) < 43.0;
 }
 
 

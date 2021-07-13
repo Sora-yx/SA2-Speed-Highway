@@ -376,6 +376,21 @@ void DeleteSETObjects()
 	}
 }
 
+void DeleteDeathZones() {
+
+	for (int i = 0; i < ObjectLists_Length; ++i)
+	{
+		ObjectMaster* obj = DeathZoneObject_ptr;
+
+		if (obj) {
+			if (obj->DeleteSub == (ObjectFuncPtr)0x46AD40) {
+				obj->MainSub = DeleteObject_;
+			}
+		}
+	}
+
+}
+
 void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u)
 {
 	void* setfile = LoadSETFile(2048, (char*)s, (char*)u);
@@ -721,12 +736,12 @@ void __cdecl Load_MultipleChildObjects(ObjectThing* things, ObjectMaster* parent
 
 	for (int i = 0; i < size; i++) {
 
-		ObjectMaster* obj = LoadChildObject((LoadObj)things[i].flags, things[i].func, parent); 
+		ObjectMaster* obj = LoadChildObject((LoadObj)things[i].flags, things[i].func, parent);
 
 		if (obj)
 		{
 			EntityData1* childData = obj->Data1.Entity;
-	
+
 			if (childData)
 			{
 				childData->Status = things[i].status;
@@ -741,5 +756,29 @@ void __cdecl Load_MultipleChildObjects(ObjectThing* things, ObjectMaster* parent
 	}
 
 	njPopMatrix(1u);
+	return;
+}
+
+
+// void __usercall(NJS_VECTOR *a1@<ebx>, float a2, float a3)
+static const void* const SplashWaterPtr = (void*)0x6ED630;
+static inline void LoadSplashWaterASM(int a1)
+{
+	__asm
+	{
+		mov ebx, [a1]
+		call SplashWaterPtr
+	}
+}
+
+void LoadSplashWater(int a1) {
+	return LoadSplashWaterASM(a1);
+}
+
+
+void SetCameraPos(float x, float y, float z) {
+	CameraData.Position.x = x;
+	CameraData.Position.y = y;
+	CameraData.Position.z = z;
 	return;
 }

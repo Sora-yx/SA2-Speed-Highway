@@ -45,7 +45,7 @@ enum SADXLevelIDs {
 
 void SpeedHighway_Hook();
 void LoadSH_DeathZonesModel();
-void DeleteDeathZones();
+void FreeDZModels();
 void LoadSH_DeathZones(int act);
 
 extern int CurrentSADXLevel;

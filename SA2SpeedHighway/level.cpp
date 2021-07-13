@@ -89,7 +89,6 @@ void SpeedHighway_Display(ObjectMaster* obj)
 		DrawObject(SH_BG[0]->getmodel());
 		njSetTexture(&bg_highway01_TEXLIST);
 		DrawObject(SH_BG[1]->getmodel());
-		njScale(0, 1.0f, 1.0f, 1.0f);
 		njPopMatrixEx();
 		break;
 	case 1:
@@ -103,7 +102,6 @@ void SpeedHighway_Display(ObjectMaster* obj)
 			njTranslate(0, 0.0f, -10000.0f - position->y * 0.2f, 0.0f);
 			njSetTexture(&bg_highway02_TEXLIST);
 			DrawObject(SH_BG[2]->getmodel());
-			njScale(0, 1.0f, 1.0f, 1.0f);
 			njPopMatrixEx();
 
 		}
@@ -114,7 +112,6 @@ void SpeedHighway_Display(ObjectMaster* obj)
 		njTranslateV(0, position);
 		njScaleV_(&SkyboxScale_SH[CurrentAct]);
 		DrawObject(SH_BG[3]->getmodel());
-		njScale(0, 1.0f, 1.0f, 1.0f);
 		njPopMatrixEx();
 		break;
 	}
@@ -187,6 +184,7 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 		data->Action = 1;
 		break;
 	case 1:
+
 		if (CurrentAct == 1) {
 
 			LoadChildObject(LoadObj_Data1, CheckAndSetControl, obj);
@@ -199,6 +197,12 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 			LoadChildObject(LoadObj_Data1, CheckAndSetControl, obj);
 			data->Action = 3;
 		}
+		break;
+	case 3:
+		if (++data->field_2 == 20) {
+			SetCameraPos(72.13f, 40.46f, 222.96f);
+		}
+		data->Action = 4;
 		break;
 	}
 	
@@ -215,6 +219,8 @@ void LoadSHAct(int act)
 	StopMusic();
 	DeleteSetHandler();
 	DeleteSETObjects();
+	DeleteDeathZones();
+
 	CurrentAct = act;
 
 	switch (act)
@@ -235,6 +241,8 @@ void LoadSHAct(int act)
 		LoadLevelMusic((char*)"highway3.adx");
 		break;
 	}
+
+	LoadSH_DeathZones(act);
 
 	for (uint8_t i = 0; i < MAXPLAYERS; i++) {
 
@@ -257,7 +265,7 @@ static void __cdecl SpeedHighway_Free()
 
 	FreeModelBG_SH();
 	FreeModelsSH();
-	DeleteDeathZones();
+	FreeDZModels();
 	DropRingsFunc_ptr = nullptr;
 	DisplayItemBoxItemFunc_ptr = nullptr;
 
@@ -283,7 +291,6 @@ static void __cdecl SpeedHighway_Init()
 	LoadLandTable("resource\\gd_pc\\speed-highway1.sa2lvl", &Act2LandInfo, &HIGHWAY02_TEXINFO);
 	LoadLandTable("resource\\gd_pc\\speed-highway2.sa2lvl", &Act3LandInfo, &HIGHWAY03_TEXINFO);
 
-
 	DropRingsFunc_ptr = DropRings;
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
 
@@ -304,6 +311,7 @@ static void __cdecl SpeedHighway_Init()
 	{
 		ParticleCoreTask = AllocateObjectMaster(ParticleCoreTask_Load, 1, "ParticleCoreTask");
 	}
+
 	LoadSH_DeathZonesModel();
 	LoadModelBG_SH();
 	LoadModelsSH();

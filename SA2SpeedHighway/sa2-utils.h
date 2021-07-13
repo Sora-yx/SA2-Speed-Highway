@@ -35,6 +35,20 @@ static inline void PConvertVector_G2P(EntityData1* a1, NJS_VECTOR* a2)
 	}
 }
 
+
+static const void* const njdrawsprite3Dptr = (void*)0x77D690;
+static inline void NJDrawSprite3D(int a1, NJS_SPRITE* a2, char a3)
+{
+	__asm
+	{
+		push[a3]
+		push[a2]
+		mov eax, [a1]
+		call njdrawsprite3Dptr
+		add esp, 8
+	}
+}
+
 #pragma pack(push, 1)
 struct EntityData2_R
 {
@@ -47,6 +61,22 @@ struct EntityData2_R
 	float frict;
 };
 #pragma pack(pop)
+
+static const void* const camptr = (void*)0x4EBD30;
+static int sub_4EBD30(int a1, int a2)
+{
+
+	int result;
+	__asm
+	{
+		mov ecx, a2
+		mov eax, a1
+		call camptr
+		mov result, eax
+	}
+	return result;
+}
+
 
 // Chaos Drive Function Pointers
 DataPointer(void*, dword_1DE4680, 0x1DE4680);
@@ -257,3 +287,7 @@ DataPointer(float, GlobalMatColorB, 0x25EFFDC);
 DataPointer(float, GlobalMatColorA, 0x25EFFD0);
 void ResetMaterialColorOffset();
 DataArray(DWORD, wtfisthis, 0x1934B8A, 70);
+VoidFunc(LoadSplashTextures, 0x6EDE40);
+void LoadSplashWater(int a1);
+void DeleteDeathZones();
+void SetCameraPos(float x, float y, float z);

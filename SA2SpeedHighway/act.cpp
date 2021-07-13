@@ -43,6 +43,7 @@ void CheckAndSetControl(ObjectMaster* obj) {
 
 }
 
+
 void SetSonicRunningOnBulding(ObjectMaster* a1)
 {
 	EntityData1* data; // esi
@@ -50,7 +51,6 @@ void SetSonicRunningOnBulding(ObjectMaster* a1)
 	int v4;
 
 	data = a1->Data1.Entity;
-
 
 	for (int i = 0; i < MAXPLAYERS; i++) {
 
@@ -63,7 +63,8 @@ void SetSonicRunningOnBulding(ObjectMaster* a1)
 
 		case 0:
 			StopMusic();
-			if (++data->field_2 == 40) {
+			if (++data->field_2 == 20) {
+				SetCameraPos(-75.90f, 45.46f, -0.56f);
 				data->Action = 1;
 			}
 			break;

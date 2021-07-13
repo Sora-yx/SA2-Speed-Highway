@@ -81,3 +81,5 @@ void __cdecl OTanka(ObjectMaster* obj);
 
 void LoadSignBModels();
 void __cdecl OSignb(ObjectMaster* obj);
+
+void __cdecl Beetle_Attack2(ObjectMaster* a1);

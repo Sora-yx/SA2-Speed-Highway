@@ -46,7 +46,7 @@ void __cdecl Draw_OClight(ObjectMaster* a1)
 	a1a.b = ColorIDK;
 	a1a.g = ColorIDK;
 	a1a.r = ColorIDK;
-	SetMaterialColor(a1a.a, a1a.r, a1a.g, a1a.b);
+	SetMaterialColor(0.4f, a1a.r, a1a.g, a1a.b);
 
 	njPushMatrix(_nj_unit_matrix_);
 	njRotateZXY(&data->Rotation);
@@ -72,12 +72,7 @@ void __cdecl Draw_OClight(ObjectMaster* a1)
 		njRotateX(0, (unsigned __int16)v12);
 	}
 
-	/*njDrawSprite3D_Queue(
-		&OGclight_Sprite,
-		0,
-		NJD_SPRITE_ALPHA | NJD_SPRITE_VFLIP | NJD_SPRITE_COLOR,
-		QueuedModelFlagsB_SomeTextureThing);*/
-	//njDrawSprite2D(&OGclight_Sprite, 0, 0, NJD_SPRITE_ALPHA | NJD_SPRITE_VFLIP | NJD_SPRITE_COLOR);
+	NJDrawSprite3D(0, &OGclight_Sprite, NJD_SPRITE_ALPHA | NJD_SPRITE_COLOR | NJD_SPRITE_VFLIP);
 
 	njPopMatrix(1u);
 	ResetMaterialColorOffset();
@@ -126,7 +121,7 @@ void __cdecl GClight_main(ObjectMaster* obj)
 			InitCollision(obj, &GclightCol, 1, 4u);
 			data->Collision->Range = 11.0F;
 			gclight_spriteInit();
-			obj->DisplaySub = Draw_OClight;
+			obj->DisplaySub_Delayed3 = Draw_OClight;
 			data->Action = 1;
 		}
 	}

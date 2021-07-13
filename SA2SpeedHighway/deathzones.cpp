@@ -77,10 +77,10 @@ void LoadSH_DeathZones(int act) {
 		break;
 	}
 
-
 }
 
-void DeleteDeathZones() {
+
+void FreeDZModels() {
 	for (size_t i = 0; i < LengthOfArray(SH_DZ); i++) {
 		std::string str = "dz" + std::to_string(i);
 		FreeMDL(SH_DZ[i]);
