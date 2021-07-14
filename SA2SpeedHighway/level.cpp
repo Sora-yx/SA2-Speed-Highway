@@ -25,7 +25,7 @@ static const StartPosition sh_startpos = { LevelIDs_RadicalHighway, 0, 0, 0, { -
 //static const StartPosition sh_endpos = { LevelIDs_RadicalHighway, 0, 0, 0, { -230.08, 150, -1840.42 }, { -230.08, 150, -1840.42}, { -230.08, 150, -1840.42} };
 static const StartPosition sh_endpos = { LevelIDs_RadicalHighway, 16404, 16404, 16404, { -229.0391998, 140, -1591.42 }, { -229.0391998, 140, -1591.42}, { -240.0391998, 140, -1591.42} };
 static const LevelEndPosition sh_2pintro = { LevelIDs_RadicalHighway, 0, 0, 0, { 0.0f, 0.0f, 0.0 }, { 0.0f, 0.0f, 0.0 } };
-static const LevelEndPosition sh_endpos23 = { LevelIDs_RadicalHighway, 0, 0, 0, { -230.08, 150, -1840.42}, { -230.08, 150, -1840.42 } };
+static const LevelEndPosition sh_endpos23 = { LevelIDs_RadicalHighway, 0, 0x8000, 0, { 0, 10, 10}, { 10487.26, -1999.75, 10216.84 } };
 
 static ModelInfo* SH_BG[4];
 

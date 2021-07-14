@@ -15,7 +15,6 @@ bool isSADXLevel()
 	return false;
 }
 
-
 void __cdecl EnemyBounceThing(unsigned __int8 playerID, float speedX, float speedY, float speedZ)
 {
 	int index; // eax
@@ -363,8 +362,6 @@ void DeleteSETObjects()
 	}
 }
 
-
-
 void DeleteDeathZones() {
 
 	if (DeathZoneObject_ptr) {
@@ -434,20 +431,6 @@ void __cdecl StartPosManager(ObjectMaster* obj)
 	else
 	{
 		DeleteObject_(obj);
-	}
-}
-
-static const void* const SavePosptr = (void*)0x43E520;
-static inline void CP_SavePosition(NJS_VECTOR* pos, Rotation* rot, int pID, int a4)
-{
-	__asm
-	{
-		push[a4]
-		push[pID]
-		mov edi, [rot]
-		mov ebx, [pos]
-		call SavePosptr
-		add esp, 8
 	}
 }
 
@@ -533,28 +516,6 @@ void DoNextAction_r(int playerNum, char action, int unknown)
 	}
 }
 
-
-// signed int __usercall CL_ColPolCheckTouchRe@<eax>(csts* a1@<eax>, NJS_OBJECT* object, SurfaceFlags attribute)
-static const void* const CL_ColPolCheckTouchRePtr = (void*)0x48CE40;
-static inline int CL_ColPolCheckTouchReASM(NJS_OBJECT* object, csts* a1, bool attribute)
-{
-	int result;
-	__asm
-	{
-		push[attribute]
-		push[a1]
-		mov eax, [object]
-		call CL_ColPolCheckTouchRePtr
-		add esp, 8
-		mov result, eax
-	}
-	return result;
-}
-
-int CL_ColPolCheckTouchRe(NJS_OBJECT* object, csts* a2, bool attribute) {
-	return CL_ColPolCheckTouchReASM(object, a2, attribute);
-}
-
 double __fastcall sub_7889F0(NJS_VECTOR* a1, NJS_VECTOR* a2, NJS_VECTOR* a3)
 {
 	double v3; // st7
@@ -601,23 +562,6 @@ int VectorAngle(NJS_VECTOR* a1, NJS_VECTOR* a2, NJS_VECTOR* a3)
 	return v5;
 }
 
-static const void* const PhysicsAnimCheckPtr = (void*)0x474F80;
-static inline void PhysicsAndAnimCheckASM(CharObj2Base* a1, EntityData1* a2)
-{
-
-	__asm
-	{
-		push[a2]
-		mov ebx, [a1]
-		call PhysicsAnimCheckPtr
-		add esp, 4
-	}
-}
-
-
-void PhysicsAndAnimCheck(CharObj2Base* a1, EntityData1* a2) {
-	return PhysicsAndAnimCheckASM(a1, a2);
-}
 
 int __cdecl DoRotationStuff(unsigned __int8 a1, int a2, int a3, int a4)
 {
@@ -742,25 +686,19 @@ void __cdecl Load_MultipleChildObjects(ObjectThing* things, ObjectMaster* parent
 }
 
 
-// void __usercall(NJS_VECTOR *a1@<ebx>, float a2, float a3)
-static const void* const SplashWaterPtr = (void*)0x6ED630;
-static inline void LoadSplashWaterASM(int a1)
-{
-	__asm
-	{
-		mov ebx, [a1]
-		call SplashWaterPtr
-	}
-}
-
-void LoadSplashWater(int a1) {
-	return LoadSplashWaterASM(a1);
-}
-
-
 void SetCameraPos(float x, float y, float z) {
 	CameraData.Position.x = x;
 	CameraData.Position.y = y;
 	CameraData.Position.z = z;
 	return;
+}
+
+bool isSonicBouncing() {
+	if (!MainCharObj1[0] || CurrentCharacter > Characters_Shadow)
+		return false;
+
+	if (MainCharObj1[0]->Action == Action_BounceDown)
+		return true;
+
+	return false;
 }

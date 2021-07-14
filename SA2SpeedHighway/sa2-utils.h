@@ -2,7 +2,6 @@
 
 // Stuff from the game's code, missing from the Mod Loader includes
 
-
 static const void* const DrawChunkModelPtr = (void*)0x42E6C0;
 static inline void DrawChunkModel(NJS_CNK_MODEL* a1)
 {
@@ -167,7 +166,6 @@ struct DynColInfo
 	ObjectMaster* Task;
 };
 
-int CL_ColPolCheckTouchRe(NJS_OBJECT* object, csts* a1, bool attribute);
 DataPointer(DynColInfo*, LandColList, 0x1A5A2DC);
 
 DataPointer(unsigned __int16, LandColList_Count, 0x1DE9484);
@@ -233,62 +231,38 @@ struct CL_ObjInfo
 };
 
 
-struct particle_info
+static const void* const PhysicsAnimCheckPtr = (void*)0x474F80;
+static inline void PhysicsAndAnimCheck(CharObj2Base* a1, EntityData1* a2)
 {
-	float scl;
-	float sclspd;
-	float animspd;
-	float friction;
-	float yacc;
-	NJS_POINT3 pos;
-	NJS_POINT3 velo;
-	NJS_ARGB argb;
-};
 
-struct sp_link;
+	__asm
+	{
+		push[a2]
+		mov ebx, [a1]
+		call PhysicsAnimCheckPtr
+		add esp, 4
+	}
+}
 
-struct sp_info
+
+// signed int __usercall CL_ColPolCheckTouchRe@<eax>(csts* a1@<eax>, NJS_OBJECT* object, SurfaceFlags attribute)
+static const void* const CL_ColPolCheckTouchRePtr = (void*)0x48CE40;
+static inline int CL_ColPolCheckTouchRe(NJS_OBJECT* object, csts* a1, bool attribute)
 {
-	NJS_TEXLIST* texlist;
-	NJS_TEXANIM* texanim;
-	int animnum;
-	int srcblend;
-	int dstblend;
-};
+	int result;
+	__asm
+	{
+		push[attribute]
+		push[a1]
+		mov eax, [object]
+		call CL_ColPolCheckTouchRePtr
+		add esp, 8
+		mov result, eax
+	}
+	return result;
+}
 
 
-struct __declspec(align(4)) sp_task
-{
-	sp_task* next;
-	void(__cdecl* exec)(sp_task*, sp_link*);
-	unsigned __int8 mode;
-	unsigned __int8 flag;
-	__int16 no;
-	int ang;
-	float frame;
-	float scl;
-	NJS_POINT3 pos;
-	NJS_POINT3 spd;
-	NJS_ARGB argb;
-	float offset;
-	sp_task* work[2];
-	unsigned __int8 wrtZflg;
-};
-
-
-struct sp_link
-{
-	sp_link* next;
-	sp_task* head;
-	void(__cdecl* exec)(sp_link*);
-	unsigned int numtask;
-	sp_info* info;
-	unsigned int sysflag;
-	void* work;
-};
-
-
-DataPointer(CL_ObjInfo*, NJS_OBJ_LIST_PTR_PREV, 0x1A5A400);
 void PhysicsAndAnimCheck(CharObj2Base* a1, EntityData1* a2);
 FunctionPointer(void, SetMaterialColor, (float Alpha, float R, float G, float B), 0x44B2E0);
 DataPointer(float, GlobalMatColorR, 0x25EFFD4);
@@ -296,7 +270,6 @@ DataPointer(float, GlobalMatColorG, 0x25EFFD8);
 DataPointer(float, GlobalMatColorB, 0x25EFFDC);
 DataPointer(float, GlobalMatColorA, 0x25EFFD0);
 void ResetMaterialColorOffset();
-DataArray(DWORD, wtfisthis, 0x1934B8A, 70);
-VoidFunc(LoadSplashTextures, 0x6EDE40);
-void LoadSplashWater(int a1);
+
 void SetCameraPos(float x, float y, float z);
+bool isSonicBouncing();

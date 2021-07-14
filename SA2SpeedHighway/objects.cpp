@@ -555,7 +555,6 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ LoadObj_Data1, 2, 0x20, 0.0, SpringB_Main },
 	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1), 2, 2, 0.0, DashPanel_Main },
 	{ (LoadObj)(LoadObj_Data1), 2, 0, 0.0, (ObjectFuncPtr)IRONBALL2 },
-
 	{ (LoadObj)2 },// 3, 0, 0, 0, (ObjectFuncPtr)0x7A3E50, "O FeBJG" } /* "O FeBJG",
 	{ (LoadObj)2 }, //3, 0, 0, 0, (ObjectFuncPtr)0x7A30E0, "O TOGE" } /* "O TOGE" ,
 	{ (LoadObj)2, 2, 4, 0, (ObjectFuncPtr)0x6D00C0 } /* "EMERALD" */,
@@ -668,7 +667,16 @@ static ObjectListEntry SpeedHighwayObjList[] = {
 	{ (LoadObj)2, 3, 0, 0, OGgrend, } /* "O GGRENA" */,
 	{ (LoadObj)2, 3, 0, 0, OGclight} /* "O GCLIGHT" */,
 	{ (LoadObj)(LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB), 2, 0x30, 0.0, ItemBoxAir_Main },
-	{ (LoadObj)2 }// 3, 1, 3240000, 0, (ObjectFuncPtr)0x614380, "MISSILE" } /* "MISSILE" */,
+	{ (LoadObj)2 },// 3, 1, 3240000, 0, (ObjectFuncPtr)0x614380, "MISSILE" } /* "MISSILE" */,
+	{ (LoadObj)6, 2, 1, 1000000, (ObjectFuncPtr)0x6E7480, } /* "KNUDAI" */,
+	{ (LoadObj)6, 2, 0, 0, (ObjectFuncPtr)0x6E6680,} /* "KDASIBA" */,
+	{ (LoadObj)2, 2, 4, 0, (ObjectFuncPtr)0x6E2F00,} /* "KDWARPHOLE" */,
+	{ (LoadObj)6, 2, 0, 0, (ObjectFuncPtr)0x6E3F80,  } /* "KDDOOR" */,
+	{ (LoadObj)2, 2, 0x30, 0, (ObjectFuncPtr)0x6E9350,  } /* "KDITEMBOX" */,
+	{ (LoadObj)2, 2, 0x20, 0, (ObjectFuncPtr)0x6E4830, } /* "KDDRNGL" */,
+	{ (LoadObj)2, 2, 0x20, 0, (ObjectFuncPtr)0x6E4FB0,} /* "KDDRNGC" */,
+	{ (LoadObj)2, 2, 0, 0, (ObjectFuncPtr)0x6E94C0, } /* "KDSPRING" */,
+	{ (LoadObj)2, 2, 0, 0, (ObjectFuncPtr)0x6E9510,  } /* "KDSPRINGB" */,
 };
 
 ObjectListHead SpeedHighwayObjListH = { arraylengthandptr(SpeedHighwayObjList) };

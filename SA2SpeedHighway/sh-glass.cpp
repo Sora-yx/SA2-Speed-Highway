@@ -162,7 +162,7 @@ void __cdecl BreakGlass(ObjectMaster* a1, signed int timer)
 	}
 	v10 = v3->Index;
 	++v3->field_6;
-	if (v10 == 2 || (AddToCollisionList(a1), (unsigned __int16)v3->field_6 > timer) || MainCharObj1[0]->Action == Action_BounceDown || MainCharObj1[0]->Action == Action_BounceUp)
+	if (v10 == 2 || (AddToCollisionList(a1), (unsigned __int16)v3->field_6 > timer) || isSonicBouncing() && IsPlayerInsideSphere(&v3->Position, 20))
 	{	
 		Play3DSound_Pos(sound_SHByeGlass, &v3->Position, 0, 0, 70);
 		UpdateSetDataAndDelete(a1);
@@ -201,7 +201,7 @@ void __cdecl SH_GlassMain(ObjectMaster* a1)
 	{
 		Status = v1->Status;
 		v3 = v1->Rotation.z;
-		if ((Status & 0x20) != 0 && !v3 || (Status & 0x10) != 0 && v3)
+		if ((Status & 0x20) != 0 && !v3 || (Status & 0x10) != 0 && v3 || isSonicBouncing() && IsPlayerInsideSphere(&v1->Position, 20))
 		{
 			v1->Status = Status & 0xFFCF;
 			a1->MainSub = LoadBreakGlass;
@@ -214,7 +214,7 @@ void __cdecl SH_GlassMain(ObjectMaster* a1)
 		}
 		v4 = v1->Collision;
 		curFlag = v4->Flag;
-		if ((curFlag & 1) != 0 || (v1->Status & 0x10) != 0)
+		if ((curFlag & 1) != 0 || (v1->Status & 0x10) != 0 || isSonicBouncing() && IsPlayerInsideSphere(&v1->Position, 20))
 		{
 			v4->Flag &= 0xFFFEu;
 			v1->Status &= 0xFFCF;

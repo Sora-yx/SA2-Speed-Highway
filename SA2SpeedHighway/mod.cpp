@@ -33,6 +33,7 @@ extern "C"
 			return;
 
 		if (Controllers[0].press & Buttons_B && CurrentLevel == LevelIDs_RadicalHighway) {
+		//	MainCharObj1[0]->Position = { 2484.12, -2001.165, 3773.63 };
 		}
 
 		FreeCam();
