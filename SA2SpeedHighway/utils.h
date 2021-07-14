@@ -14,6 +14,7 @@ void LoadLandTable(const char* path, LandTableInfo** land, const TexPackInfo* te
 void LoadLandManager_(LandTable* land);
 void DeleteSetHandler();
 void DeleteSETObjects();
+void DeleteDeathZones();
 void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u);
 void LoadLevelMusic(const char* name);
 void SetStartEndPoints(const StartPosition* start, const LevelEndPosition* start2pIntro, const StartPosition* end, const LevelEndPosition* missionend);
@@ -24,7 +25,6 @@ void ObjectSetupInput(EntityData1* twp, EntityData2* mwp);
 NJS_OBJECT* DynCol_AddFromObject(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECTOR* position, Angle rotY, int flags);
 void __cdecl MainSubGlobalCol(ObjectMaster* obj);
 void __cdecl MainSubGlobalDynCol(ObjectMaster* obj);
-void KillPlayerFall(int a1);
 void __cdecl EnemyBounceThing(unsigned __int8 playerID, float speedX, float speedY, float speedZ);
 void __cdecl EnemyBounceThing_Wrapper(unsigned __int8 playerID, float a2, float a3, float a4);
 void DoNextAction_r(int playerNum, char action, int unknown);

@@ -179,7 +179,7 @@ bool CheckPlayerFall(CharObj2Base* status, EntityData1* _entity)
 }
 
 
-
+#pragma optimize("", off)
 //SADX Functions
 void __fastcall PGetAccelerationForBuilding(EntityData1* twp, EntityData2_R* mwp, CharObj2Base* pwp)
 {
@@ -749,3 +749,4 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
     }
     return v36;
 }
+#pragma optimize("", on)

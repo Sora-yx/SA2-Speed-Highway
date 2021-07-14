@@ -25,14 +25,14 @@ void CheckAndKillPlayer(ObjectMaster* obj) {
 		if (CurrentAct == 0) {
 			if (MainCharObj1[0]->Position.y < -3176)
 			{
-				KillPlayerFall(0);
+				BGCheckAndKillPlayer(0);
 				data->Action = 50;
 			}
 		}
 		else if (CurrentAct == 2) {
 			if (MainCharObj1[0]->Position.y < -100)
 			{
-				KillPlayerFall(0);
+				BGCheckAndKillPlayer(0);
 				data->Action = 50;
 			}
 		}
@@ -52,7 +52,6 @@ void LoadSH_DeathZonesModel() {
 }
 
 void LoadSH_DeathZones(int act) {
-
 
 	switch (act) {
 	case 0:
@@ -76,8 +75,8 @@ void LoadSH_DeathZones(int act) {
 		LoadDeathZones(&SHDeathZonesAct3);
 		break;
 	}
-
 }
+
 
 
 void FreeDZModels() {

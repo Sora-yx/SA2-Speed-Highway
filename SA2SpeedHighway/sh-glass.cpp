@@ -162,7 +162,7 @@ void __cdecl BreakGlass(ObjectMaster* a1, signed int timer)
 	}
 	v10 = v3->Index;
 	++v3->field_6;
-	if (v10 == 2 || (AddToCollisionList(a1), (unsigned __int16)v3->field_6 > timer))
+	if (v10 == 2 || (AddToCollisionList(a1), (unsigned __int16)v3->field_6 > timer) || MainCharObj1[0]->Action == Action_BounceDown || MainCharObj1[0]->Action == Action_BounceUp)
 	{	
 		Play3DSound_Pos(sound_SHByeGlass, &v3->Position, 0, 0, 70);
 		UpdateSetDataAndDelete(a1);

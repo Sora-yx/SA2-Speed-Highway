@@ -77,6 +77,16 @@ static int sub_4EBD30(int a1, int a2)
 	return result;
 }
 
+static const void* const KillPlayerFallPtr = (void*)0x46B330;
+static inline void  BGCheckAndKillPlayer(int a1)
+{
+	__asm
+	{
+		mov ebx, a1 // a2
+		call KillPlayerFallPtr
+	}
+}
+
 
 // Chaos Drive Function Pointers
 DataPointer(void*, dword_1DE4680, 0x1DE4680);
@@ -289,5 +299,4 @@ void ResetMaterialColorOffset();
 DataArray(DWORD, wtfisthis, 0x1934B8A, 70);
 VoidFunc(LoadSplashTextures, 0x6EDE40);
 void LoadSplashWater(int a1);
-void DeleteDeathZones();
 void SetCameraPos(float x, float y, float z);

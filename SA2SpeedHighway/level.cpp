@@ -157,7 +157,7 @@ void __cdecl BgExec_SH(ObjectMaster* a1)
 			a2.y = ((double)rand() * 0.000030517578125 - 0.5) * 530.0 + a2.y;
 			a2.z = ((double)rand() * 0.000030517578125 - 0.5) * 530.0 + a2.z;
 
-	
+
 			Play3DSound_Pos(sound_SHWind, &a2, 0, 0, 80);
 
 		}
@@ -189,6 +189,7 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 
 			LoadChildObject(LoadObj_Data1, CheckAndSetControl, obj);
 			LoadChildObject(LoadObj_Data1, SetSonicRunningOnBulding, obj);
+
 			data->Action = 2;
 		}
 		break;
@@ -205,7 +206,7 @@ static void __cdecl SpeedHighway_Main(ObjectMaster* obj)
 		data->Action = 4;
 		break;
 	}
-	
+
 	CheckAndKillPlayer(obj);
 }
 
@@ -242,7 +243,8 @@ void LoadSHAct(int act)
 		break;
 	}
 
-	LoadSH_DeathZones(act);
+	if (CurrentAct < 1)
+		LoadSH_DeathZones(act);
 
 	for (uint8_t i = 0; i < MAXPLAYERS; i++) {
 
@@ -304,7 +306,7 @@ static void __cdecl SpeedHighway_Init()
 
 	// Get starting act
 	CurrentAct = 0;
-	
+
 	CurrentSADXLevel = LevelIDs_SpeedHighway;
 	LoadGreenForestCharAnims(); //used for helico grab animation
 	if (!ParticleCoreTask)

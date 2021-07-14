@@ -33,3 +33,5 @@ struct __declspec(align(2)) ObjectThing
 	NJS_OBJECT* object;
 };
 #pragma pack(pop)
+
+void FreeCam();

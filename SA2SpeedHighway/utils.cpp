@@ -15,19 +15,6 @@ bool isSADXLevel()
 	return false;
 }
 
-static const void* const KillPlayerFallPtr = (void*)0x46B330;
-static inline void  BGCheckAndKillPlayerASM(int a1)
-{
-	__asm
-	{
-		mov ebx, a1 // a2
-		call KillPlayerFallPtr
-	}
-}
-
-void KillPlayerFall(int a1) {
-	return BGCheckAndKillPlayerASM(a1);
-}
 
 void __cdecl EnemyBounceThing(unsigned __int8 playerID, float speedX, float speedY, float speedZ)
 {
@@ -376,20 +363,15 @@ void DeleteSETObjects()
 	}
 }
 
+
+
 void DeleteDeathZones() {
 
-	for (int i = 0; i < ObjectLists_Length; ++i)
-	{
-		ObjectMaster* obj = DeathZoneObject_ptr;
-
-		if (obj) {
-			if (obj->DeleteSub == (ObjectFuncPtr)0x46AD40) {
-				obj->MainSub = DeleteObject_;
-			}
-		}
+	if (DeathZoneObject_ptr) {
+		DeleteObject_(DeathZoneObject_ptr);
 	}
-
 }
+
 
 void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u)
 {
